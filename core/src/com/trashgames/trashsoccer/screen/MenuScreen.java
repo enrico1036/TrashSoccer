@@ -69,7 +69,7 @@ public class MenuScreen extends GameScreen {
 //		sprite3.setPosition(50+(img.getWidth()/2), 50);
 //		sprite3.setSize(200, 200);
 		
-		Gdx.gl.glClearColor(0.8f, 0f, 0f, 1f);
+		Gdx.gl.glClearColor(0f, 1f, 0f, 1f);
 	}
 	
 	@Override
