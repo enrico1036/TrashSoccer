@@ -7,7 +7,6 @@ import com.trashgames.trashsoccer.screen.PlayScreen;
 import com.trashgames.trashsoccer.screen.ScreenManager;
 
 
-
 public class GameManager extends ApplicationAdapter {
     // Static variables
     public static String WND_TITLE = "Platformer game";
@@ -21,7 +20,6 @@ public class GameManager extends ApplicationAdapter {
     public void create () {
         sm = new ScreenManager(this);
         sm.push(new PlayScreen(this));
-        sm.push(new MenuScreen(this));
     }
 
     @Override
