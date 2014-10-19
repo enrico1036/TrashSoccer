@@ -2,6 +2,10 @@
 /MenuBackground.jpg
 /badlogic.jpg
 /com/
+<<<<<<< HEAD
 /image.jpg
 /paolo-brosio.jpg
 /.gitignore
+=======
+/font/
+>>>>>>> refs/remotes/origin/matcap_branch
