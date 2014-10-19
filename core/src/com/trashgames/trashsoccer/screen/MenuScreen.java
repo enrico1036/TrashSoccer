@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 
 import java.util.Vector;
 
@@ -18,13 +19,16 @@ import com.trashgames.trashsoccer.ui.UIButton;
 import com.trashgames.trashsoccer.ui.UILabel;
 
 
-public class MenuScreen extends GameScreen implements InputProcessor{
-
+public class MenuScreen extends GameScreen{
+	private Texture btup;
+	private Texture btdown;
 	private Vector<UIButton> buttons;
 	private Vector<UILabel> labels;
  	
 	public MenuScreen(GameManager gm) {
 		super(gm);
+		Gdx.input.setInputProcessor(this);
+		
 		sb = new SpriteBatch();
 		camera = new OrthographicCamera(30 , 30*(GameManager.WND_HEIGHT/GameManager.WND_WIDTH));
 		camera.setToOrtho(false);
@@ -35,7 +39,20 @@ public class MenuScreen extends GameScreen implements InputProcessor{
 		
 		buttons = new Vector<UIButton>();
 		labels = new Vector<UILabel>();
-
+		
+		// Button creation
+		btup = new Texture(Gdx.files.internal("btup.jpg"));
+		btdown = new Texture(Gdx.files.internal("btdown.jpg"));
+		UIButton bt = new UIButton("Bottone di prova", font, new Rectangle(0,100,250,80), new Sprite(btup), new Sprite(btdown));
+		bt.setAction(new Runnable() {
+			
+			@Override
+			public void run() {
+				System.out.println("CIAO");
+			}
+		});
+		buttons.add(bt);
+		
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1f);
 	}
 
@@ -71,51 +88,26 @@ public class MenuScreen extends GameScreen implements InputProcessor{
 	@Override
 	public void dispose() {
 		super.dispose();
-		
+		btdown.dispose();
+		btup.dispose();
 	}
 	
-	/*
-	 *	INPUT EVENTS
-	 */
-	@Override
-	public boolean keyDown(int keycode) {
-		return false;
-	}
-
-	@Override
-	public boolean keyTyped(char keycode) {
-		return false;
-	}
-
-	@Override
-	public boolean keyUp(int keycode) {
-		return false;
-	}
-
-	@Override
-	public boolean mouseMoved(int screenX, int screenY) {
-		return false;
-	}
-
-	@Override
-	public boolean scrolled(int arg0) {
-		return false;
-	}
-
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		return false;
-	}
-
-	@Override
-	public boolean touchDragged(int arg0, int arg1, int arg2) {
-		return false;
-	}
-
-	@Override
-	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		return false;
+		for(UIButton bt : buttons)
+			if(bt.checkBound(new Vector2(screenX, Gdx.graphics.getHeight() - screenY))){
+				bt.setPressed(true);
+				bt.execAction();
+				break;
+			}
+		return true;
 	}
 	
-
+	@Override
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		for(UIButton bt : buttons)
+			bt.setPressed(false);
+		return true;
+	}
+	
 }

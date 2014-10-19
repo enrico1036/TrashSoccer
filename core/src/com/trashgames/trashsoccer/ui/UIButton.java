@@ -13,7 +13,8 @@ public class UIButton {
 	private BitmapFont font;
 	private Sprite[] backImg;	// 0 = normal background, 1 = pressed background
 	private boolean state; 		// false = released, 	  true = pressed
-	public Rectangle bound;
+	private Rectangle bound;
+	private Runnable action;
 	
 	public UIButton(String text, BitmapFont font, Rectangle bound, Sprite normal, Sprite pressed){
 		this.font = font;
@@ -38,6 +39,14 @@ public class UIButton {
 			TextBounds tBound = font.getBounds(text);
 			font.draw(batch, text, bound.x + (bound.width - tBound.width) / 2, bound.y + (bound.height - tBound.height) / 2);
 		}
+	}
+	
+	public void setAction(Runnable action){
+		this.action = action;
+	}
+	
+	public void execAction(){
+		action.run();
 	}
 	
 	public boolean checkBound(Vector2 point){
