@@ -14,7 +14,6 @@ public class MenuScreen extends GameScreen {
 	private Sprite spriteBg;
 	private SpriteBatch sb;
 	
-	private float x=0;
 	public MenuScreen(GameManager gm) {
 		super(gm);
 		//Sets the camera view
