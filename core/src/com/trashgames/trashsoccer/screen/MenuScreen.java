@@ -9,21 +9,35 @@ import com.trashgames.trashsoccer.GameManager;
 
 public class MenuScreen extends GameScreen {
 
-	private Texture img;
-	private Texture img2;
-	private Sprite sprite;
-	private Sprite sprite2;
-	private Sprite sprite3;
-	private float x=0;
+	//Background Image
+	private Texture bg;
+	private Sprite spriteBg;
+	private SpriteBatch sb;
+	
 	public MenuScreen(GameManager gm) {
 		super(gm);
-		show();
+		//Sets the camera view
+		camera = new OrthographicCamera(30 , 30*(GameManager.WND_HEIGHT/GameManager.WND_WIDTH));
+		camera.setToOrtho(false);
+		camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0);
+		
+		//Load bacground image
+		bg = new Texture("MenuBackground.jpg");
+		spriteBg = new Sprite(bg);
+		spriteBg.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		sb = new SpriteBatch();
 	}
 
 	@Override
 	public void render(float delta) {
 		super.render(delta);
+		//Clear buffer bit
 		Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
+		
+		//Draws all the images
+		sb.begin();
+		spriteBg.draw(sb);
+		sb.end();
 	}
 
 	@Override
@@ -31,15 +45,7 @@ public class MenuScreen extends GameScreen {
 		super.update(delta);
 		camera.update();
 		
-	}
-	@Override
-	public void show() {
-		super.show();
-		camera = new OrthographicCamera(30 , 30*(GameManager.WND_HEIGHT/GameManager.WND_WIDTH));
-		camera.setToOrtho(false);
-		camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0);
 		
-		Gdx.gl.glClearColor(0f, 1f, 0f, 1f);
 	}
 	
 	@Override
