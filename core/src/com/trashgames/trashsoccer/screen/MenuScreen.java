@@ -31,7 +31,7 @@ public class MenuScreen extends GameScreen {
 		camera.setToOrtho(false);
 		camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0);
 		
-		//Load bacground image
+		//Load background image
 		bg = new Texture("MenuBackground.jpg");
 		spriteBg = new Sprite(bg);
 		spriteBg.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -59,6 +59,8 @@ public class MenuScreen extends GameScreen {
 		
 		button.render(sb);
 		label.render(sb);
+		sb.end();
+	}
 
 	@Override
 	public void update(float delta) {
