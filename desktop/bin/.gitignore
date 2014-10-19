@@ -3,9 +3,13 @@
 /badlogic.jpg
 /com/
 <<<<<<< HEAD
+<<<<<<< HEAD
 /image.jpg
 /paolo-brosio.jpg
 /.gitignore
 =======
 /font/
 >>>>>>> refs/remotes/origin/matcap_branch
+=======
+/font/
+>>>>>>> origin/matcap_branch

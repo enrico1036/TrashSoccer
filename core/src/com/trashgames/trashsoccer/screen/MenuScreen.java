@@ -16,6 +16,7 @@ import com.trashgames.trashsoccer.ui.UILabel;
 public class MenuScreen extends GameScreen {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	//Background Image
 	private Texture bg;
 	private Sprite spriteBg;
@@ -25,6 +26,11 @@ public class MenuScreen extends GameScreen {
 	UIButton button;
 	UILabel label;
 >>>>>>> refs/remotes/origin/matcap_branch
+=======
+	private float x=0;
+	UIButton button;
+	UILabel label;
+>>>>>>> origin/matcap_branch
 	
 	public MenuScreen(GameManager gm) {
 		super(gm);
@@ -46,6 +52,7 @@ public class MenuScreen extends GameScreen {
 		//Clear buffer bit
 		Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		
 		//Draws all the images
 		sb.begin();
@@ -55,6 +62,11 @@ public class MenuScreen extends GameScreen {
 		button.render(sb);
 		label.render(sb);
 >>>>>>> refs/remotes/origin/matcap_branch
+=======
+		sb.begin();
+		button.render(sb);
+		label.render(sb);
+>>>>>>> origin/matcap_branch
 		sb.end();
 	}
 
@@ -64,7 +76,10 @@ public class MenuScreen extends GameScreen {
 		camera.update();
 		
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> origin/matcap_branch
 		if(button.checkBound(gm.im.mousePos()))
 			button.setPressed(true);
 		else
@@ -93,8 +108,22 @@ public class MenuScreen extends GameScreen {
 		label = new UILabel("TEST LABEL", new Rectangle(0, 0, 100, 100), font);
 		
 		
+<<<<<<< HEAD
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1f);
 >>>>>>> refs/remotes/origin/matcap_branch
+=======
+		BitmapFont font = new BitmapFont();
+		font.setColor(Color.WHITE);
+		
+		Texture t1 = new Texture(Gdx.files.internal("image.jpg"));
+		Texture t2 = new Texture(Gdx.files.internal("paolo-brosio.jpg"));
+		
+		button = new UIButton("CIAO", font, new Rectangle(200, 200, 100, 100), new Sprite(t1), new Sprite(t2));
+		label = new UILabel("TEST LABEL", new Rectangle(0, 0, 100, 100), font);
+		
+		
+		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1f);
+>>>>>>> origin/matcap_branch
 	}
 	
 	@Override
