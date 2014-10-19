@@ -11,11 +11,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.trashgames.trashsoccer.GameManager;
 import com.trashgames.trashsoccer.ui.UIButton;
+import com.trashgames.trashsoccer.ui.UILabel;
 
 public class MenuScreen extends GameScreen {
 
 	private float x=0;
 	UIButton button;
+	UILabel label;
+	
 	public MenuScreen(GameManager gm) {
 		super(gm);
 		show();
@@ -27,6 +30,7 @@ public class MenuScreen extends GameScreen {
 		Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
 		sb.begin();
 		button.render(sb);
+		label.render(sb);
 		sb.end();
 	}
 
@@ -36,9 +40,9 @@ public class MenuScreen extends GameScreen {
 		camera.update();
 		
 		if(button.checkBound(gm.im.mousePos()))
-			button.font.setColor(Color.GREEN);
+			button.setPressed(true);
 		else
-			button.font.setColor(Color.RED);
+			button.setPressed(false);
 		
 		
 	}
@@ -53,7 +57,12 @@ public class MenuScreen extends GameScreen {
 		BitmapFont font = new BitmapFont();
 		font.setColor(Color.WHITE);
 		
-		button = new UIButton("CIAO", font, new Rectangle(200, 200, 100, 100), null, null);
+		Texture t1 = new Texture(Gdx.files.internal("image.jpg"));
+		Texture t2 = new Texture(Gdx.files.internal("paolo-brosio.jpg"));
+		
+		button = new UIButton("CIAO", font, new Rectangle(200, 200, 100, 100), new Sprite(t1), new Sprite(t2));
+		label = new UILabel("TEST LABEL", new Rectangle(0, 0, 100, 100), font);
+		
 		
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1f);
 	}
