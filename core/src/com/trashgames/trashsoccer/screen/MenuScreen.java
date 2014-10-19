@@ -22,6 +22,12 @@ import com.trashgames.trashsoccer.ui.UILabel;
 public class MenuScreen extends GameScreen{
 	private Texture btup;
 	private Texture btdown;
+	private Texture bg;
+	private Texture ter;
+	private Texture ros;
+	private Sprite bgSprite;
+	private Sprite terSprite;
+	private Sprite rosSprite;
 	private Vector<UIButton> buttons;
 	private Vector<UILabel> labels;
  	
@@ -41,18 +47,46 @@ public class MenuScreen extends GameScreen{
 		buttons = new Vector<UIButton>();
 		labels = new Vector<UILabel>();
 		
-		// Button creation
+		// Background
+		bg = new Texture("StandardBackground.png");
+		bgSprite = new Sprite(bg);
+		bgSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		
+		// Terrain
+		ter = new Texture("StandardTerrain.png");
+		terSprite = new Sprite(ter);
+		terSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()/4);
+		
+		// Rosario muniz
+		ros = new Texture("rosario-muniz.png");
+		rosSprite = new Sprite(ros);
+		rosSprite.setSize(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
+		rosSprite.setPosition(Gdx.graphics.getWidth()*(2f/3f), 0);
+		
 		btup = new Texture(Gdx.files.internal("btup.jpg"));
 		btdown = new Texture(Gdx.files.internal("btdown.jpg"));
-		UIButton bt = new UIButton("Bottone di prova", font, new Rectangle(0,100,250,80), new Sprite(btup), new Sprite(btdown));
+		// Button creation
+		UIButton bt = new UIButton("1 Player", font, new Rectangle(Gdx.graphics.getWidth()/8,Gdx.graphics.getHeight()/2,Gdx.graphics.getWidth()/3,Gdx.graphics.getHeight()/7), new Sprite(btup), new Sprite(btdown));
 		bt.setAction(new Runnable() {
 			
 			@Override
 			public void run() {
-				System.out.println("CIAO");
+				System.out.println("1player");
 			}
 		});
 		buttons.add(bt);
+		
+		// 2 players button creation
+		UIButton bt2 = new UIButton("2 Players", font, new Rectangle(Gdx.graphics.getWidth()*(13f/24f),Gdx.graphics.getHeight()/2,Gdx.graphics.getWidth()/3,Gdx.graphics.getHeight()/7), new Sprite(btup), new Sprite(btdown));
+		bt2.setAction(new Runnable() {
+			
+			@Override
+			public void run() {
+				System.out.println("2players");
+			}
+		});
+		buttons.add(bt2);
+		
 		
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1f);
 	}
@@ -63,7 +97,12 @@ public class MenuScreen extends GameScreen{
 		Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
 		
 		sb.begin();
-		
+		// Background rendering
+		bgSprite.draw(sb);
+		// Terrain rendering
+		terSprite.draw(sb);
+		// Rosario muniz rendering
+		rosSprite.draw(sb);
 		// UI rendering
 		for(UIButton bt : buttons)
 			bt.render(sb);
@@ -78,19 +117,13 @@ public class MenuScreen extends GameScreen{
 		super.update(delta);
 		camera.update();
 		
-		// Check button press
 	}
-	
-	@Override
-	public void show() {
-		super.show();
-	}
-	
 
 	@Override
 	public void dispose() {
 		super.dispose();
-
+		
+		bg.dispose();
 		btdown.dispose();
 		btup.dispose();
 	}
