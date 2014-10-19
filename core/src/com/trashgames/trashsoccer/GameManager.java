@@ -19,7 +19,7 @@ public class GameManager extends ApplicationAdapter {
     @Override
     public void create () {
         sm = new ScreenManager(this);
-        sm.push(new PlayScreen(this));
+        sm.push(new MenuScreen(this));
     }
 
     @Override
