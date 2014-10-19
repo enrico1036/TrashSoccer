@@ -5,17 +5,17 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.math.Rectangle;
 
-public class UILabel extends UIObject {
-//	private String text;
-//	private Rectangle bound;
-//	private BitmapFont font;
+public class UILabel{
+	private String text;
+	private Rectangle bound;
+	private BitmapFont font;
 	
 	public UILabel(String text, Rectangle bound, BitmapFont font){
 		this.text = text;
 		this.bound = bound;
 		this.font = font;
 	}
-	@Override
+	
 	public void render(SpriteBatch batch){
 		if(!text.isEmpty()){
 			TextBounds tBound = font.getBounds(text);

@@ -8,12 +8,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-public class UIButton extends UIObject{
-//	private String text;
-//	private BitmapFont font;
+public class UIButton{
+	private String text;
+	private BitmapFont font;
 	private Sprite[] backImg;	// 0 = normal background, 1 = pressed background
 	private boolean state; 		// false = released, 	  true = pressed
-//	public Rectangle bound;
+	public Rectangle bound;
 	
 	public UIButton(String text, BitmapFont font, Rectangle bound, Sprite normal, Sprite pressed){
 		this.font = font;
@@ -24,7 +24,6 @@ public class UIButton extends UIObject{
 		this.bound = bound;
 	}
 	
-	@Override
 	public void render(SpriteBatch batch){
 		// Convert boolean to int
 		int s = (state) ? 1 : 0;
