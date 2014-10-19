@@ -2,6 +2,7 @@ package com.trashgames.trashsoccer.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -9,60 +10,66 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+
+import java.util.Vector;
+
 import com.trashgames.trashsoccer.GameManager;
 import com.trashgames.trashsoccer.ui.UIButton;
 import com.trashgames.trashsoccer.ui.UILabel;
 
-public class MenuScreen extends GameScreen {
 
-	//Background Image
-	private Texture bg;
-	private Sprite spriteBg;
-	private SpriteBatch sb;
-
-	//Buttons
-	UIButton button;
-	UILabel label;
-	Texture t1;
-	Texture t2;
-	
+public class MenuScreen extends GameScreen{
+	private Texture btup;
+	private Texture btdown;
+	private Vector<UIButton> buttons;
+	private Vector<UILabel> labels;
+ 	
 	public MenuScreen(GameManager gm) {
 		super(gm);
-		//Sets the camera view
+
+		Gdx.input.setInputProcessor(this);
+		
+		sb = new SpriteBatch();
 		camera = new OrthographicCamera(30 , 30*(GameManager.WND_HEIGHT/GameManager.WND_WIDTH));
 		camera.setToOrtho(false);
 		camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0);
 		
-		//Load background image
-		bg = new Texture("MenuBackground.jpg");
-		spriteBg = new Sprite(bg);
-		spriteBg.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		sb = new SpriteBatch();
-		
-		//Sets Buttons and labels
 		BitmapFont font = new BitmapFont();
 		font.setColor(Color.WHITE);
 		
-		t1 = new Texture(Gdx.files.internal("image.jpg"));
-		t2 = new Texture(Gdx.files.internal("paolo-brosio.jpg"));
+		buttons = new Vector<UIButton>();
+		labels = new Vector<UILabel>();
 		
-		button = new UIButton("CIAO", font, new Rectangle(200, 200, 100, 100), new Sprite(t1), new Sprite(t2));
-		label = new UILabel("TEST LABEL", new Rectangle(0, 0, 100, 100), font);
-
+		// Button creation
+		btup = new Texture(Gdx.files.internal("btup.jpg"));
+		btdown = new Texture(Gdx.files.internal("btdown.jpg"));
+		UIButton bt = new UIButton("Bottone di prova", font, new Rectangle(0,100,250,80), new Sprite(btup), new Sprite(btdown));
+		bt.setAction(new Runnable() {
+			
+			@Override
+			public void run() {
+				System.out.println("CIAO");
+			}
+		});
+		buttons.add(bt);
+		
+		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1f);
 	}
 
 	@Override
 	public void render(float delta) {
 		super.render(delta);
-		//Clear buffer bit
 		Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
-
-		//Draws all the images
-		sb.begin();
-		spriteBg.draw(sb);
 		
-		button.render(sb);
-		label.render(sb);
+		sb.begin();
+		
+		// UI rendering
+		for(UIButton bt : buttons)
+			bt.render(sb);
+		for(UILabel lb : labels)
+			lb.render(sb);
+		
 		sb.end();
 	}
 
@@ -70,22 +77,40 @@ public class MenuScreen extends GameScreen {
 	public void update(float delta) {
 		super.update(delta);
 		camera.update();
-
-
-		if(button.checkBound(gm.im.mousePos()))
-			button.setPressed(true);
-		else
-			button.setPressed(false);
 		
-		
+		// Check button press
 	}
+	
+	@Override
+	public void show() {
+		super.show();
+	}
+	
 
 	@Override
 	public void dispose() {
 		super.dispose();
-		bg.dispose();
-		
+
+		btdown.dispose();
+		btup.dispose();
 	}
 	
-
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		for(UIButton bt : buttons)
+			if(bt.checkBound(new Vector2(screenX, Gdx.graphics.getHeight() - screenY))){
+				bt.setPressed(true);
+				bt.execAction();
+				break;
+			}
+		return true;
+	}
+	
+	@Override
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		for(UIButton bt : buttons)
+			bt.setPressed(false);
+		return true;
+	}
+	
 }
