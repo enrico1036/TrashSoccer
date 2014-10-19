@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.trashgames.trashsoccer.GameManager;
 import com.trashgames.trashsoccer.ui.UIButton;
 import com.trashgames.trashsoccer.ui.UILabel;
+import com.trashgames.trashsoccer.ui.UIObject;
 
 public class MenuScreen extends GameScreen {
 
@@ -23,6 +24,7 @@ public class MenuScreen extends GameScreen {
 	//Buttons
 	UIButton button;
 	UILabel label;
+	UIObject objects[];
 	
 	public MenuScreen(GameManager gm) {
 		super(gm);
@@ -37,14 +39,17 @@ public class MenuScreen extends GameScreen {
 		spriteBg.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		sb = new SpriteBatch();
 		
+		//Sets Buttons and labels
 		BitmapFont font = new BitmapFont();
 		font.setColor(Color.WHITE);
 		
 		Texture t1 = new Texture(Gdx.files.internal("image.jpg"));
 		Texture t2 = new Texture(Gdx.files.internal("paolo-brosio.jpg"));
 		
-		button = new UIButton("CIAO", font, new Rectangle(200, 200, 100, 100), new Sprite(t1), new Sprite(t2));
-		label = new UILabel("TEST LABEL", new Rectangle(0, 0, 100, 100), font);
+		objects = new UIObject[2];
+		
+		objects[0] = new UIButton("CIAO", font, new Rectangle(200, 200, 100, 100), new Sprite(t1), new Sprite(t2));
+		objects[1] = new UILabel("TEST LABEL", new Rectangle(0, 0, 100, 100), font);
 	}
 
 	@Override
@@ -57,8 +62,8 @@ public class MenuScreen extends GameScreen {
 		sb.begin();
 		spriteBg.draw(sb);
 		
-		button.render(sb);
-		label.render(sb);
+		objects[0].render(sb);
+		objects[1].render(sb);
 		sb.end();
 	}
 
