@@ -1,5 +1,6 @@
 package com.trashgames.trashsoccer.screen;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -14,6 +15,7 @@ public abstract class GameScreen extends ScreenAdapter implements InputProcessor
 
     public GameScreen(GameManager gm){
         this.gm = gm;
+		Gdx.input.setInputProcessor(this);	
     }
 
     public GameManager getGm() {
@@ -42,29 +44,27 @@ public abstract class GameScreen extends ScreenAdapter implements InputProcessor
 
     @Override
     public void hide() {
-
+    	
     }
 
     @Override
     public void pause() {
-
+    	
     }
 
     @Override
-    public void resume() {
-
-    }
+	public void resume() {
+    	Gdx.input.setInputProcessor(this);
+	}
 
     @Override
     public void dispose() {
 
     }
     
-    /*
-	 *	INPUT EVENTS
-	 */
 	@Override
 	public boolean keyDown(int keycode) {
+		
 		return false;
 	}
 
