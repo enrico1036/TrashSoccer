@@ -23,6 +23,7 @@ import com.trashgames.trashsoccer.Game;
 
 import static com.trashgames.trashsoccer.Game.PPM;
 
+import com.trashgames.trashsoccer.entities.Player;
 import com.trashgames.trashsoccer.graphics.TextureManager;
 
 public class PlayScreen extends GameScreen {
@@ -43,24 +44,26 @@ public class PlayScreen extends GameScreen {
 		
 		// Body creation
 		BodyDef bdef = new BodyDef();
-		bdef.position.set(50 / PPM, 50 / PPM);
+		bdef.position.set(320 / PPM, 50 / PPM);
 		bdef.type  = BodyType.StaticBody;
 		Body body = world.createBody(bdef);
 		
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(200 / PPM, 30 / PPM);
+		shape.setAsBox(320 / PPM, 30 / PPM);
 		
 		FixtureDef fdef = new FixtureDef();
 		fdef.shape = shape;
 		body.createFixture(fdef);
 		
+		Player player1 = new Player(world, new Vector2(70/PPM, 150/PPM));
+		
 		
 		
 		// Texture loading
-		tm.loadTexture("MenuBackground.jpg", "BACKGROUND");
-		sprite = new Sprite(tm.get("BACKGROUND"));
-		sprite.setPosition(0, 0);
-		sb = new SpriteBatch();
+//		tm.loadTexture("MenuBackground.jpg", "BACKGROUND");
+//		sprite = new Sprite(tm.get("BACKGROUND"));
+//		sprite.setPosition(0, 0);
+//		sb = new SpriteBatch();
 		
 		// Camera
 		camera = new OrthographicCamera();
@@ -76,9 +79,9 @@ public class PlayScreen extends GameScreen {
 		super.render(delta);
 		Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
 		//sb.setProjectionMatrix(camera.combined);
-		sb.begin();
-		sprite.draw(sb);
-		sb.end();
+//		sb.begin();
+//		sprite.draw(sb);
+//		sb.end();
 		
 		renderer.render(world, camera.combined);
 	}
