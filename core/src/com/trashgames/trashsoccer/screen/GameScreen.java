@@ -15,7 +15,7 @@ public abstract class GameScreen extends ScreenAdapter implements InputProcessor
 
     public GameScreen(GameManager gm){
         this.gm = gm;
-		Gdx.input.setInputProcessor(this);	
+		Gdx.input.setInputProcessor(this);
     }
 
     public GameManager getGm() {
@@ -29,7 +29,7 @@ public abstract class GameScreen extends ScreenAdapter implements InputProcessor
     }
 
     public void update(float delta){
-
+    	
     }
 
     @Override
