@@ -5,20 +5,20 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.trashgames.trashsoccer.GameManager;
+import com.trashgames.trashsoccer.Game;
 
 public abstract class GameScreen extends ScreenAdapter implements InputProcessor{
 
-    protected GameManager gm;
+    protected Game gm;
     protected SpriteBatch sb;
     protected OrthographicCamera camera;
 
-    public GameScreen(GameManager gm){
+    public GameScreen(Game gm){
         this.gm = gm;
 		Gdx.input.setInputProcessor(this);
     }
 
-    public GameManager getGm() {
+    public Game getGm() {
         return gm;
     }
 

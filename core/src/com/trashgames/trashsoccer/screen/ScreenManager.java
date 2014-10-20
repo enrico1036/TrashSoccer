@@ -3,19 +3,19 @@ package com.trashgames.trashsoccer.screen;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
-import com.trashgames.trashsoccer.GameManager;
+import com.trashgames.trashsoccer.Game;
 
 public class ScreenManager {
 
-	protected GameManager gm;
+	protected Game gm;
 	protected Stack<GameScreen> screenStack;
 
-	public ScreenManager(GameManager gm) {
+	public ScreenManager(Game gm) {
 		this.gm = gm;
 		screenStack = new Stack<GameScreen>();
 	}
 
-	public GameManager getGameManager() {
+	public Game getGameManager() {
 		return gm;
 	}
 

@@ -9,21 +9,62 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.trashgames.trashsoccer.GameManager;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.Shape;
+import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.trashgames.trashsoccer.Game;
+
+import static com.trashgames.trashsoccer.Game.PPM;
+
 import com.trashgames.trashsoccer.graphics.TextureManager;
 
 public class PlayScreen extends GameScreen {
+	
 	private TextureManager tm;
 	private Sprite sprite;
-
-	public PlayScreen(GameManager gm) {
+	private World world;
+	private Box2DDebugRenderer renderer;
+	
+	public PlayScreen(Game gm) {
 		super(gm);
 		tm = new TextureManager();
+		
+		renderer = new Box2DDebugRenderer();
+		
+		// World initialization
+		world = new World(new Vector2(0f, -9.81f), true);
+		
+		// Body creation
+		BodyDef bdef = new BodyDef();
+		bdef.position.set(50 / PPM, 50 / PPM);
+		bdef.type  = BodyType.StaticBody;
+		Body body = world.createBody(bdef);
+		
+		PolygonShape shape = new PolygonShape();
+		shape.setAsBox(200 / PPM, 30 / PPM);
+		
+		FixtureDef fdef = new FixtureDef();
+		fdef.shape = shape;
+		body.createFixture(fdef);
+		
+		
+		
 		// Texture loading
 		tm.loadTexture("MenuBackground.jpg", "BACKGROUND");
 		sprite = new Sprite(tm.get("BACKGROUND"));
 		sprite.setPosition(0, 0);
 		sb = new SpriteBatch();
+		
+		// Camera
+		camera = new OrthographicCamera();
+		camera.setToOrtho(false, Gdx.graphics.getWidth() / PPM, Gdx.graphics.getHeight() / PPM);
 
 		// OpenGL initialization
 		Gdx.gl.glClearColor(.3f, .0f, .25f, 1f);
@@ -34,14 +75,18 @@ public class PlayScreen extends GameScreen {
 	public void render(float delta) {
 		super.render(delta);
 		Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
-
+		//sb.setProjectionMatrix(camera.combined);
 		sb.begin();
 		sprite.draw(sb);
 		sb.end();
+		
+		renderer.render(world, camera.combined);
 	}
 
 	@Override
 	public void update(float delta) {
+		camera.update();
+		world.step(delta, 6, 2);
 	}
 
 	@Override

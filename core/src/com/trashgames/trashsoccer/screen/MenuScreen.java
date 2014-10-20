@@ -13,7 +13,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import java.util.Vector;
-import com.trashgames.trashsoccer.GameManager;
+import com.trashgames.trashsoccer.Game;
 import com.trashgames.trashsoccer.graphics.TextureManager;
 import com.trashgames.trashsoccer.ui.UIButton;
 import com.trashgames.trashsoccer.ui.UILabel;
@@ -29,11 +29,11 @@ public class MenuScreen extends GameScreen {
 	private Vector<UIButton> buttons;
 	private Vector<UILabel> labels;
 
-	public MenuScreen(final GameManager gm) {
+	public MenuScreen(final Game gm) {
 		super(gm);
 
 		sb = new SpriteBatch();
-		camera = new OrthographicCamera(30, 30 * (GameManager.WND_HEIGHT / GameManager.WND_WIDTH));
+		camera = new OrthographicCamera(30, 30 * (Game.WND_HEIGHT / Game.WND_WIDTH));
 		camera.setToOrtho(false);
 		camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0);
 
