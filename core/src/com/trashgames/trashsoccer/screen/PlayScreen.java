@@ -32,6 +32,7 @@ public class PlayScreen extends GameScreen {
 	private Sprite sprite;
 	private World world;
 	private Box2DDebugRenderer renderer;
+	Player player1;
 	
 	public PlayScreen(Game gm) {
 		super(gm);
@@ -55,7 +56,7 @@ public class PlayScreen extends GameScreen {
 		fdef.shape = shape;
 		body.createFixture(fdef);
 		
-		Player player1 = new Player(world, new Vector2(70/PPM, 150/PPM));
+		player1 = new Player(world, new Vector2(320/PPM, 200/PPM));
 		
 		
 		
@@ -98,6 +99,11 @@ public class PlayScreen extends GameScreen {
 		tm.dispose();
 	}
 
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		player1.jump();
+		return true;
+	}
 	@Override
 	public boolean keyUp(int keycode) {
 		switch (keycode) {
