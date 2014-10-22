@@ -1,6 +1,10 @@
 package com.trashgames.trashsoccer.entities;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -18,11 +22,15 @@ import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
 import com.badlogic.gdx.physics.box2d.joints.MotorJointDef;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.badlogic.gdx.physics.box2d.joints.RopeJointDef;
+import com.trashgames.trashsoccer.graphics.TextureManager;
 
 import static com.trashgames.trashsoccer.Game.PPM;
 
 public class Player {
 
+	private TextureManager tm;
+	private Sprite sprite;
+	
 	private Body body;
 	private Body armR;
 	private Body armL;
@@ -33,7 +41,6 @@ public class Player {
 	private Body pivot;
 	private Body junction;
 	
-	private float yOff;
 	
 	private float bodyWidth = Gdx.graphics.getWidth()/35/PPM;
 	private float bodyHeight = Gdx.graphics.getHeight()/10/PPM;
@@ -43,8 +50,9 @@ public class Player {
 	private float legWidth = bodyWidth/2;
 	private float legHeight = Gdx.graphics.getHeight()/20/PPM;
 	
-	public Player(World world, Vector2 pos){
-		Filter filter = new Filter();
+	public Player(World world, Vector2 pos, Filter filter, TextureManager tm){
+		this.tm = tm;
+		sprite = new Sprite();
 		
 		// Body creation
 		BodyDef bdef = new BodyDef();
@@ -191,7 +199,6 @@ public class Player {
 //		fdef.shape = cshape;
 //		pivot.createFixture(fdef).setFilterData(filter);
 		
-		yOff = bdef.position.y;
 		
 		// Junction
 		bdef.type = BodyType.DynamicBody;
@@ -243,5 +250,22 @@ public class Player {
 	
 	public void kick(){
 		
+	}
+	
+	public Sprite generateSprite(Body bd, float halfWidth, float halfHeight, Texture texture){
+		sprite.setTexture(texture);
+		sprite.setPosition(bd.getPosition().x - halfWidth, bd.getPosition().y - halfHeight);
+		sprite.setRotation(bd.getAngle() * MathUtils.radiansToDegrees);
+		sprite.setSize(halfWidth * 2, halfHeight * 2);
+		sprite.setOriginCenter();
+		return sprite;
+	}
+	
+	public void draw(SpriteBatch sb){
+		generateSprite(legR, legWidth, legHeight, tm.get("leg")).draw(sb);
+		generateSprite(legL, legWidth, legHeight, tm.get("leg")).draw(sb);
+		generateSprite(armR, armWidth, armHeight, tm.get("BACKGROUND")).draw(sb);
+		generateSprite(armL, armWidth, armHeight, tm.get("BACKGROUND")).draw(sb);
+		generateSprite(body, bodyWidth, bodyHeight+headRad, tm.get("leg")).draw(sb);
 	}
 }

@@ -72,23 +72,25 @@ public class PlayScreen extends GameScreen {
 		Body bodyR = world.createBody(bdef);
 		bodyR.createFixture(fdef).setFilterData(filter);
 		
-		
-		player1 = new Player(world, new Vector2(320/PPM, 300/PPM));
+		tm.loadTexture("MenuBackground.jpg", "BACKGROUND");
+		tm.loadTexture("character/leg.jpg", "leg");
+		tm.loadTexture("rosario-muniz.jpg", "ros");
+		player1 = new Player(world, new Vector2(320/PPM, 300/PPM), filter, tm);
 		
 		
 		
 		// Texture loading
-//		tm.loadTexture("MenuBackground.jpg", "BACKGROUND");
-//		sprite = new Sprite(tm.get("BACKGROUND"));
-//		sprite.setPosition(0, 0);
-//		sb = new SpriteBatch();
+		sprite = new Sprite(tm.get("BACKGROUND"));
+		sprite.setPosition(0, 0);
+		sprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		sb = new SpriteBatch();
 		
 		// Camera
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, Gdx.graphics.getWidth() / PPM, Gdx.graphics.getHeight() / PPM);
 
 		// OpenGL initialization
-		Gdx.gl.glClearColor(.3f, .0f, .25f, 1f);
+		Gdx.gl.glClearColor(.0f, .0f, .0f, 1f);
 
 	}
 
@@ -96,10 +98,12 @@ public class PlayScreen extends GameScreen {
 	public void render(float delta) {
 		super.render(delta);
 		Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
-		//sb.setProjectionMatrix(camera.combined);
-//		sb.begin();
+		
+		sb.setProjectionMatrix(camera.combined);
+		sb.begin();
 //		sprite.draw(sb);
-//		sb.end();
+		player1.draw(sb);
+		sb.end();
 		
 		renderer.render(world, camera.combined);
 	}
@@ -114,6 +118,7 @@ public class PlayScreen extends GameScreen {
 	@Override
 	public void dispose() {
 		super.dispose();
+		world.dispose();
 		tm.dispose();
 	}
 
