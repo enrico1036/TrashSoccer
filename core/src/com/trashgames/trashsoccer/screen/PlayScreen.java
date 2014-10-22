@@ -14,6 +14,8 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.EdgeShape;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
@@ -52,11 +54,26 @@ public class PlayScreen extends GameScreen {
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(320 / PPM, 30 / PPM);
 		
+		
 		FixtureDef fdef = new FixtureDef();
 		fdef.shape = shape;
-		body.createFixture(fdef);
+		Filter filter = new Filter();
+		filter.categoryBits = 8;
+		filter.maskBits = 1;
+		body.createFixture(fdef).setFilterData(filter);
 		
-		player1 = new Player(world, new Vector2(320/PPM, 200/PPM));
+		bdef.position.set(0, Gdx.graphics.getHeight()/(2*PPM));
+		Body bodyL = world.createBody(bdef);
+		shape.setAsBox(30/PPM, 240/PPM);
+		fdef.shape = shape;
+		bodyL.createFixture(fdef).setFilterData(filter);
+		
+		bdef.position.set(Gdx.graphics.getWidth()/PPM, Gdx.graphics.getHeight()/(2*PPM));
+		Body bodyR = world.createBody(bdef);
+		bodyR.createFixture(fdef).setFilterData(filter);
+		
+		
+		player1 = new Player(world, new Vector2(320/PPM, 300/PPM));
 		
 		
 		
@@ -91,6 +108,7 @@ public class PlayScreen extends GameScreen {
 	public void update(float delta) {
 		camera.update();
 		world.step(delta, 6, 2);
+		player1.move();
 	}
 
 	@Override
