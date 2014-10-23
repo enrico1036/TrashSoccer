@@ -2,6 +2,8 @@ package com.trashgames.trashsoccer;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
 import com.trashgames.trashsoccer.screen.MenuScreen;
 import com.trashgames.trashsoccer.screen.PlayScreen;
 import com.trashgames.trashsoccer.screen.ScreenManager;
@@ -14,12 +16,15 @@ public class Game extends ApplicationAdapter {
 	public static final int WND_HEIGHT = 480;
 	
 	// Class memebers
-	public ScreenManager sm;
-
+	public ScreenManager screenManager;
+	public AssetManager assetManager;
 	@Override
 	public void create() {
-		sm = new ScreenManager(this);
-		sm.push(new MenuScreen(this));
+		screenManager = new ScreenManager(this);
+		screenManager.push(new MenuScreen(this));
+		
+		assetManager = new AssetManager();
+		Texture.setAssetManager(assetManager);
 	}
 
 	@Override
@@ -30,7 +35,7 @@ public class Game extends ApplicationAdapter {
 
 	@Override
 	public void render() {
-		if (!sm.renderCurrent(Gdx.graphics.getDeltaTime())) {
+		if (!screenManager.renderCurrent(Gdx.graphics.getDeltaTime())) {
 			Gdx.app.log("ERROR", "Nothing to render. Exiting");
 			Gdx.app.exit();
 		}
@@ -39,6 +44,6 @@ public class Game extends ApplicationAdapter {
 	@Override
 	public void dispose() {
 		super.dispose();
-		sm.dispose();
+		screenManager.dispose();
 	}
 }

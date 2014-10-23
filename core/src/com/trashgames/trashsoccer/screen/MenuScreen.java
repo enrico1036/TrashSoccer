@@ -45,11 +45,11 @@ public class MenuScreen extends GameScreen {
 
 		// Load texture manager
 		tm = new TextureManager();
-		tm.loadTexture("StandardBackground.png", "menubg");
-		tm.loadTexture("StandardTerrain.png", "menuter");
-		tm.loadTexture("rosario-muniz.png", "ros");
-		tm.loadTexture("btup.jpg", "btup");
-		tm.loadTexture("btdown.jpg", "btdown");
+		tm.loadTexture("data/StandardBackground.png", "menubg");
+		tm.loadTexture("data/StandardTerrain.png", "menuter");
+		tm.loadTexture("data/rosario-muniz.png", "ros");
+		tm.loadTexture("data/btup.jpg", "btup");
+		tm.loadTexture("data/btdown.jpg", "btdown");
 
 		// Background
 		bgSprite = new Sprite(tm.get("menubg"));
@@ -73,7 +73,7 @@ public class MenuScreen extends GameScreen {
 			@Override
 			public void run() {
 				System.out.println("Starting PlayScreen");
-				gm.sm.push(new PlayScreen(gm));
+				gm.screenManager.push(new PlayScreen(gm));
 			}
 		});
 		buttons.add(bt);
