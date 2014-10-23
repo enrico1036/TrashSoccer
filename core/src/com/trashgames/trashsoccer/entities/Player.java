@@ -1,5 +1,7 @@
 package com.trashgames.trashsoccer.entities;
 
+
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
@@ -24,6 +26,7 @@ import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
 import com.badlogic.gdx.physics.box2d.joints.MotorJointDef;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.badlogic.gdx.physics.box2d.joints.RopeJointDef;
+import com.trashgames.trashsoccer.Dimension;
 import com.trashgames.trashsoccer.graphics.TextureManager;
 
 import static com.trashgames.trashsoccer.Game.PPM;
@@ -42,13 +45,7 @@ public class Player extends Entity{
 	private static final int JUNCTION = 9;
 	
 	// Dimension of bodies
-	private float bodyWidth; 
-	private float armWidth; 
-	private float legWidth; 
-	private float headRadius;
-	private float bodyHeight;
-	private float legHeight; 
-	private float armHeight; 
+	private Dimension[] dims;
 	
 	// To make sure the Player will fit in a defined dimension
 	private Rectangle bounds;
@@ -56,11 +53,27 @@ public class Player extends Entity{
 	public Player(World world, Rectangle bounds, Filter filter, AssetManager assetManager){
 		this.world = world;
 		this.bounds = bounds;
-		
+
 		bodies = new Body[10];
 		sprites = new Sprite[10];
+		dims = new Dimension[10];
+		
+		for(int i = 0; i < dims.length; i++){
+			dims[i] = new Dimension(0, 0, 0);
+		}
 		
 		createBodies(filter);
+		
+		// Creating Sprites
+		sprites[HEAD] = new Sprite(assetManager.get("data/paolo-brosio.jpg", Texture.class));
+		sprites[TORSO] = new Sprite(assetManager.get("data/rosario-muniz.jpg", Texture.class));
+		sprites[RIGHT_ARM] = new Sprite(assetManager.get("data/rosario-muniz.jpg", Texture.class));
+		sprites[LEFT_ARM] = new Sprite(assetManager.get("data/character/leg.png", Texture.class));
+		sprites[RIGHT_LEG] = new Sprite(assetManager.get("data/character/leg.png", Texture.class));
+		sprites[LEFT_LEG] = new Sprite(assetManager.get("data/character/leg.png", Texture.class));
+		for(Sprite sprite : sprites)
+			if(sprite != null)
+				sprite.setOriginCenter();
 	}
 	
 	public void createBodies(Filter filter){
@@ -68,18 +81,21 @@ public class Player extends Entity{
 		destroy();
 		
 		// Set parts dimension proportional to bound rect (half dimension)
-		float bodyWidth = (float)(bounds.width / 2 * 0.6);
-		float armWidth = (float)(bounds.width / 2 * 0.2);
-		float legWidth = (float)(bounds.width / 2 * 0.2);
-		float headRadius = (float)(bounds.height / 2 * 0.2);
-		float bodyHeight =  (float)(bounds.height / 2 * 0.6);
-		float legHeight = (float)(bounds.height / 2 * 0.4);
-		float armHeight = (float)(bounds.height / 2 * 0.3);
+		dims[TORSO].width = (float)(bounds.width / 2 * 0.6);
+		dims[RIGHT_ARM].width = (float)(bounds.width / 2 * 0.2);
+		dims[RIGHT_LEG].width = (float)(bounds.width / 2 * 0.2);
+		dims[HEAD].height = dims[HEAD].width = (float)(bounds.height / 2 * 0.2);
+		dims[TORSO].height =  (float)(bounds.height / 2 * 0.6);
+		dims[RIGHT_LEG].height = (float)(bounds.height / 2 * 0.4);
+		dims[RIGHT_ARM].height = (float)(bounds.height / 2 * 0.3);
+		
+		dims[LEFT_ARM] = dims[RIGHT_ARM];
+		dims[LEFT_LEG] = dims[RIGHT_LEG];
 		
 		// Get box2d torso position
 		Vector2 pos = new Vector2(
-				bounds.x + (2*armWidth + bodyWidth),
-				bounds.y + (2*legHeight + bodyHeight));
+				bounds.x + (2*dims[RIGHT_ARM].width + dims[TORSO].width),
+				bounds.y + (2*dims[RIGHT_LEG].height + dims[TORSO].height));
 		
 		// ##### TORSO #####
 		BodyDef bdef = new BodyDef();
@@ -89,7 +105,7 @@ public class Player extends Entity{
 		bodies[TORSO] = world.createBody(bdef);
 
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(bodyWidth, bodyHeight);
+		shape.setAsBox(dims[TORSO].width, dims[TORSO].height);
 		FixtureDef fdef = new FixtureDef();
 		fdef.shape = shape;
 		fdef.restitution = 0.5f;
@@ -97,8 +113,8 @@ public class Player extends Entity{
 		
 		// ##### HEAD #####
 		CircleShape cshape = new CircleShape();
-		cshape.setRadius(headRadius);
-		cshape.setPosition(new Vector2(0, headRadius + bodyHeight));
+		cshape.setRadius(dims[HEAD].width);
+		cshape.setPosition(new Vector2(0, dims[HEAD].width + dims[TORSO].height));
 		fdef.shape = cshape;
 		bodies[TORSO].createFixture(fdef).setFilterData(filter);
 		MassData md = new MassData();
@@ -111,7 +127,7 @@ public class Player extends Entity{
 		md.I = 0.1f;
 		md.mass = 0.2f;
 		bodies[RIGHT_ARM].setMassData(md);
-		shape.setAsBox(armWidth, armHeight);
+		shape.setAsBox(dims[RIGHT_ARM].width, dims[RIGHT_ARM].height);
 		fdef.shape = shape;
 		fdef.restitution = 0.2f;
 		bodies[RIGHT_ARM].createFixture(fdef);
@@ -125,23 +141,23 @@ public class Player extends Entity{
 		RevoluteJointDef jdef = new RevoluteJointDef();
 		jdef.bodyA = bodies[TORSO];
 		jdef.bodyB = bodies[RIGHT_ARM];
-		jdef.localAnchorA.set(bodyWidth, bodyHeight);
-		jdef.localAnchorB.set(-armWidth, armHeight);
+		jdef.localAnchorA.set(dims[TORSO].width, dims[TORSO].height);
+		jdef.localAnchorB.set(-dims[RIGHT_ARM].width, dims[RIGHT_ARM].height);
 		jdef.collideConnected = true;
 		world.createJoint(jdef);
 		
 		// #### LEFT ARM JOINT ####
 		jdef.bodyA = bodies[TORSO];
 		jdef.bodyB = bodies[LEFT_ARM];
-		jdef.localAnchorA.set(-bodyWidth, bodyHeight);
-		jdef.localAnchorB.set(armWidth, armHeight);
+		jdef.localAnchorA.set(-dims[TORSO].width, dims[TORSO].height);
+		jdef.localAnchorB.set(dims[RIGHT_ARM].width, dims[RIGHT_ARM].height);
 		world.createJoint(jdef);
 				
 		
 		// #### RIGHT LEG ####
 		filter.categoryBits = 1;
 		filter.maskBits = 8;
-		shape.setAsBox(legWidth, legHeight);
+		shape.setAsBox(dims[RIGHT_LEG].width, dims[RIGHT_LEG].height);
 		fdef.restitution = 0.2f;
 		fdef.friction = 0.8f;
 		md.mass = 30f;
@@ -158,8 +174,8 @@ public class Player extends Entity{
 		// #### RIGHT LEG JOINT ####
 		jdef.bodyA = bodies[TORSO];
 		jdef.bodyB = bodies[RIGHT_LEG];
-		jdef.localAnchorA.set(bodyWidth/2, -bodyHeight+10/PPM);
-		jdef.localAnchorB.set(0, legHeight);
+		jdef.localAnchorA.set(dims[TORSO].width/2, -dims[TORSO].height+10/PPM);
+		jdef.localAnchorB.set(0, dims[RIGHT_LEG].height);
 		jdef.collideConnected = false;
 		jdef.lowerAngle = 0f;
 		jdef.upperAngle = 0f;
@@ -169,8 +185,8 @@ public class Player extends Entity{
 		// #### LEFT LEG JOINT ####
 		jdef.bodyA = bodies[TORSO];
 		jdef.bodyB = bodies[LEFT_LEG];
-		jdef.localAnchorA.set(-bodyWidth/2, -bodyHeight+10/PPM);
-		jdef.localAnchorB.set(0, legHeight);
+		jdef.localAnchorA.set(-dims[TORSO].width/2, -dims[TORSO].height+10/PPM);
+		jdef.localAnchorB.set(0, dims[RIGHT_LEG].height);
 		jdef.collideConnected = false;
 		jdef.lowerAngle = 0f;
 		jdef.upperAngle = 0f;
@@ -178,11 +194,11 @@ public class Player extends Entity{
 		world.createJoint(jdef);
 
 		bdef.angle = 0;
-		cshape.setPosition(new Vector2(0, -legHeight));
+		cshape.setPosition(new Vector2(0, -dims[RIGHT_LEG].height));
 		
 		// #### PIVOT ####
 		bdef.type = BodyType.KinematicBody;
-		bdef.position.set(pos.add(0, bodyHeight*2));
+		bdef.position.set(pos.add(0, bounds.height / PPM));
 		bodies[PIVOT] = world.createBody(bdef);
 		
 		// #### JUNCTION ####
@@ -201,8 +217,8 @@ public class Player extends Entity{
 		djdef.bodyA = bodies[JUNCTION];
 		djdef.bodyB = bodies[TORSO];
 		djdef.localAnchorA.setZero();
-		djdef.localAnchorB.setZero();
-		djdef.length = bodyHeight-bodyWidth;
+		djdef.localAnchorB.set(0, dims[TORSO].height);
+		djdef.length = dims[TORSO].height-dims[TORSO].width;
 		djdef.dampingRatio = 0.2f;
 		djdef.frequencyHz = 2.15f;
 		world.createJoint(djdef);
@@ -213,14 +229,9 @@ public class Player extends Entity{
 		rdef.bodyB = bodies[JUNCTION];
 		rdef.localAnchorA.setZero();
 		rdef.localAnchorB.setZero();
-		rdef.maxLength = bodyHeight*2;
+		rdef.maxLength = dims[TORSO].height*2;
 		world.createJoint(rdef);
 				
-	}
-	
-	public void move(){
-		bodies[PIVOT].setLinearVelocity((bodies[TORSO].getPosition().x - bodies[PIVOT].getPosition().x)*2, 0);
-
 	}
 	
 	public void jump(){
@@ -232,35 +243,28 @@ public class Player extends Entity{
 	public void kick(){
 		
 	}
-	
-	public Sprite generateSprite(Body bd, float halfWidth, float halfHeight, Texture texture){
-		/*sprite.setTexture(texture);
-		sprite.setRegion(texture);
-		sprite.setPosition(bd.getPosition().x - halfWidth, bd.getPosition().y - halfHeight);
-		sprite.setRotation(bd.getAngle() * MathUtils.radiansToDegrees);
-		sprite.setSize(halfWidth * 2, halfHeight * 2);
-		sprite.setOriginCenter();
-		return sprite;*/
-		return null;
-	}
-	
-	public void draw(SpriteBatch sb){
-		/*
-		generateSprite(bodies.get(RIGHT_LEG).body, legWidth, legHeight, tm.get("leg")).draw(sb);
-		generateSprite(bodies.get(LEFT_LEG).body, legWidth, legHeight, tm.get("leg")).draw(sb);
-		generateSprite(bodies.get(RIGHT_ARM).body, armWidth, armHeight, tm.get("BACKGROUND")).draw(sb);
-		generateSprite(bodies.get(LEFT_ARM).body, armWidth, armHeight, tm.get("BACKGROUND")).draw(sb);
-		generateSprite(bodies.get(TORSO).body, bodyWidth, bodyHeight+headRadius, tm.get("ros")).draw(sb);
-		*/
-	}
 
 	@Override
 	public void update(float delta) {
+		bodies[PIVOT].setLinearVelocity((bodies[TORSO].getPosition().x - bodies[PIVOT].getPosition().x)*2, 0);
 		
+		for(int i = 0; i<sprites.length; i++){
+			if(bodies[i] != null && sprites[i] != null){
+				sprites[i].setPosition(bodies[i].getPosition().x - dims[i].width, 
+						bodies[i].getPosition().y - dims[i].height);
+				sprites[i].setSize(dims[i].width * 2, dims[i].height * 2);
+				sprites[i].setOriginCenter();
+				sprites[i].setRotation(bodies[i].getAngle() * MathUtils.radiansToDegrees);
+			}
+		}
 	}
 
 	@Override
-	public void render() {
-				
+	public void render(SpriteBatch batch) {
+		for(int i = 0; i<sprites.length; i++){
+			if(sprites[i] != null){
+				sprites[i].draw(batch);
+			}
+		}
 	}
 }

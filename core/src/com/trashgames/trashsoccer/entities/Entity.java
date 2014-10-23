@@ -3,6 +3,7 @@ package com.trashgames.trashsoccer.entities;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.JointEdge;
@@ -24,7 +25,7 @@ public abstract class Entity {
 
 	public abstract void update(float delta);
 
-	public abstract void render();
+	public abstract void render(SpriteBatch batch);
 
 	public void destroy() {
 		for (Body body : bodies) {

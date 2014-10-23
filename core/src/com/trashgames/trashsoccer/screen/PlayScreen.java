@@ -76,6 +76,7 @@ public class PlayScreen extends GameScreen {
 		gm.assetManager.load("data/MenuBackground.jpg", Texture.class);
 		gm.assetManager.load("data/character/leg.png", Texture.class);
 		gm.assetManager.load("data/rosario-muniz.jpg", Texture.class);
+		gm.assetManager.load("data/paolo-brosio.jpg", Texture.class);
 		gm.assetManager.finishLoading();
 		
 		Rectangle rect = new Rectangle(300 / PPM, 300 / PPM, 60 / PPM, 150 / PPM);
@@ -106,7 +107,7 @@ public class PlayScreen extends GameScreen {
 		sb.setProjectionMatrix(camera.combined);
 		sb.begin();
 		sprite.draw(sb);
-		//player1.draw(sb);
+		player1.render(sb);
 		sb.end();
 		
 		renderer.render(world, camera.combined);
@@ -116,7 +117,7 @@ public class PlayScreen extends GameScreen {
 	public void update(float delta) {
 		camera.update();
 		world.step(delta, 6, 2);
-		player1.move();
+		player1.update(delta);
 	}
 
 	@Override
