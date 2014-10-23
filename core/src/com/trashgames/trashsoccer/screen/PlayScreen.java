@@ -73,7 +73,7 @@ public class PlayScreen extends GameScreen {
 		bodyR.createFixture(fdef).setFilterData(filter);
 		
 		tm.loadTexture("MenuBackground.jpg", "BACKGROUND");
-		tm.loadTexture("character/leg.jpg", "leg");
+		tm.loadTexture("character/leg.png", "leg");
 		tm.loadTexture("rosario-muniz.jpg", "ros");
 		player1 = new Player(world, new Vector2(320/PPM, 300/PPM), filter, tm);
 		
@@ -82,7 +82,7 @@ public class PlayScreen extends GameScreen {
 		// Texture loading
 		sprite = new Sprite(tm.get("BACKGROUND"));
 		sprite.setPosition(0, 0);
-		sprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		sprite.setSize(Gdx.graphics.getWidth() / PPM, Gdx.graphics.getHeight() / PPM);
 		sb = new SpriteBatch();
 		
 		// Camera

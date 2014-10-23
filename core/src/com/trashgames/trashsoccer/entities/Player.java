@@ -254,6 +254,7 @@ public class Player {
 	
 	public Sprite generateSprite(Body bd, float halfWidth, float halfHeight, Texture texture){
 		sprite.setTexture(texture);
+		sprite.setRegion(texture);
 		sprite.setPosition(bd.getPosition().x - halfWidth, bd.getPosition().y - halfHeight);
 		sprite.setRotation(bd.getAngle() * MathUtils.radiansToDegrees);
 		sprite.setSize(halfWidth * 2, halfHeight * 2);
@@ -266,6 +267,6 @@ public class Player {
 		generateSprite(legL, legWidth, legHeight, tm.get("leg")).draw(sb);
 		generateSprite(armR, armWidth, armHeight, tm.get("BACKGROUND")).draw(sb);
 		generateSprite(armL, armWidth, armHeight, tm.get("BACKGROUND")).draw(sb);
-		generateSprite(body, bodyWidth, bodyHeight+headRad, tm.get("leg")).draw(sb);
+		generateSprite(body, bodyWidth, bodyHeight+headRad, tm.get("ros")).draw(sb);
 	}
 }
