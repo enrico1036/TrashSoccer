@@ -6,6 +6,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
@@ -55,7 +56,6 @@ public class PlayScreen extends GameScreen {
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(320 / PPM, 30 / PPM);
 		
-		
 		FixtureDef fdef = new FixtureDef();
 		fdef.shape = shape;
 		Filter filter = new Filter();
@@ -79,7 +79,7 @@ public class PlayScreen extends GameScreen {
 		gm.assetManager.load("data/paolo-brosio.jpg", Texture.class);
 		gm.assetManager.finishLoading();
 		
-		Rectangle rect = new Rectangle(300 / PPM, 300 / PPM, 60 / PPM, 150 / PPM);
+		Rectangle rect = new Rectangle(300 / PPM, 300 / PPM, 30 / PPM, 60 / PPM);
 		player1 = new Player(world, rect, filter, gm.assetManager);
 		
 		
@@ -136,6 +136,10 @@ public class PlayScreen extends GameScreen {
 		switch (keycode) {
 		case Keys.ESCAPE:
 			gm.screenManager.pop();
+			break;
+			
+		case Keys.A:
+			player1.createBodies(new Filter());
 			break;
 		default:
 			break;

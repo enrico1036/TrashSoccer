@@ -15,19 +15,14 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Filter;
-import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.JointDef;
-import com.badlogic.gdx.physics.box2d.JointDef.JointType;
 import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
-import com.badlogic.gdx.physics.box2d.joints.MotorJointDef;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.badlogic.gdx.physics.box2d.joints.RopeJointDef;
 import com.trashgames.trashsoccer.Dimension;
-import com.trashgames.trashsoccer.graphics.TextureManager;
 
 import static com.trashgames.trashsoccer.Game.PPM;
 
@@ -128,6 +123,7 @@ public class Player extends Entity{
 		md.mass = 0.2f;
 		bodies[RIGHT_ARM].setMassData(md);
 		shape.setAsBox(dims[RIGHT_ARM].width, dims[RIGHT_ARM].height);
+		
 		fdef.shape = shape;
 		fdef.restitution = 0.2f;
 		bodies[RIGHT_ARM].createFixture(fdef);
@@ -198,7 +194,7 @@ public class Player extends Entity{
 		
 		// #### PIVOT ####
 		bdef.type = BodyType.KinematicBody;
-		bdef.position.set(pos.add(0, bounds.height / PPM));
+		bdef.position.set(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
 		bodies[PIVOT] = world.createBody(bdef);
 		
 		// #### JUNCTION ####
@@ -246,7 +242,8 @@ public class Player extends Entity{
 
 	@Override
 	public void update(float delta) {
-		bodies[PIVOT].setLinearVelocity((bodies[TORSO].getPosition().x - bodies[PIVOT].getPosition().x)*2, 0);
+		bodies[PIVOT].setLinearVelocity((bodies[TORSO].getPosition().x - bodies[PIVOT].getPosition().x)*2,
+				/*(float)(bounds.height - bodies[HEAD].getPosition().y)*/ 0);
 		
 		for(int i = 0; i<sprites.length; i++){
 			if(bodies[i] != null && sprites[i] != null){
