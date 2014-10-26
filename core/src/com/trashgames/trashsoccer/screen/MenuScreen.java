@@ -60,9 +60,9 @@ public class MenuScreen extends GameScreen {
 		terSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 4);
 
 		// Rosario muniz
-		rosSprite = new Sprite(tm.get("ros"));
-		rosSprite.setSize(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
-		rosSprite.setPosition(Gdx.graphics.getWidth() * (2f / 3f), 0);
+//		rosSprite = new Sprite(tm.get("ros"));
+//		rosSprite.setSize(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+//		rosSprite.setPosition(Gdx.graphics.getWidth() * (2f / 3f), 0);
 
 		// Button creation
 		UIButton bt = new UIButton("1 Player", font, 
@@ -105,7 +105,7 @@ public class MenuScreen extends GameScreen {
 		// Terrain rendering
 		terSprite.draw(sb);
 		// Rosario muniz rendering
-		rosSprite.draw(sb);
+//		rosSprite.draw(sb);
 		// UI rendering
 		for (UIButton bt : buttons)
 			bt.render(sb);

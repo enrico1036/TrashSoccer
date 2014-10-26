@@ -27,6 +27,7 @@ import com.trashgames.trashsoccer.Game;
 
 import static com.trashgames.trashsoccer.Game.PPM;
 
+import com.trashgames.trashsoccer.entities.Goal;
 import com.trashgames.trashsoccer.entities.Player;
 import com.trashgames.trashsoccer.graphics.TextureManager;
 
@@ -37,6 +38,7 @@ public class PlayScreen extends GameScreen {
 	private World world;
 	private Box2DDebugRenderer renderer;
 	Player player1;
+	Goal goal;
 	
 	public PlayScreen(Game gm) {
 		super(gm);
@@ -81,6 +83,8 @@ public class PlayScreen extends GameScreen {
 		
 		Rectangle rect = new Rectangle(300 / PPM, 300 / PPM, 60 / PPM, 150 / PPM);
 		player1 = new Player(world, rect, filter, gm.assetManager);
+		rect.set(0, 0, 150/PPM, 200/PPM);
+		goal = new Goal(world, rect, filter, gm.assetManager);
 		
 		
 		
