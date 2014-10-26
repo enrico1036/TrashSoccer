@@ -246,7 +246,7 @@ public class Player extends Entity{
 
 	@Override
 	public void update(float delta) {
-		bodies[PIVOT].setLinearVelocity((bodies[TORSO].getPosition().x - bodies[PIVOT].getPosition().x)*2, 0);
+		bodies[PIVOT].setLinearVelocity((bodies[TORSO].getPosition().x - bodies[PIVOT].getPosition().x)*10, 0);
 		
 		for(int i = 0; i<sprites.length; i++){
 			if(bodies[i] != null && sprites[i] != null){
