@@ -83,7 +83,7 @@ public class PlayScreen extends GameScreen {
 		
 		Rectangle rect = new Rectangle(300 / PPM, 300 / PPM, 60 / PPM, 150 / PPM);
 		player1 = new Player(world, rect, filter, gm.assetManager);
-		rect.set(0, 0, 150/PPM, 200/PPM);
+		rect = new Rectangle(450/PPM, 80/PPM, 150/PPM, 200/PPM);
 		goal = new Goal(world, rect, filter, gm.assetManager);
 		
 		

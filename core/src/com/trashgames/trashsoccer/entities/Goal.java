@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.Filter;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -21,7 +22,7 @@ public class Goal extends Entity{
 	
 	// Positions of bodies into body array
 	private static final int POLES = 0;
-	private static final int CROSSPIECE = 1;
+	private static final int SENSOR = 1;
 	// Dimension of bodies
 		private Dimension[] dims;
 	
@@ -47,13 +48,13 @@ public class Goal extends Entity{
 		// Sets parts dimension proportional to bound rect (half dimension)
 		dims[POLES].width = (float)(bounds.width / 2);
 		dims[POLES].height = (float)(bounds.height / 2);
-		dims[CROSSPIECE].width = (float)(bounds.width / 10);
-		dims[CROSSPIECE].height = (float)(bounds.height / 2);
+		dims[SENSOR].width = (float)(bounds.width / 10);
+		dims[SENSOR].height = (float)(bounds.height / 2);
 		
 		BodyDef bdef = new BodyDef();
 
 		// ##### POLES #####
-		bdef.position.set(bounds.x + dims[POLES].width, bounds.y + dims[POLES].height);
+//		bdef.position.set(bounds.x, bounds.y);
 		bdef.type = BodyType.StaticBody;
 		bodies[POLES] = world.createBody(bdef);
 		
@@ -71,6 +72,12 @@ public class Goal extends Entity{
 		shape.createLoop(vertices);
 		FixtureDef fdef = new FixtureDef();
 		fdef.shape = shape;
+		bodies[POLES].createFixture(fdef);
+		
+		EdgeShape eshape = new EdgeShape();
+		eshape.set(vertices[0], vertices[3]);
+		fdef.shape = eshape;
+		fdef.isSensor = true;
 		bodies[POLES].createFixture(fdef);
 		
 	}
