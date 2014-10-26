@@ -2,6 +2,7 @@ package com.trashgames.trashsoccer.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -9,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -25,20 +27,21 @@ import com.trashgames.trashsoccer.Game;
 
 import static com.trashgames.trashsoccer.Game.PPM;
 
+import com.trashgames.trashsoccer.entities.Goal;
 import com.trashgames.trashsoccer.entities.Player;
 import com.trashgames.trashsoccer.graphics.TextureManager;
 
 public class PlayScreen extends GameScreen {
 	
-	private TextureManager tm;
+	private AssetManager am;
 	private Sprite sprite;
 	private World world;
 	private Box2DDebugRenderer renderer;
 	Player player1;
+	Goal goal;
 	
 	public PlayScreen(Game gm) {
 		super(gm);
-		tm = new TextureManager();
 		
 		renderer = new Box2DDebugRenderer();
 		
@@ -72,15 +75,21 @@ public class PlayScreen extends GameScreen {
 		Body bodyR = world.createBody(bdef);
 		bodyR.createFixture(fdef).setFilterData(filter);
 		
-		tm.loadTexture("MenuBackground.jpg", "BACKGROUND");
-		tm.loadTexture("character/leg.png", "leg");
-		tm.loadTexture("rosario-muniz.jpg", "ros");
-		player1 = new Player(world, new Vector2(320/PPM, 300/PPM), filter, tm);
+		gm.assetManager.load("data/MenuBackground.jpg", Texture.class);
+		gm.assetManager.load("data/character/leg.png", Texture.class);
+		gm.assetManager.load("data/rosario-muniz.jpg", Texture.class);
+		gm.assetManager.load("data/paolo-brosio.jpg", Texture.class);
+		gm.assetManager.finishLoading();
+		
+		Rectangle rect = new Rectangle(300 / PPM, 300 / PPM, 60 / PPM, 150 / PPM);
+		player1 = new Player(world, rect, filter, gm.assetManager);
+		rect = new Rectangle(450/PPM, 80/PPM, 150/PPM, 200/PPM);
+		goal = new Goal(world, rect, filter, gm.assetManager);
 		
 		
 		
 		// Texture loading
-		sprite = new Sprite(tm.get("BACKGROUND"));
+		sprite = new Sprite(gm.assetManager.get("data/MenuBackground.jpg", Texture.class));
 		sprite.setPosition(0, 0);
 		sprite.setSize(Gdx.graphics.getWidth() / PPM, Gdx.graphics.getHeight() / PPM);
 		sb = new SpriteBatch();
@@ -101,8 +110,8 @@ public class PlayScreen extends GameScreen {
 		
 		sb.setProjectionMatrix(camera.combined);
 		sb.begin();
-//		sprite.draw(sb);
-		player1.draw(sb);
+		sprite.draw(sb);
+		player1.render(sb);
 		sb.end();
 		
 		renderer.render(world, camera.combined);
@@ -112,14 +121,13 @@ public class PlayScreen extends GameScreen {
 	public void update(float delta) {
 		camera.update();
 		world.step(delta, 6, 2);
-		player1.move();
+		player1.update(delta);
 	}
 
 	@Override
 	public void dispose() {
 		super.dispose();
 		world.dispose();
-		tm.dispose();
 	}
 
 	@Override
@@ -131,7 +139,7 @@ public class PlayScreen extends GameScreen {
 	public boolean keyUp(int keycode) {
 		switch (keycode) {
 		case Keys.ESCAPE:
-			gm.sm.pop();
+			gm.screenManager.pop();
 			break;
 		default:
 			break;

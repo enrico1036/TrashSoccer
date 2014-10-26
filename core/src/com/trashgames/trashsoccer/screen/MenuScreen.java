@@ -45,11 +45,11 @@ public class MenuScreen extends GameScreen {
 
 		// Load texture manager
 		tm = new TextureManager();
-		tm.loadTexture("StandardBackground.png", "menubg");
-		tm.loadTexture("StandardTerrain.png", "menuter");
-		tm.loadTexture("rosario-muniz.png", "ros");
-		tm.loadTexture("btup.jpg", "btup");
-		tm.loadTexture("btdown.jpg", "btdown");
+		tm.loadTexture("data/StandardBackground.png", "menubg");
+		tm.loadTexture("data/StandardTerrain.png", "menuter");
+		tm.loadTexture("data/rosario-muniz.png", "ros");
+		tm.loadTexture("data/btup.jpg", "btup");
+		tm.loadTexture("data/btdown.jpg", "btdown");
 
 		// Background
 		bgSprite = new Sprite(tm.get("menubg"));
@@ -60,9 +60,9 @@ public class MenuScreen extends GameScreen {
 		terSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 4);
 
 		// Rosario muniz
-		rosSprite = new Sprite(tm.get("ros"));
-		rosSprite.setSize(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
-		rosSprite.setPosition(Gdx.graphics.getWidth() * (2f / 3f), 0);
+//		rosSprite = new Sprite(tm.get("ros"));
+//		rosSprite.setSize(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+//		rosSprite.setPosition(Gdx.graphics.getWidth() * (2f / 3f), 0);
 
 		// Button creation
 		UIButton bt = new UIButton("1 Player", font, 
@@ -73,7 +73,7 @@ public class MenuScreen extends GameScreen {
 			@Override
 			public void run() {
 				System.out.println("Starting PlayScreen");
-				gm.sm.push(new PlayScreen(gm));
+				gm.screenManager.push(new PlayScreen(gm));
 			}
 		});
 		buttons.add(bt);
@@ -105,7 +105,7 @@ public class MenuScreen extends GameScreen {
 		// Terrain rendering
 		terSprite.draw(sb);
 		// Rosario muniz rendering
-		rosSprite.draw(sb);
+//		rosSprite.draw(sb);
 		// UI rendering
 		for (UIButton bt : buttons)
 			bt.render(sb);
