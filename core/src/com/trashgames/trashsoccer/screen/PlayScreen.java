@@ -38,12 +38,10 @@ public class PlayScreen extends GameScreen {
 	private Sprite sprite;
 	private World world;
 	private Box2DDebugRenderer renderer;
+	
 	Player player1;
-<<<<<<< HEAD
 	Goal goal;
-=======
 	Player player2;
->>>>>>> matcap_branch
 	
 	public PlayScreen(Game gm) {
 		super(gm);
