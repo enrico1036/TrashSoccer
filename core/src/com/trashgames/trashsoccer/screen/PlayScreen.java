@@ -38,11 +38,14 @@ public class PlayScreen extends GameScreen {
 	private World world;
 	private Box2DDebugRenderer renderer;
 	Player player1;
+	Player player2;
 	
 	public PlayScreen(Game gm) {
 		super(gm);
 		
 		renderer = new Box2DDebugRenderer();
+		renderer.setDrawContacts(true);
+		renderer.setDrawJoints(true);
 		
 		// World initialization
 		world = new World(new Vector2(0f, -9.81f), true);
@@ -73,15 +76,33 @@ public class PlayScreen extends GameScreen {
 		Body bodyR = world.createBody(bdef);
 		bodyR.createFixture(fdef).setFilterData(filter);
 		
+		// Ball
+		bdef = new BodyDef();
+		bdef.position.set(200 / PPM, 200/PPM);
+		bdef.type  = BodyType.DynamicBody;
+		Body ball = world.createBody(bdef);
+		
+		CircleShape cshape = new CircleShape();
+		cshape.setRadius(10f / PPM);
+		fdef.shape = cshape;
+		fdef.restitution = 0.5f;
+		fdef.filter.categoryBits = 8;
+		fdef.filter.categoryBits = (short) (Math.pow(2, 16) - 1);
+		ball.createFixture(fdef);
+		
+		
+		
 		gm.assetManager.load("data/MenuBackground.jpg", Texture.class);
 		gm.assetManager.load("data/character/leg.png", Texture.class);
 		gm.assetManager.load("data/rosario-muniz.jpg", Texture.class);
 		gm.assetManager.load("data/paolo-brosio.jpg", Texture.class);
 		gm.assetManager.finishLoading();
 		
-		Rectangle rect = new Rectangle(300 / PPM, 300 / PPM, 30 / PPM, 60 / PPM);
+		Rectangle rect = new Rectangle(300 / PPM, 300 / PPM, 60 / PPM, 130 / PPM);
 		player1 = new Player(world, rect, filter, gm.assetManager);
 		
+		rect = new Rectangle(100 / PPM, 300 / PPM, 40 / PPM, 90 / PPM);
+		player2 = new Player(world, rect, filter, gm.assetManager);
 		
 		
 		// Texture loading
@@ -106,8 +127,9 @@ public class PlayScreen extends GameScreen {
 		
 		sb.setProjectionMatrix(camera.combined);
 		sb.begin();
-		sprite.draw(sb);
-		player1.render(sb);
+		//sprite.draw(sb);
+		//player1.render(sb);
+		//player2.render(sb);
 		sb.end();
 		
 		renderer.render(world, camera.combined);
@@ -118,6 +140,7 @@ public class PlayScreen extends GameScreen {
 		camera.update();
 		world.step(delta, 6, 2);
 		player1.update(delta);
+		player2.update(delta);
 	}
 
 	@Override
@@ -129,17 +152,40 @@ public class PlayScreen extends GameScreen {
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		player1.jump();
+		player2.jump();
 		return true;
 	}
+	
+	public boolean keyDown(int keycode) {
+		switch (keycode) {
+		case Keys.SPACE:
+			player1.toggleKick();
+			player2.toggleKick();
+			break;
+		default:
+			break;
+		}
+		return true;
+	}
+	
 	@Override
 	public boolean keyUp(int keycode) {
 		switch (keycode) {
 		case Keys.ESCAPE:
 			gm.screenManager.pop();
 			break;
-			
+		case Keys.SPACE:
+			player1.toggleKick();
+			player2.toggleKick();
+			break;
 		case Keys.A:
 			player1.createBodies(new Filter());
+			player2.createBodies(new Filter());
+			break;
+			
+		case Keys.R:
+			player1.destroy();
+			player2.destroy();
 			break;
 		default:
 			break;

@@ -35,6 +35,7 @@ public class Game extends ApplicationAdapter {
 
 	@Override
 	public void render() {
+		Gdx.graphics.setTitle(WND_TITLE + " FPS:" + Gdx.graphics.getFramesPerSecond());
 		if (!screenManager.renderCurrent(Gdx.graphics.getDeltaTime())) {
 			Gdx.app.log("ERROR", "Nothing to render. Exiting");
 			Gdx.app.exit();
