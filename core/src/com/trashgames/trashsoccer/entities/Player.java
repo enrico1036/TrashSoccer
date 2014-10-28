@@ -281,15 +281,13 @@ public class Player extends Entity {
 
 	@Override
 	public void update(float delta) {
-<<<<<<< HEAD
 		bodies[PIVOT].setLinearVelocity((bodies[TORSO].getPosition().x - bodies[PIVOT].getPosition().x)*10, 0);
-=======
+
 		// Make the pivot follow the player
 		bodies[PIVOT].setLinearVelocity((bodies[TORSO].getPosition().x - bodies[PIVOT].getPosition().x) * 2, 0);
 
 		//kickJoint.setMotorSpeed(50f * kickingLegAngle);
 		
->>>>>>> matcap_branch
 		
 		// Update sprites position
 		for (int i = 0; i < sprites.length; i++) {
