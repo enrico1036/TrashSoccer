@@ -20,6 +20,7 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -40,8 +41,11 @@ public class PlayScreen extends GameScreen {
 	private Box2DDebugRenderer renderer;
 	
 	Player player1;
-	Goal goal;
 	Player player2;
+	Player player3;
+	Player player4;
+	Goal goalR;
+	Goal goalL;
 	
 	public PlayScreen(Game gm) {
 		super(gm);
@@ -53,28 +57,32 @@ public class PlayScreen extends GameScreen {
 		// World initialization
 		world = new World(new Vector2(0f, -9.81f), true);
 		
-		// Body creation
+		// Terrain creation
 		BodyDef bdef = new BodyDef();
 		bdef.position.set(320 / PPM, 50 / PPM);
 		bdef.type  = BodyType.StaticBody;
 		Body body = world.createBody(bdef);
 		
+		// Ground
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(320 / PPM, 30 / PPM);
+		shape.setAsBox(Gdx.graphics.getWidth() / PPM, 30 / PPM);
 		
 		FixtureDef fdef = new FixtureDef();
 		fdef.shape = shape;
+		fdef.friction = 0.3f;
 		Filter filter = new Filter();
 		filter.categoryBits = 8;
 		filter.maskBits = 1;
 		body.createFixture(fdef).setFilterData(filter);
 		
+		// Left wall
 		bdef.position.set(0, Gdx.graphics.getHeight()/(2*PPM));
 		Body bodyL = world.createBody(bdef);
-		shape.setAsBox(30/PPM, 240/PPM);
+		shape.setAsBox(30/PPM, Gdx.graphics.getHeight()/PPM);
 		fdef.shape = shape;
 		bodyL.createFixture(fdef).setFilterData(filter);
 		
+		// Right wall
 		bdef.position.set(Gdx.graphics.getWidth()/PPM, Gdx.graphics.getHeight()/(2*PPM));
 		Body bodyR = world.createBody(bdef);
 		bodyR.createFixture(fdef).setFilterData(filter);
@@ -83,14 +91,22 @@ public class PlayScreen extends GameScreen {
 		bdef = new BodyDef();
 		bdef.position.set(200 / PPM, 200/PPM);
 		bdef.type  = BodyType.DynamicBody;
+		bdef.allowSleep = false;
+		bdef.angularDamping = 0.7f;
+		MassData md = new MassData();
+		md.mass = .5f;
+		md.I = 0.05f;
 		Body ball = world.createBody(bdef);
+		ball.setMassData(md);
+		
 		
 		CircleShape cshape = new CircleShape();
-		cshape.setRadius(10f / PPM);
+		cshape.setRadius(15f / PPM);
 		fdef.shape = cshape;
-		fdef.restitution = 0.5f;
+		fdef.restitution = 0.7f;
+		fdef.friction = 0.5f;
 		fdef.filter.categoryBits = 8;
-		fdef.filter.categoryBits = (short) (Math.pow(2, 16) - 1);
+		fdef.filter.categoryBits = 255;
 		ball.createFixture(fdef);
 		
 		
@@ -101,13 +117,31 @@ public class PlayScreen extends GameScreen {
 		gm.assetManager.load("data/paolo-brosio.jpg", Texture.class);
 		gm.assetManager.finishLoading();
 		
-		Rectangle rect = new Rectangle(300 / PPM, 300 / PPM, 60 / PPM, 130 / PPM);
-		player1 = new Player(world, rect, filter, gm.assetManager);
-		rect = new Rectangle(450/PPM, 80/PPM, 150/PPM, 200/PPM);
-		goal = new Goal(world, rect, filter, gm.assetManager);
+		// #### PLAYER1 ####
+		Rectangle rect = new Rectangle(300 / PPM, 300 / PPM, 60 / PPM, 150 / PPM);
+		filter.categoryBits = 1;
+		filter.maskBits = 8;
+		player1 = new Player(world, rect, filter, gm.assetManager, true);
 		
-		rect = new Rectangle(100 / PPM, 300 / PPM, 40 / PPM, 90 / PPM);
-		player2 = new Player(world, rect, filter, gm.assetManager);
+		// #### PLAYER2 ####
+//		rect = new Rectangle(100 / PPM, 300 / PPM, 40 / PPM, 90 / PPM);
+		player2 = new Player(world, rect, filter, gm.assetManager, true);
+		
+		// #### PLAYER3 ####
+		player3 = new Player(world, rect, filter, gm.assetManager, false);
+		
+		// #### PLAYER4 ####
+		player4 = new Player(world, rect, filter, gm.assetManager, false);
+		
+		// #### GOAL ####
+		rect = new Rectangle((Gdx.graphics.getWidth()-180)/PPM, 66/PPM, 150/PPM, 300/PPM);
+		filter = new Filter();
+		filter.categoryBits = 8;
+		filter.maskBits = 1;
+		goalR = new Goal(world, rect, filter, gm.assetManager, true);
+		rect.x = 30 / PPM;
+		goalL = new Goal(world, rect, filter, gm.assetManager, false);
+		
 		
 		
 		// Texture loading
@@ -143,9 +177,11 @@ public class PlayScreen extends GameScreen {
 	@Override
 	public void update(float delta) {
 		camera.update();
-		world.step(delta, 6, 2);
+		world.step(delta , 6, 2);
 		player1.update(delta);
 		player2.update(delta);
+		player3.update(delta);
+		player4.update(delta);
 	}
 
 	@Override
@@ -158,6 +194,8 @@ public class PlayScreen extends GameScreen {
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		player1.jump();
 		player2.jump();
+		player3.jump();
+		player4.jump();
 		return true;
 	}
 	
@@ -166,6 +204,8 @@ public class PlayScreen extends GameScreen {
 		case Keys.SPACE:
 			player1.toggleKick();
 			player2.toggleKick();
+			player3.toggleKick();
+			player4.toggleKick();
 			break;
 		default:
 			break;
@@ -182,15 +222,21 @@ public class PlayScreen extends GameScreen {
 		case Keys.SPACE:
 			player1.toggleKick();
 			player2.toggleKick();
+			player3.toggleKick();
+			player4.toggleKick();
 			break;
 		case Keys.A:
-			player1.createBodies(new Filter());
-			player2.createBodies(new Filter());
+			player1.createBodies();
+			player2.createBodies();
+			player3.createBodies();
+			player4.createBodies();
 			break;
 			
 		case Keys.R:
 			player1.destroy();
 			player2.destroy();
+			player3.destroy();
+			player4.destroy();
 			break;
 		default:
 			break;

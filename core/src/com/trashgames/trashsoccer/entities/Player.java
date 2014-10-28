@@ -48,12 +48,16 @@ public class Player extends Entity {
 	private RevoluteJoint kickJoint;
 	private RevoluteJoint ghostJoint;
 	private MotorJoint motorJoint;
+	private Filter filter;
+	private boolean leftfacing;
 	
 	private boolean kicking =false;
 
-	public Player(World world, Rectangle bounds, Filter filter, AssetManager assetManager) {
+	public Player(World world, Rectangle bounds, Filter filter, AssetManager assetManager, boolean leftfacing) {
 		this.world = world;
 		this.bounds = bounds;
+		this.filter = filter;
+		this.leftfacing = leftfacing;
 
 		bodies = new Body[11];
 		sprites = new Sprite[10];
@@ -63,7 +67,7 @@ public class Player extends Entity {
 			dims[i] = new Dimension(0, 0, 0);
 		}
 
-		createBodies(filter);
+		createBodies();
 
 		// Creating Sprites
 		sprites[HEAD] = new Sprite(assetManager.get("data/paolo-brosio.jpg", Texture.class));
@@ -77,7 +81,7 @@ public class Player extends Entity {
 				sprite.setOriginCenter();
 	}
 
-	public void createBodies(Filter filter) {
+	public void createBodies() {
 		// Destroy first
 		destroy();
 
@@ -101,6 +105,7 @@ public class Player extends Entity {
 		bdef.position.set(pos);
 		bdef.type = BodyType.DynamicBody;
 		bdef.angle = 0.1f * (float) Math.PI;
+		bdef.angularDamping = 0;
 		bodies[TORSO] = world.createBody(bdef);
 
 		PolygonShape shape = new PolygonShape();
@@ -108,7 +113,8 @@ public class Player extends Entity {
 		FixtureDef fdef = new FixtureDef();
 		fdef.shape = shape;
 		fdef.restitution = 0.5f;
-		bodies[TORSO].createFixture(fdef);
+		bodies[TORSO].createFixture(fdef).setFilterData(filter);
+		
 
 		// ##### HEAD #####
 		CircleShape cshape = new CircleShape();
@@ -117,10 +123,10 @@ public class Player extends Entity {
 		fdef.shape = cshape;
 		bodies[TORSO].createFixture(fdef).setFilterData(filter);
 		MassData md = new MassData();
-		md.mass = 60f;
+		md.mass = 10f;
 		md.I = 0.5f;
 		bodies[TORSO].setMassData(md);
-
+		
 		// #### RIGHT ARM ####
 		bodies[RIGHT_ARM] = world.createBody(bdef);
 		md.I = 0.1f;
@@ -130,12 +136,12 @@ public class Player extends Entity {
 
 		fdef.shape = shape;
 		fdef.restitution = 0.2f;
-		bodies[RIGHT_ARM].createFixture(fdef);
+		bodies[RIGHT_ARM].createFixture(fdef).setFilterData(filter);
 
 		// #### LEFT ARM ####
 		bodies[LEFT_ARM] = world.createBody(bdef);
 		bodies[LEFT_ARM].setMassData(md);
-		bodies[LEFT_ARM].createFixture(fdef);
+		bodies[LEFT_ARM].createFixture(fdef).setFilterData(filter);
 
 		// #### RIGHT ARM JOINT ####
 		RevoluteJointDef jdef = new RevoluteJointDef();
@@ -143,7 +149,9 @@ public class Player extends Entity {
 		jdef.bodyB = bodies[RIGHT_ARM];
 		jdef.localAnchorA.set(dims[TORSO].width, dims[TORSO].height);
 		jdef.localAnchorB.set(-dims[RIGHT_ARM].width, dims[RIGHT_ARM].height);
-		jdef.collideConnected = true;
+		jdef.lowerAngle = 0;
+		jdef.upperAngle = 3.1415f / 2;
+		jdef.enableLimit = true;
 		world.createJoint(jdef);
 
 		// #### LEFT ARM JOINT ####
@@ -151,28 +159,37 @@ public class Player extends Entity {
 		jdef.bodyB = bodies[LEFT_ARM];
 		jdef.localAnchorA.set(-dims[TORSO].width, dims[TORSO].height);
 		jdef.localAnchorB.set(dims[RIGHT_ARM].width, dims[RIGHT_ARM].height);
+		jdef.lowerAngle = -3.1415f / 2;
+		jdef.upperAngle = 0;
 		world.createJoint(jdef);
 
 		// #### RIGHT LEG ####
-		filter.categoryBits = 1;
-		filter.maskBits = 8;
 		shape.setAsBox(dims[RIGHT_LEG].width, dims[RIGHT_LEG].height);
 		fdef.restitution = 0f;
 		fdef.friction = 1f;
-		md.mass = 10f;
+		if(leftfacing)
+			md.mass = 10f;
+		else
+			md.mass = 5f;
+		
 		md.I = 0.7f;
 		bodies[RIGHT_LEG] = world.createBody(bdef);
 		bodies[RIGHT_LEG].setMassData(md);
-		bodies[RIGHT_LEG].createFixture(fdef).setFilterData(filter);
+		bodies[RIGHT_LEG].createFixture(fdef).setFilterData(filter);			
 
 		// #### GHOST LEG ####
+		md.mass = 5f;
 		fdef.filter.categoryBits = 1;
-		fdef.filter.maskBits = 16;
+		fdef.filter.maskBits = 256;
 		bodies[GHOST_LEG] = world.createBody(bdef);
 		bodies[GHOST_LEG].setMassData(md);
 		bodies[GHOST_LEG].createFixture(fdef);
 		
 		// #### LEFT LEG ####
+		if(leftfacing)
+			md.mass = 5f;
+		else
+			md.mass = 10f;
 		bodies[LEFT_LEG] = world.createBody(bdef);
 		bodies[LEFT_LEG].setMassData(md);
 		bodies[LEFT_LEG].createFixture(fdef).setFilterData(filter);
@@ -186,10 +203,18 @@ public class Player extends Entity {
 		jdef.lowerAngle = 0f;
 		jdef.upperAngle = 0f;
 		jdef.enableLimit = true;
-		kickJoint = (RevoluteJoint) world.createJoint(jdef);
+		if(leftfacing)
+			world.createJoint(jdef);
+		else
+			kickJoint = (RevoluteJoint) world.createJoint(jdef);
 		
 		// GHOST LEG JOINT
+		jdef.bodyA = bodies[TORSO];
 		jdef.bodyB = bodies[GHOST_LEG];
+		if(leftfacing)
+			jdef.localAnchorA.set(-dims[TORSO].width / 2, -dims[TORSO].height + 10 / PPM);
+		else
+			jdef.localAnchorA.set(dims[TORSO].width / 2, -dims[TORSO].height + 10 / PPM);
 		jdef.upperAngle = 0f;
 		jdef.lowerAngle = 0f;
 		jdef.enableLimit = true;
@@ -215,7 +240,10 @@ public class Player extends Entity {
 		jdef.lowerAngle = 0f;
 		jdef.upperAngle = 0f;
 		jdef.enableLimit = true;
-		world.createJoint(jdef);
+		if(leftfacing)
+			kickJoint = (RevoluteJoint) world.createJoint(jdef);
+		else
+			world.createJoint(jdef);
 
 		bdef.angle = 0;
 		cshape.setPosition(new Vector2(0, -dims[RIGHT_LEG].height));
@@ -228,7 +256,6 @@ public class Player extends Entity {
 		// #### JUNCTION ####
 		bdef.type = BodyType.DynamicBody;
 		bdef.linearDamping = 0.9f;
-		bdef.angularDamping = 0.9f;
 		bodies[JUNCTION] = world.createBody(bdef);
 		md.mass = 0;
 		bodies[JUNCTION].setMassData(md);
@@ -244,7 +271,7 @@ public class Player extends Entity {
 		djdef.localAnchorB.set(0, dims[TORSO].height);
 		djdef.length = dims[TORSO].height / 2;
 		djdef.dampingRatio = 0.1f;
-		djdef.frequencyHz = 3f;
+		djdef.frequencyHz = 2.15f;
 		world.createJoint(djdef);
 
 		// #### ROPE ####
@@ -259,7 +286,7 @@ public class Player extends Entity {
 	}
 
 	public void jump() {
-		bodies[TORSO].applyForceToCenter(-30000 * (float) Math.sin(bodies[TORSO].getAngle()), 30000 * (float) Math.cos(bodies[TORSO].getAngle()), true);
+		bodies[TORSO].applyForceToCenter(-15000 * (float) Math.sin(bodies[TORSO].getAngle()), 15000 * (float) Math.cos(bodies[TORSO].getAngle()), true);
 	}
 
 	public void toggleKick() {
@@ -267,25 +294,34 @@ public class Player extends Entity {
 		kicking = !kicking;
 		
 		if(kicking ){
-			kickJoint.setLimits(0, 3.1415f / 2);
-			ghostJoint.setLimits(-3.1415f / 2, 0);
-			bodies[RIGHT_LEG].applyAngularImpulse(25f, true);
-			bodies[GHOST_LEG].applyAngularImpulse(-25f, true);
+			if(leftfacing){
+				bodies[LEFT_LEG].applyAngularImpulse(-15f, true);
+				kickJoint.setLimits(-3.1415f / 2,0);
+				ghostJoint.setLimits(0, 3.1415f / 2);
+			}else{
+				bodies[RIGHT_LEG].applyAngularImpulse(15f, true);
+				kickJoint.setLimits(0, 3.1415f / 2);
+				ghostJoint.setLimits(-3.1415f / 2,0);
+			}
 		}else{
 			kickJoint.setLimits(0, 0);
 			ghostJoint.setLimits(0, 0);
 		}
-			
+		// Make the ghost leg follow the other one
+		if(leftfacing)
+			bodies[GHOST_LEG].setAngularVelocity(-bodies[LEFT_LEG].getAngularVelocity());
+		else
+			bodies[GHOST_LEG].setAngularVelocity(-bodies[RIGHT_LEG].getAngularVelocity());
+		
 		
 	}
-
+	
 	@Override
 	public void update(float delta) {
-		bodies[PIVOT].setLinearVelocity((bodies[TORSO].getPosition().x - bodies[PIVOT].getPosition().x)*10, 0);
 
 		// Make the pivot follow the player
-		bodies[PIVOT].setLinearVelocity((bodies[TORSO].getPosition().x - bodies[PIVOT].getPosition().x) * 2, 0);
-
+		bodies[PIVOT].setLinearVelocity((bodies[TORSO].getPosition().x - bodies[PIVOT].getPosition().x)*10, 0);
+		
 		//kickJoint.setMotorSpeed(50f * kickingLegAngle);
 		
 		

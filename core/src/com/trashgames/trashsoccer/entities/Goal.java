@@ -29,7 +29,7 @@ public class Goal extends Entity{
 	// To make sure the Goal will fit in a defined dimension
 		private Rectangle bounds;
 	
-	public Goal(World world, Rectangle bounds, Filter filter, AssetManager assetManager){
+	public Goal(World world, Rectangle bounds, Filter filter, AssetManager assetManager, boolean leftfacing){
 		this.world = world;
 		this.bounds = bounds;
 		
@@ -39,10 +39,10 @@ public class Goal extends Entity{
 			dims[i] = new Dimension(0, 0, 0);
 		}
 		
-		createBodies(filter);
+		createBodies(filter, leftfacing);
 	}
 	
-	public void createBodies(Filter filter){
+	public void createBodies(Filter filter, boolean leftfacing){
 		// destroy first
 		destroy();
 		// Sets parts dimension proportional to bound rect (half dimension)
@@ -60,19 +60,32 @@ public class Goal extends Entity{
 		
 		ChainShape shape = new ChainShape();
 		Vector2[] vertices = new Vector2[8];
-		vertices[0] = new Vector2(bounds.x, bounds.y);
-		vertices[1] = new Vector2(vertices[0].x + dims[POLES].width * 2, vertices[0].y);
-		vertices[2] = new Vector2(vertices[0].x + dims[POLES].width * 1.4f, vertices[1].y + dims[POLES].height * 2);
-		vertices[3] = new Vector2(vertices[0].x, vertices[2].y);
-		vertices[4] = new Vector2(vertices[3].x, vertices[0].y + dims[POLES].height * 1.9f);
-		vertices[5] = new Vector2(vertices[0].x + dims[POLES].width * 1.25f, vertices[4].y);
-		vertices[6] = new Vector2(vertices[0].x + dims[POLES].width * 1.8f, vertices[0].y + dims[POLES].height * 0.095f);
-		vertices[7] = new Vector2(vertices[0].x, vertices[6].y);
+		if(leftfacing)
+		{
+			vertices[0] = new Vector2(bounds.x, bounds.y);
+			vertices[1] = new Vector2(vertices[0].x + dims[POLES].width * 2, vertices[0].y);
+			vertices[2] = new Vector2(vertices[0].x + dims[POLES].width * 0.95f, vertices[1].y + dims[POLES].height * 2);
+			vertices[3] = new Vector2(vertices[0].x, vertices[2].y);
+			vertices[4] = new Vector2(vertices[3].x, vertices[0].y + dims[POLES].height * 1.9f);
+			vertices[5] = new Vector2(vertices[0].x + dims[POLES].width * 0.8f, vertices[4].y);
+			vertices[6] = new Vector2(vertices[0].x + dims[POLES].width * 1.75f, vertices[0].y + dims[POLES].height * 0.095f);
+			vertices[7] = new Vector2(vertices[0].x, vertices[6].y);
+		}else
+		{
+			vertices[0] = new Vector2(bounds.x + bounds.width, bounds.y);
+			vertices[1] = new Vector2(vertices[0].x - dims[POLES].width * 2, vertices[0].y);
+			vertices[2] = new Vector2(vertices[0].x - dims[POLES].width * 0.95f, vertices[1].y + dims[POLES].height * 2);
+			vertices[3] = new Vector2(vertices[0].x, vertices[2].y);
+			vertices[4] = new Vector2(vertices[3].x, vertices[0].y + dims[POLES].height * 1.9f);
+			vertices[5] = new Vector2(vertices[0].x - dims[POLES].width * 0.8f, vertices[4].y);
+			vertices[6] = new Vector2(vertices[0].x - dims[POLES].width * 1.75f, vertices[0].y + dims[POLES].height * 0.095f);
+			vertices[7] = new Vector2(vertices[0].x, vertices[6].y);
+		}
 		
 		shape.createLoop(vertices);
 		FixtureDef fdef = new FixtureDef();
 		fdef.shape = shape;
-		bodies[POLES].createFixture(fdef);
+		bodies[POLES].createFixture(fdef).setFilterData(filter);
 		
 		EdgeShape eshape = new EdgeShape();
 		eshape.set(vertices[0], vertices[3]);

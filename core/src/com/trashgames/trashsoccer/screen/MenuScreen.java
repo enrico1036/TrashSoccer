@@ -72,7 +72,6 @@ public class MenuScreen extends GameScreen {
 
 			@Override
 			public void run() {
-				System.out.println("Starting PlayScreen");
 				gm.screenManager.push(new PlayScreen(gm));
 			}
 		});
