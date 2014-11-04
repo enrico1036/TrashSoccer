@@ -24,14 +24,18 @@ public class Goal extends Entity{
 	private static final int POLES = 0;
 	private static final int SENSOR = 1;
 	// Dimension of bodies
-		private Dimension[] dims;
+	private Dimension[] dims;
 	
 	// To make sure the Goal will fit in a defined dimension
-		private Rectangle bounds;
+	private Rectangle bounds;
+	
+	private boolean leftfacing;
 	
 	public Goal(World world, Rectangle bounds, Filter filter, AssetManager assetManager, boolean leftfacing){
 		this.world = world;
 		this.bounds = bounds;
+		this.filter = filter;
+		this.leftfacing = leftfacing;
 		
 		bodies = new Body[2];
 		dims = new Dimension[2];
@@ -39,10 +43,11 @@ public class Goal extends Entity{
 			dims[i] = new Dimension(0, 0, 0);
 		}
 		
-		createBodies(filter, leftfacing);
+		createBodies();
 	}
 	
-	public void createBodies(Filter filter, boolean leftfacing){
+	@Override
+	protected void createBodies(){
 		// destroy first
 		destroy();
 		// Sets parts dimension proportional to bound rect (half dimension)

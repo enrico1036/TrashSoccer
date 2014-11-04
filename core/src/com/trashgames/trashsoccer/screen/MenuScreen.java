@@ -20,8 +20,6 @@ import com.trashgames.trashsoccer.ui.UILabel;
 
 public class MenuScreen extends GameScreen {
 
-	private TextureManager tm;
-
 	private Sprite bgSprite;
 	private Sprite terSprite;
 	private Sprite rosSprite;
@@ -44,30 +42,32 @@ public class MenuScreen extends GameScreen {
 		labels = new Vector<UILabel>();
 
 		// Load texture manager
-		tm = new TextureManager();
-		tm.loadTexture("data/StandardBackground.png", "menubg");
-		tm.loadTexture("data/StandardTerrain.png", "menuter");
-		tm.loadTexture("data/rosario-muniz.png", "ros");
-		tm.loadTexture("data/btup.jpg", "btup");
-		tm.loadTexture("data/btdown.jpg", "btdown");
+
+		gm.assetManager.load("data/StandardBackground.png", Texture.class);
+		gm.assetManager.load("data/StandardTerrain.png", Texture.class);
+		gm.assetManager.load("data/rosario-muniz.png", Texture.class);
+		gm.assetManager.load("data/btup.jpg", Texture.class);
+		gm.assetManager.load("data/btdown.jpg", Texture.class);
+		gm.assetManager.finishLoading();
 
 		// Background
-		bgSprite = new Sprite(tm.get("menubg"));
+		bgSprite = new Sprite(gm.assetManager.get("data/StandardBackground.png", Texture.class));
 		bgSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 		// Terrain
-		terSprite = new Sprite(tm.get("menuter"));
+		terSprite = new Sprite(gm.assetManager.get("data/StandardTerrain.png", Texture.class));
 		terSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 4);
 
 		// Rosario muniz
-//		rosSprite = new Sprite(tm.get("ros"));
-//		rosSprite.setSize(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
-//		rosSprite.setPosition(Gdx.graphics.getWidth() * (2f / 3f), 0);
+		rosSprite = new Sprite(gm.assetManager.get("data/rosario-muniz.png", Texture.class));
+		rosSprite.setSize(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+		rosSprite.setPosition(Gdx.graphics.getWidth() * (2f / 3f), 0);
 
 		// Button creation
 		UIButton bt = new UIButton("1 Player", font, 
-				new Rectangle(Gdx.graphics.getWidth() / 8, Gdx.graphics.getHeight() / 2, Gdx.graphics.getWidth() / 3, Gdx.graphics.getHeight() / 7), 
-				tm.get("btup"), tm.get("btdown"));
+				new Rectangle(Gdx.graphics.getWidth() / 8, Gdx.graphics.getHeight() / 2, 
+						Gdx.graphics.getWidth() / 3, Gdx.graphics.getHeight() / 7), 
+				gm.assetManager.get("data/btup.jpg", Texture.class), gm.assetManager.get("data/btdown.jpg", Texture.class));
 		bt.setAction(new Runnable() {
 
 			@Override
@@ -80,7 +80,7 @@ public class MenuScreen extends GameScreen {
 		// 2 players button creation
 		UIButton bt2 = new UIButton("2 Players", font, 
 				new Rectangle(Gdx.graphics.getWidth() * (13f / 24f), Gdx.graphics.getHeight() / 2, Gdx.graphics.getWidth() / 3, Gdx.graphics.getHeight() / 7), 
-				tm.get("btup"), tm.get("btdown"));
+				gm.assetManager.get("data/btup.jpg", Texture.class), gm.assetManager.get("data/btdown.jpg", Texture.class));
 		bt2.setAction(new Runnable() {
 
 			@Override
@@ -104,7 +104,7 @@ public class MenuScreen extends GameScreen {
 		// Terrain rendering
 		terSprite.draw(sb);
 		// Rosario muniz rendering
-//		rosSprite.draw(sb);
+		rosSprite.draw(sb);
 		// UI rendering
 		for (UIButton bt : buttons)
 			bt.render(sb);
@@ -124,7 +124,7 @@ public class MenuScreen extends GameScreen {
 	@Override
 	public void dispose() {
 		super.dispose();
-		tm.dispose();
+		gm.assetManager.dispose();
 	}
 
 	@Override

@@ -4,16 +4,32 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.JointEdge;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.trashgames.trashsoccer.Dimension;
 
 public abstract class Entity {
 	protected World world;
+	protected Rectangle bounds;
+	protected Filter filter;
 	protected Body[] bodies;
 	protected Sprite[] sprites;
+	protected Dimension[] dims;
+	
+	protected abstract void createBodies();
+	
+	public void regenerateBodies(){
+		// destroy first
+		destroy();
+		createBodies();
+	}
 
 	public Body[] getBodies() {
 		return bodies;
@@ -23,9 +39,25 @@ public abstract class Entity {
 		return sprites;
 	}
 
-	public abstract void update(float delta);
+	public  void update(float delta){
+		// Update sprites position
+		for (int i = 0; i < sprites.length; i++) {
+			if (bodies[i] != null && sprites[i] != null) {
+				sprites[i].setPosition(bodies[i].getPosition().x - dims[i].width, bodies[i].getPosition().y - dims[i].height);
+				sprites[i].setSize(dims[i].width * 2, dims[i].height * 2);
+				sprites[i].setOriginCenter();
+				sprites[i].setRotation(bodies[i].getAngle() * MathUtils.radiansToDegrees);
+			}
+		}
+	}
 
-	public abstract void render(SpriteBatch batch);
+	public void render(SpriteBatch batch){
+		for (int i = 0; i < sprites.length; i++) {
+			if (sprites[i] != null && bodies[i] != null) {
+				sprites[i].draw(batch);
+			}
+		}
+	}
 
 	public void destroy() {
 		for (Body body : bodies) {

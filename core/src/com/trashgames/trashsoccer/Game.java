@@ -20,11 +20,11 @@ public class Game extends ApplicationAdapter {
 	public AssetManager assetManager;
 	@Override
 	public void create() {
-		screenManager = new ScreenManager(this);
-		screenManager.push(new MenuScreen(this));
-		
 		assetManager = new AssetManager();
 		Texture.setAssetManager(assetManager);
+		
+		screenManager = new ScreenManager(this);
+		screenManager.push(new MenuScreen(this));
 	}
 
 	@Override
@@ -46,5 +46,6 @@ public class Game extends ApplicationAdapter {
 	public void dispose() {
 		super.dispose();
 		screenManager.dispose();
+		assetManager.dispose();
 	}
 }

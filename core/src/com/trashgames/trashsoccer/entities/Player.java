@@ -40,15 +40,10 @@ public class Player extends Entity {
 	private static final int PIVOT = 8;
 	private static final int JUNCTION = 9;
 	private static final int GHOST_LEG = 10;
-	// Dimension of bodies
-	private Dimension[] dims;
 
-	// To make sure the Player will fit in a defined dimension
-	private Rectangle bounds;
 	private RevoluteJoint kickJoint;
 	private RevoluteJoint ghostJoint;
 	private MotorJoint motorJoint;
-	private Filter filter;
 	private boolean leftfacing;
 	
 	private boolean kicking =false;
@@ -70,10 +65,10 @@ public class Player extends Entity {
 		createBodies();
 
 		// Creating Sprites
-		sprites[HEAD] = new Sprite(assetManager.get("data/paolo-brosio.jpg", Texture.class));
-		sprites[TORSO] = new Sprite(assetManager.get("data/rosario-muniz.jpg", Texture.class));
-		sprites[RIGHT_ARM] = new Sprite(assetManager.get("data/rosario-muniz.jpg", Texture.class));
-		sprites[LEFT_ARM] = new Sprite(assetManager.get("data/character/leg.png", Texture.class));
+		sprites[HEAD] = new Sprite(assetManager.get("data/character/head.png", Texture.class));
+		sprites[TORSO] = new Sprite(assetManager.get("data/character/body.png", Texture.class));
+		sprites[RIGHT_ARM] = new Sprite(assetManager.get("data/character/arm_rx.png", Texture.class));
+		sprites[LEFT_ARM] = new Sprite(assetManager.get("data/character/arm_lx.png", Texture.class));
 		sprites[RIGHT_LEG] = new Sprite(assetManager.get("data/character/leg.png", Texture.class));
 		sprites[LEFT_LEG] = new Sprite(assetManager.get("data/character/leg.png", Texture.class));
 		for (Sprite sprite : sprites)
@@ -81,15 +76,14 @@ public class Player extends Entity {
 				sprite.setOriginCenter();
 	}
 
-	public void createBodies() {
-		// Destroy first
-		destroy();
+	@Override
+	protected void createBodies() {
 
 		// Set parts dimension proportional to bound rect (half dimension)
 		dims[TORSO].width = (float) (bounds.width / 2 * 0.6);
 		dims[RIGHT_ARM].width = (float) (bounds.width / 2 * 0.2);
 		dims[RIGHT_LEG].width = (float) (bounds.width / 2 * 0.2);
-		dims[HEAD].height = dims[HEAD].width = (float) (bounds.height / 2 * 0.2);
+		dims[HEAD].height = dims[HEAD].width = (float) (bounds.height / 2 * 0.3);
 		dims[TORSO].height = (float) (bounds.height / 2 * 0.6);
 		dims[RIGHT_LEG].height = (float) (bounds.height / 2 * 0.4);
 		dims[RIGHT_ARM].height = (float) (bounds.height / 2 * 0.3);
@@ -114,18 +108,33 @@ public class Player extends Entity {
 		fdef.shape = shape;
 		fdef.restitution = 0.5f;
 		bodies[TORSO].createFixture(fdef).setFilterData(filter);
+		MassData md = new MassData();
+		md.mass = 8f;
+		md.I = 0.5f;
+		bodies[TORSO].setMassData(md);
 		
 
 		// ##### HEAD #####
+		bdef.angle = 0;
+		bodies[HEAD] = world.createBody(bdef);
 		CircleShape cshape = new CircleShape();
 		cshape.setRadius(dims[HEAD].width);
-		cshape.setPosition(new Vector2(0, dims[HEAD].width + dims[TORSO].height));
 		fdef.shape = cshape;
-		bodies[TORSO].createFixture(fdef).setFilterData(filter);
-		MassData md = new MassData();
-		md.mass = 10f;
+		bodies[HEAD].createFixture(fdef).setFilterData(filter);
+		md.mass = 1.5f;
 		md.I = 0.5f;
-		bodies[TORSO].setMassData(md);
+		bodies[HEAD].setMassData(md);
+		
+		// #### HEAD JOINT####
+		RevoluteJointDef jdef = new RevoluteJointDef();
+		jdef.bodyA = bodies[TORSO];
+		jdef.bodyB = bodies[HEAD];
+		jdef.localAnchorA.set(0, dims[TORSO].height);
+		jdef.localAnchorB.set(0, -dims[HEAD].height);
+		jdef.lowerAngle = -0.180f;
+		jdef.upperAngle = 0.180f;
+		jdef.enableLimit = true;
+		world.createJoint(jdef);
 		
 		// #### RIGHT ARM ####
 		bodies[RIGHT_ARM] = world.createBody(bdef);
@@ -144,7 +153,6 @@ public class Player extends Entity {
 		bodies[LEFT_ARM].createFixture(fdef).setFilterData(filter);
 
 		// #### RIGHT ARM JOINT ####
-		RevoluteJointDef jdef = new RevoluteJointDef();
 		jdef.bodyA = bodies[TORSO];
 		jdef.bodyB = bodies[RIGHT_ARM];
 		jdef.localAnchorA.set(dims[TORSO].width, dims[TORSO].height);
@@ -179,8 +187,7 @@ public class Player extends Entity {
 
 		// #### GHOST LEG ####
 		md.mass = 5f;
-		fdef.filter.categoryBits = 1;
-		fdef.filter.maskBits = 256;
+		fdef.filter.maskBits = 0;
 		bodies[GHOST_LEG] = world.createBody(bdef);
 		bodies[GHOST_LEG].setMassData(md);
 		bodies[GHOST_LEG].createFixture(fdef);
@@ -208,7 +215,7 @@ public class Player extends Entity {
 		else
 			kickJoint = (RevoluteJoint) world.createJoint(jdef);
 		
-		// GHOST LEG JOINT
+		// #### GHOST LEG JOINT ####
 		jdef.bodyA = bodies[TORSO];
 		jdef.bodyB = bodies[GHOST_LEG];
 		if(leftfacing)
@@ -219,17 +226,6 @@ public class Player extends Entity {
 		jdef.lowerAngle = 0f;
 		jdef.enableLimit = true;
 		ghostJoint = (RevoluteJoint) world.createJoint(jdef);
-		
-		/*
-		MotorJointDef mdef = new MotorJointDef();
-		mdef.bodyA = bodies[TORSO];
-		mdef.bodyB = bodies[RIGHT_LEG];
-		mdef.angularOffset = 0;
-		mdef.maxTorque = 10000f;
-		
-		motorJoint = (MotorJoint) world.createJoint(mdef);
-		*/
-		
 
 		// #### LEFT LEG JOINT ####
 		jdef.bodyA = bodies[TORSO];
@@ -261,7 +257,7 @@ public class Player extends Entity {
 		bodies[JUNCTION].setMassData(md);
 		shape.setAsBox(1 / PPM, 1 / PPM);
 		fdef.shape = shape;
-		bodies[JUNCTION].createFixture(fdef).setFilterData(filter);
+		bodies[JUNCTION].createFixture(fdef);
 
 		// #### SPRING ####
 		DistanceJointDef djdef = new DistanceJointDef();
@@ -322,26 +318,10 @@ public class Player extends Entity {
 		// Make the pivot follow the player
 		bodies[PIVOT].setLinearVelocity((bodies[TORSO].getPosition().x - bodies[PIVOT].getPosition().x)*10, 0);
 		
-		//kickJoint.setMotorSpeed(50f * kickingLegAngle);
+		super.update(delta);
 		
 		
-		// Update sprites position
-		for (int i = 0; i < sprites.length; i++) {
-			if (bodies[i] != null && sprites[i] != null) {
-				sprites[i].setPosition(bodies[i].getPosition().x - dims[i].width, bodies[i].getPosition().y - dims[i].height);
-				sprites[i].setSize(dims[i].width * 2, dims[i].height * 2);
-				sprites[i].setOriginCenter();
-				sprites[i].setRotation(bodies[i].getAngle() * MathUtils.radiansToDegrees);
-			}
-		}
+		
 	}
 
-	@Override
-	public void render(SpriteBatch batch) {
-		for (int i = 0; i < sprites.length; i++) {
-			if (sprites[i] != null && bodies[i] != null) {
-				sprites[i].draw(batch);
-			}
-		}
-	}
 }

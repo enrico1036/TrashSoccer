@@ -1,5 +1,7 @@
 package com.trashgames.trashsoccer.screen;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.assets.AssetManager;
@@ -25,30 +27,31 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.trashgames.trashsoccer.B2DFilter;
 import com.trashgames.trashsoccer.Game;
 
 import static com.trashgames.trashsoccer.Game.PPM;
 
+import com.trashgames.trashsoccer.entities.Ball;
+import com.trashgames.trashsoccer.entities.Entity;
 import com.trashgames.trashsoccer.entities.Goal;
 import com.trashgames.trashsoccer.entities.Player;
 import com.trashgames.trashsoccer.graphics.TextureManager;
 
 public class PlayScreen extends GameScreen {
 	
-	private AssetManager am;
 	private Sprite sprite;
 	private World world;
 	private Box2DDebugRenderer renderer;
 	
-	Player player1;
-	Player player2;
-	Player player3;
-	Player player4;
 	Goal goalR;
 	Goal goalL;
 	
+	ArrayList<Entity> entities;
+	
 	public PlayScreen(Game gm) {
 		super(gm);
+		entities = new ArrayList<Entity>();
 		
 		renderer = new Box2DDebugRenderer();
 		renderer.setDrawContacts(true);
@@ -71,8 +74,8 @@ public class PlayScreen extends GameScreen {
 		fdef.shape = shape;
 		fdef.friction = 0.3f;
 		Filter filter = new Filter();
-		filter.categoryBits = 8;
-		filter.maskBits = 1;
+		filter.categoryBits = B2DFilter.TERRAIN;
+		filter.maskBits = B2DFilter.PLAYER | B2DFilter.BALL;
 		body.createFixture(fdef).setFilterData(filter);
 		
 		// Left wall
@@ -87,57 +90,33 @@ public class PlayScreen extends GameScreen {
 		Body bodyR = world.createBody(bdef);
 		bodyR.createFixture(fdef).setFilterData(filter);
 		
-		// Ball
-		bdef = new BodyDef();
-		bdef.position.set(200 / PPM, 200/PPM);
-		bdef.type  = BodyType.DynamicBody;
-		bdef.allowSleep = false;
-		bdef.angularDamping = 0.7f;
-		MassData md = new MassData();
-		md.mass = .5f;
-		md.I = 0.05f;
-		Body ball = world.createBody(bdef);
-		ball.setMassData(md);
-		
-		
-		CircleShape cshape = new CircleShape();
-		cshape.setRadius(15f / PPM);
-		fdef.shape = cshape;
-		fdef.restitution = 0.7f;
-		fdef.friction = 0.5f;
-		fdef.filter.categoryBits = 8;
-		fdef.filter.categoryBits = 255;
-		ball.createFixture(fdef);
-		
-		
 		
 		gm.assetManager.load("data/MenuBackground.jpg", Texture.class);
+		gm.assetManager.load("data/character/head.png", Texture.class);
+		gm.assetManager.load("data/character/body.png", Texture.class);
+		gm.assetManager.load("data/character/arm_lx.png", Texture.class);
+		gm.assetManager.load("data/character/arm_rx.png", Texture.class);
 		gm.assetManager.load("data/character/leg.png", Texture.class);
-		gm.assetManager.load("data/rosario-muniz.jpg", Texture.class);
-		gm.assetManager.load("data/paolo-brosio.jpg", Texture.class);
+		gm.assetManager.load("data/balls/ballstd.png", Texture.class);
 		gm.assetManager.finishLoading();
+		
+		// #### BALL ####
+		filter.categoryBits = B2DFilter.BALL;
+		filter.maskBits = B2DFilter.ALL;
+		entities.add(new Ball(world, new Rectangle (200 / PPM, 200 / PPM, 30 / PPM, 30 / PPM), filter, gm.assetManager));
 		
 		// #### PLAYER1 ####
 		Rectangle rect = new Rectangle(300 / PPM, 300 / PPM, 60 / PPM, 150 / PPM);
-		filter.categoryBits = 1;
-		filter.maskBits = 8;
-		player1 = new Player(world, rect, filter, gm.assetManager, true);
-		
-		// #### PLAYER2 ####
-//		rect = new Rectangle(100 / PPM, 300 / PPM, 40 / PPM, 90 / PPM);
-		player2 = new Player(world, rect, filter, gm.assetManager, true);
-		
-		// #### PLAYER3 ####
-		player3 = new Player(world, rect, filter, gm.assetManager, false);
-		
-		// #### PLAYER4 ####
-		player4 = new Player(world, rect, filter, gm.assetManager, false);
-		
+		filter.categoryBits = B2DFilter.PLAYER;
+		filter.maskBits = B2DFilter.ALL;
+		for(int i = 0; i < 1; i++)
+			entities.add(new Player(world, rect, filter, gm.assetManager, true));
+	
 		// #### GOAL ####
 		rect = new Rectangle((Gdx.graphics.getWidth()-180)/PPM, 66/PPM, 150/PPM, 300/PPM);
 		filter = new Filter();
-		filter.categoryBits = 8;
-		filter.maskBits = 1;
+		filter.categoryBits = B2DFilter.GOAL;
+		filter.maskBits = B2DFilter.ALL;
 		goalR = new Goal(world, rect, filter, gm.assetManager, true);
 		rect.x = 30 / PPM;
 		goalL = new Goal(world, rect, filter, gm.assetManager, false);
@@ -155,7 +134,7 @@ public class PlayScreen extends GameScreen {
 		camera.setToOrtho(false, Gdx.graphics.getWidth() / PPM, Gdx.graphics.getHeight() / PPM);
 
 		// OpenGL initialization
-		Gdx.gl.glClearColor(.0f, .0f, .0f, 1f);
+		Gdx.gl.glClearColor(.5f, .5f, .5f, 1f);
 
 	}
 
@@ -167,8 +146,10 @@ public class PlayScreen extends GameScreen {
 		sb.setProjectionMatrix(camera.combined);
 		sb.begin();
 		//sprite.draw(sb);
-		//player1.render(sb);
-		//player2.render(sb);
+
+		for (Entity entity : entities)
+			entity.render(sb);
+		
 		sb.end();
 		
 		renderer.render(world, camera.combined);
@@ -178,10 +159,8 @@ public class PlayScreen extends GameScreen {
 	public void update(float delta) {
 		camera.update();
 		world.step(delta , 6, 2);
-		player1.update(delta);
-		player2.update(delta);
-		player3.update(delta);
-		player4.update(delta);
+		for (Entity entity : entities)
+			entity.update(delta);
 	}
 
 	@Override
@@ -192,20 +171,24 @@ public class PlayScreen extends GameScreen {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		player1.jump();
-		player2.jump();
-		player3.jump();
-		player4.jump();
+		for (Entity entity : entities)
+			try {
+				((Player)entity).jump();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+			}
 		return true;
 	}
 	
 	public boolean keyDown(int keycode) {
 		switch (keycode) {
 		case Keys.SPACE:
-			player1.toggleKick();
-			player2.toggleKick();
-			player3.toggleKick();
-			player4.toggleKick();
+			for (Entity entity : entities)
+				try {
+					((Player)entity).toggleKick();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+				}
 			break;
 		default:
 			break;
@@ -220,23 +203,21 @@ public class PlayScreen extends GameScreen {
 			gm.screenManager.pop();
 			break;
 		case Keys.SPACE:
-			player1.toggleKick();
-			player2.toggleKick();
-			player3.toggleKick();
-			player4.toggleKick();
+			for (Entity entity : entities)
+				try {
+					((Player)entity).toggleKick();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+				}
 			break;
 		case Keys.A:
-			player1.createBodies();
-			player2.createBodies();
-			player3.createBodies();
-			player4.createBodies();
+			for (Entity entity : entities)
+				entity.regenerateBodies();
 			break;
 			
 		case Keys.R:
-			player1.destroy();
-			player2.destroy();
-			player3.destroy();
-			player4.destroy();
+			for (Entity entity : entities)
+				entity.destroy();
 			break;
 		default:
 			break;
