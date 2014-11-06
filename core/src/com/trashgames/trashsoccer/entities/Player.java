@@ -75,9 +75,14 @@ public class Player extends Entity {
 		sprites[LEFT_ARM] = new Sprite(assetManager.get("data/character/arm_lx.png", Texture.class));
 		sprites[RIGHT_LEG] = new Sprite(assetManager.get("data/character/leg.png", Texture.class));
 		sprites[LEFT_LEG] = new Sprite(assetManager.get("data/character/leg.png", Texture.class));
-		for (Sprite sprite : sprites)
-			if (sprite != null)
+		
+		for (Sprite sprite : sprites){
+			if (sprite != null){
 				sprite.setOriginCenter();
+				// Make the sprite face player's direction
+				sprite.setFlip(!leftfacing, false);
+			}
+		}
 	}
 
 	@Override
