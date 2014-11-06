@@ -108,15 +108,17 @@ public class PlayScreen extends GameScreen {
 				Gdx.graphics.getHeight() * 0.21f / PPM);
 		filter.categoryBits = B2DFilter.PLAYER;
 		filter.maskBits = B2DFilter.ALL;
-		float offset = 1/7;
-		for(int i = 0; i < 2; i++){
+		
+		float offset = 1f/7f;
+		for(int i = 0; i < 4; i++){
 			if(i%2 != 0)
 			{
-				rect.setPosition(Gdx.graphics.getWidth() * offset * 2 / PPM, 300/PPM);//Gdx.graphics.getHeight() / 4 / PPM);
-				entities.add(new Player(world, rect, filter, gm.assetManager, true));
-			}else{
-				rect.setPosition(Gdx.graphics.getWidth() * (1-offset * 2) / PPM, 300/PPM);//Gdx.graphics.getHeight() / 4 / PPM);
+				rect.setPosition(Gdx.graphics.getWidth() * offset * 2 / PPM - rect.width / 2, 300 / PPM);
 				entities.add(new Player(world, rect, filter, gm.assetManager, false));
+				offset += offset;
+			}else{
+				rect.setPosition(Gdx.graphics.getWidth() * (1 - offset * 2) / PPM - rect.width / 2, 300 / PPM);
+				entities.add(new Player(world, rect, filter, gm.assetManager, true));
 			}
 		}
 	
