@@ -29,6 +29,7 @@ import static com.trashgames.trashsoccer.Game.PPM;
 
 public class Player extends Entity {
 	// Positions of bodies into body array
+	// Renderable first
 	private static final int HEAD = 0;
 	private static final int TORSO = 1;
 	private static final int RIGHT_ARM = 2;
@@ -37,6 +38,7 @@ public class Player extends Entity {
 	private static final int LEFT_LEG = 5;
 	private static final int RIGHT_FOOT = 6;
 	private static final int LEFT_FOOT = 7;
+	// Invisible then
 	private static final int PIVOT = 8;
 	private static final int JUNCTION = 9;
 	private static final int GHOST_LEG = 10;

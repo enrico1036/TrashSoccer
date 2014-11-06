@@ -104,7 +104,7 @@ public class MenuScreen extends GameScreen {
 		// Terrain rendering
 		terSprite.draw(sb);
 		// Rosario muniz rendering
-		rosSprite.draw(sb);
+//		rosSprite.draw(sb);
 		// UI rendering
 		for (UIButton bt : buttons)
 			bt.render(sb);

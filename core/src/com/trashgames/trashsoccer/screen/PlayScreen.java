@@ -36,6 +36,7 @@ import com.trashgames.trashsoccer.entities.Ball;
 import com.trashgames.trashsoccer.entities.Entity;
 import com.trashgames.trashsoccer.entities.Goal;
 import com.trashgames.trashsoccer.entities.Player;
+import com.trashgames.trashsoccer.entities.Terrain;
 import com.trashgames.trashsoccer.graphics.TextureManager;
 
 public class PlayScreen extends GameScreen {
@@ -60,23 +61,26 @@ public class PlayScreen extends GameScreen {
 		// World initialization
 		world = new World(new Vector2(0f, -9.81f), true);
 		
-		// Terrain creation
+		gm.assetManager.load("data/StandardTerrain.png", Texture.class);
+		gm.assetManager.load("data/StandardBackground.png", Texture.class);
+		gm.assetManager.load("data/character/head.png", Texture.class);
+		gm.assetManager.load("data/character/body.png", Texture.class);
+		gm.assetManager.load("data/character/arm_lx.png", Texture.class);
+		gm.assetManager.load("data/character/arm_rx.png", Texture.class);
+		gm.assetManager.load("data/character/leg.png", Texture.class);
+		gm.assetManager.load("data/balls/ballstd.png", Texture.class);
+		gm.assetManager.finishLoading();
+		
+		// Usefull instances
 		BodyDef bdef = new BodyDef();
-		bdef.position.set(320 / PPM, 50 / PPM);
-		bdef.type  = BodyType.StaticBody;
-		Body body = world.createBody(bdef);
-		
-		// Ground
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(Gdx.graphics.getWidth() / PPM, 30 / PPM);
-		
 		FixtureDef fdef = new FixtureDef();
-		fdef.shape = shape;
-		fdef.friction = 0.3f;
 		Filter filter = new Filter();
+		
+		// Terrain creation
 		filter.categoryBits = B2DFilter.TERRAIN;
 		filter.maskBits = B2DFilter.PLAYER | B2DFilter.BALL;
-		body.createFixture(fdef).setFilterData(filter);
+		entities.add(new Terrain(world, 53 / PPM, 0.3f, filter, gm.assetManager));		
 		
 		// Left wall
 		bdef.position.set(0, Gdx.graphics.getHeight()/(2*PPM));
@@ -91,26 +95,30 @@ public class PlayScreen extends GameScreen {
 		bodyR.createFixture(fdef).setFilterData(filter);
 		
 		
-		gm.assetManager.load("data/MenuBackground.jpg", Texture.class);
-		gm.assetManager.load("data/character/head.png", Texture.class);
-		gm.assetManager.load("data/character/body.png", Texture.class);
-		gm.assetManager.load("data/character/arm_lx.png", Texture.class);
-		gm.assetManager.load("data/character/arm_rx.png", Texture.class);
-		gm.assetManager.load("data/character/leg.png", Texture.class);
-		gm.assetManager.load("data/balls/ballstd.png", Texture.class);
-		gm.assetManager.finishLoading();
-		
 		// #### BALL ####
 		filter.categoryBits = B2DFilter.BALL;
 		filter.maskBits = B2DFilter.ALL;
 		entities.add(new Ball(world, new Rectangle (200 / PPM, 200 / PPM, 30 / PPM, 30 / PPM), filter, gm.assetManager));
 		
 		// #### PLAYER1 ####
-		Rectangle rect = new Rectangle(300 / PPM, 300 / PPM, 60 / PPM, 150 / PPM);
+		Rectangle rect = new Rectangle(
+				0,
+				0,
+				Gdx.graphics.getWidth() * 0.047f / PPM,
+				Gdx.graphics.getHeight() * 0.21f / PPM);
 		filter.categoryBits = B2DFilter.PLAYER;
 		filter.maskBits = B2DFilter.ALL;
-		for(int i = 0; i < 1; i++)
-			entities.add(new Player(world, rect, filter, gm.assetManager, true));
+		float offset = 1/7;
+		for(int i = 0; i < 2; i++){
+			if(i%2 != 0)
+			{
+				rect.setPosition(Gdx.graphics.getWidth() * offset * 2 / PPM, 300/PPM);//Gdx.graphics.getHeight() / 4 / PPM);
+				entities.add(new Player(world, rect, filter, gm.assetManager, true));
+			}else{
+				rect.setPosition(Gdx.graphics.getWidth() * (1-offset * 2) / PPM, 300/PPM);//Gdx.graphics.getHeight() / 4 / PPM);
+				entities.add(new Player(world, rect, filter, gm.assetManager, false));
+			}
+		}
 	
 		// #### GOAL ####
 		rect = new Rectangle((Gdx.graphics.getWidth()-180)/PPM, 66/PPM, 150/PPM, 300/PPM);
@@ -124,9 +132,7 @@ public class PlayScreen extends GameScreen {
 		
 		
 		// Texture loading
-		sprite = new Sprite(gm.assetManager.get("data/MenuBackground.jpg", Texture.class));
-		sprite.setPosition(0, 0);
-		sprite.setSize(Gdx.graphics.getWidth() / PPM, Gdx.graphics.getHeight() / PPM);
+
 		sb = new SpriteBatch();
 		
 		// Camera
@@ -145,7 +151,6 @@ public class PlayScreen extends GameScreen {
 		
 		sb.setProjectionMatrix(camera.combined);
 		sb.begin();
-		//sprite.draw(sb);
 
 		for (Entity entity : entities)
 			entity.render(sb);

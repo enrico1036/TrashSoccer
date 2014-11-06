@@ -41,7 +41,7 @@ public abstract class Entity {
 
 	public  void update(float delta){
 		// Update sprites position
-		for (int i = 0; i < sprites.length; i++) {
+		for (int i = 0; i < sprites.length && i < bodies.length; i++) {
 			if (bodies[i] != null && sprites[i] != null) {
 				sprites[i].setPosition(bodies[i].getPosition().x - dims[i].width, bodies[i].getPosition().y - dims[i].height);
 				sprites[i].setSize(dims[i].width * 2, dims[i].height * 2);
@@ -52,7 +52,7 @@ public abstract class Entity {
 	}
 
 	public void render(SpriteBatch batch){
-		for (int i = 0; i < sprites.length; i++) {
+		for (int i = 0; i < sprites.length  && i < bodies.length; i++) {
 			if (sprites[i] != null && bodies[i] != null) {
 				sprites[i].draw(batch);
 			}
