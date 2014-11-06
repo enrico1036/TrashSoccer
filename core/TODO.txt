@@ -1,2 +1,2 @@
--(W)Even odd players (positions and facing)
--Pivot position based on ground 
+- DONE Even odd players (positions and facing)
+- DONE Pivot position based on ground 

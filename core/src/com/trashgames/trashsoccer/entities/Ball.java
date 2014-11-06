@@ -44,7 +44,7 @@ public class Ball extends Entity {
 		bdef.allowSleep = false;
 		bdef.angularDamping = 0.6f;
 		MassData md = new MassData();
-		md.mass = .5f;
+		md.mass = .3f;
 		md.I = 0.05f;
 		bodies[0] = world.createBody(bdef);
 		bodies[0].setMassData(md);

@@ -47,14 +47,16 @@ public class Player extends Entity {
 	private RevoluteJoint ghostJoint;
 	private MotorJoint motorJoint;
 	private boolean leftfacing;
+	private float terrainSurface;
 	
 	private boolean kicking =false;
 
-	public Player(World world, Rectangle bounds, Filter filter, AssetManager assetManager, boolean leftfacing) {
+	public Player(World world, Rectangle bounds, Filter filter, AssetManager assetManager, boolean leftfacing, float terrainSurface) {
 		this.world = world;
 		this.bounds = bounds;
 		this.filter = filter;
 		this.leftfacing = leftfacing;
+		this.terrainSurface = terrainSurface;
 
 		bodies = new Body[11];
 		sprites = new Sprite[10];
@@ -248,7 +250,7 @@ public class Player extends Entity {
 
 		// #### PIVOT ####
 		bdef.type = BodyType.KinematicBody;
-		bdef.position.set(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
+		bdef.position.set(bounds.x + bounds.width / 2, terrainSurface + Gdx.graphics.getHeight() * 0.238f / PPM + bounds.height);//bounds.y + bounds.height / 2);
 		bodies[PIVOT] = world.createBody(bdef);
 
 		// #### JUNCTION ####
