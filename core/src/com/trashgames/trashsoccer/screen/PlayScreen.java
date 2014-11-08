@@ -29,6 +29,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.trashgames.trashsoccer.B2DFilter;
 import com.trashgames.trashsoccer.Game;
+import com.trashgames.trashsoccer.MyContactListener;
 
 import static com.trashgames.trashsoccer.Game.PPM;
 
@@ -44,6 +45,7 @@ public class PlayScreen extends GameScreen {
 	private Sprite sprite;
 	private World world;
 	private Box2DDebugRenderer renderer;
+	MyContactListener cl;
 	
 	Goal goalR;
 	Goal goalL;
@@ -59,7 +61,9 @@ public class PlayScreen extends GameScreen {
 		renderer.setDrawJoints(true);
 		
 		// World initialization
+		cl = new MyContactListener();
 		world = new World(new Vector2(0f, -9.81f), true);
+		world.setContactListener(cl);
 		
 		gm.assetManager.load("data/StandardTerrain.png", Texture.class);
 		gm.assetManager.load("data/StandardBackground.png", Texture.class);
@@ -80,7 +84,7 @@ public class PlayScreen extends GameScreen {
 		// Terrain creation
 		filter.categoryBits = B2DFilter.TERRAIN;
 		filter.maskBits = B2DFilter.PLAYER | B2DFilter.BALL;
-		Terrain terrain = new Terrain(world, 53 / PPM, 0.3f, filter, gm.assetManager);
+		Terrain terrain = new Terrain(world, 55 / PPM, 0.3f, filter, gm.assetManager);
 		entities.add(terrain);		
 		
 		// Left wall
@@ -99,9 +103,9 @@ public class PlayScreen extends GameScreen {
 		// #### BALL ####
 		filter.categoryBits = B2DFilter.BALL;
 		filter.maskBits = B2DFilter.ALL;
-		entities.add(new Ball(world, new Rectangle (200 / PPM, 200 / PPM, 30 / PPM, 30 / PPM), filter, gm.assetManager));
+		entities.add(new Ball(world, new Rectangle (800 / PPM, 200 / PPM, 30 / PPM, 30 / PPM), filter, gm.assetManager));
 		
-		// #### PLAYER1 ####
+		// #### PLAYERS ####
 		Rectangle rect = new Rectangle(
 				0,
 				0,
@@ -179,6 +183,7 @@ public class PlayScreen extends GameScreen {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		if(cl.isPlayerOnGround())
 		for (Entity entity : entities)
 			try {
 				((Player)entity).jump();

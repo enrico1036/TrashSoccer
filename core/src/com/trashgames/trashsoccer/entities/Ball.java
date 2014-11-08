@@ -12,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Filter;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.World;
@@ -44,8 +45,8 @@ public class Ball extends Entity {
 		bdef.allowSleep = false;
 		bdef.angularDamping = 0.6f;
 		MassData md = new MassData();
-		md.mass = .3f;
-		md.I = 0.05f;
+		md.mass = .1f;
+		md.I = 0.005f;
 		bodies[0] = world.createBody(bdef);
 		bodies[0].setMassData(md);
 		
@@ -54,8 +55,10 @@ public class Ball extends Entity {
 		cshape.setRadius(dims[0].width);
 		fdef.shape = cshape;
 		fdef.restitution = 0.8f;
-		fdef.friction = 0.5f;
-		bodies[0].createFixture(fdef).setFilterData(filter);;
+		fdef.friction = 0.7f;
+		Fixture fixture = bodies[0].createFixture(fdef);
+		fixture.setFilterData(filter);
+		fixture.setUserData("ball");
 	}
 
 }

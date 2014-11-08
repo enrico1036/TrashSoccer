@@ -1,2 +1,2 @@
-- DONE Even odd players (positions and facing)
-- DONE Pivot position based on ground 
+ContactListener inside player class
+Foot sensor (bug fixes)

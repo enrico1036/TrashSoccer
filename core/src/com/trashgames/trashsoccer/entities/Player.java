@@ -13,6 +13,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Filter;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -23,7 +24,9 @@ import com.badlogic.gdx.physics.box2d.joints.MotorJointDef;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.badlogic.gdx.physics.box2d.joints.RopeJointDef;
+import com.trashgames.trashsoccer.B2DFilter;
 import com.trashgames.trashsoccer.Dimension;
+import com.trashgames.trashsoccer.MyContactListener;
 
 import static com.trashgames.trashsoccer.Game.PPM;
 
@@ -45,11 +48,11 @@ public class Player extends Entity {
 
 	private RevoluteJoint kickJoint;
 	private RevoluteJoint ghostJoint;
-	private MotorJoint motorJoint;
 	private boolean leftfacing;
 	private float terrainSurface;
 	
-	private boolean kicking =false;
+	private boolean kicking = false;
+	
 
 	public Player(World world, Rectangle bounds, Filter filter, AssetManager assetManager, boolean leftfacing, float terrainSurface) {
 		this.world = world;
@@ -58,9 +61,10 @@ public class Player extends Entity {
 		this.leftfacing = leftfacing;
 		this.terrainSurface = terrainSurface;
 
+		
 		bodies = new Body[11];
 		sprites = new Sprite[10];
-		dims = new Dimension[10];
+		dims = new Dimension[12];
 
 		for (int i = 0; i < dims.length; i++) {
 			dims[i] = new Dimension(0, 0, 0);
@@ -92,13 +96,16 @@ public class Player extends Entity {
 		dims[TORSO].width = (float) (bounds.width / 2 * 0.6);
 		dims[RIGHT_ARM].width = (float) (bounds.width / 2 * 0.2);
 		dims[RIGHT_LEG].width = (float) (bounds.width / 2 * 0.2);
+		dims[RIGHT_FOOT].width = dims[RIGHT_LEG].width;
 		dims[HEAD].height = dims[HEAD].width = (float) (bounds.height / 2 * 0.3);
 		dims[TORSO].height = (float) (bounds.height / 2 * 0.6);
 		dims[RIGHT_LEG].height = (float) (bounds.height / 2 * 0.4);
 		dims[RIGHT_ARM].height = (float) (bounds.height / 2 * 0.3);
+		dims[RIGHT_FOOT].height = .5f / PPM;
 
 		dims[LEFT_ARM] = dims[RIGHT_ARM];
 		dims[LEFT_LEG] = dims[RIGHT_LEG];
+		dims[LEFT_FOOT] = dims[RIGHT_FOOT];
 
 		// Get box2d torso position
 		Vector2 pos = new Vector2(bounds.x + (2 * dims[RIGHT_ARM].width + dims[TORSO].width), bounds.y + (2 * dims[RIGHT_LEG].height + dims[TORSO].height));
@@ -109,6 +116,7 @@ public class Player extends Entity {
 		bdef.type = BodyType.DynamicBody;
 		bdef.angle = 0.1f * (float) Math.PI;
 		bdef.angularDamping = 0;
+		bdef.allowSleep = false;
 		bodies[TORSO] = world.createBody(bdef);
 
 		PolygonShape shape = new PolygonShape();
@@ -143,6 +151,7 @@ public class Player extends Entity {
 		jdef.lowerAngle = -0.180f;
 		jdef.upperAngle = 0.180f;
 		jdef.enableLimit = true;
+		jdef.collideConnected = false;
 		world.createJoint(jdef);
 		
 		// #### RIGHT ARM ####
@@ -169,6 +178,7 @@ public class Player extends Entity {
 		jdef.lowerAngle = 0;
 		jdef.upperAngle = 3.1415f / 2;
 		jdef.enableLimit = true;
+		jdef.collideConnected = false;
 		world.createJoint(jdef);
 
 		// #### LEFT ARM JOINT ####
@@ -178,6 +188,7 @@ public class Player extends Entity {
 		jdef.localAnchorB.set(dims[RIGHT_ARM].width, dims[RIGHT_ARM].height);
 		jdef.lowerAngle = -3.1415f / 2;
 		jdef.upperAngle = 0;
+		jdef.collideConnected = false;
 		world.createJoint(jdef);
 
 		// #### RIGHT LEG ####
@@ -188,11 +199,10 @@ public class Player extends Entity {
 			md.mass = 10f;
 		else
 			md.mass = 5f;
-		
 		md.I = 0.7f;
 		bodies[RIGHT_LEG] = world.createBody(bdef);
 		bodies[RIGHT_LEG].setMassData(md);
-		bodies[RIGHT_LEG].createFixture(fdef).setFilterData(filter);			
+		bodies[RIGHT_LEG].createFixture(fdef).setFilterData(filter);
 
 		// #### GHOST LEG ####
 		md.mass = 5f;
@@ -252,7 +262,16 @@ public class Player extends Entity {
 
 		bdef.angle = 0;
 		cshape.setPosition(new Vector2(0, -dims[RIGHT_LEG].height));
-
+		
+		// #### FOOT ####
+		shape.setAsBox(dims[TORSO].width, dims[RIGHT_FOOT].height, new Vector2(-dims[TORSO].width / 2, -(dims[RIGHT_LEG].height + dims[RIGHT_FOOT].height)), 0);
+		fdef.shape = shape;
+		fdef.isSensor = true;
+		fdef.filter.categoryBits = filter.categoryBits;
+		fdef.filter.maskBits = B2DFilter.TERRAIN;
+		bodies[RIGHT_LEG].createFixture(fdef).setUserData("foot");
+		fdef.isSensor = false;
+		
 		// #### PIVOT ####
 		bdef.type = BodyType.KinematicBody;
 		bdef.position.set(bounds.x + bounds.width / 2, terrainSurface + Gdx.graphics.getHeight() * 0.238f / PPM + bounds.height);//bounds.y + bounds.height / 2);
@@ -291,7 +310,7 @@ public class Player extends Entity {
 	}
 
 	public void jump() {
-		bodies[TORSO].applyForceToCenter(-15000 * (float) Math.sin(bodies[TORSO].getAngle()), 15000 * (float) Math.cos(bodies[TORSO].getAngle()), true);
+		bodies[TORSO].applyForceToCenter(-10000 * (float) Math.sin(bodies[TORSO].getAngle()), 10000 * (float) Math.cos(bodies[TORSO].getAngle()), true);
 	}
 
 	public void toggleKick() {
@@ -300,11 +319,11 @@ public class Player extends Entity {
 		
 		if(kicking ){
 			if(leftfacing){
-				bodies[LEFT_LEG].applyAngularImpulse(-15f, true);
+				bodies[LEFT_LEG].applyAngularImpulse(-20f, true);
 				kickJoint.setLimits(-3.1415f / 2,0);
 				ghostJoint.setLimits(0, 3.1415f / 2);
 			}else{
-				bodies[RIGHT_LEG].applyAngularImpulse(15f, true);
+				bodies[RIGHT_LEG].applyAngularImpulse(20f, true);
 				kickJoint.setLimits(0, 3.1415f / 2);
 				ghostJoint.setLimits(-3.1415f / 2,0);
 			}
