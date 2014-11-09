@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Filter;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.JointEdge;
 import com.badlogic.gdx.physics.box2d.World;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.utils.Array;
 import com.trashgames.trashsoccer.Dimension;
 
 public abstract class Entity {
+	
 	protected World world;
 	protected Rectangle bounds;
 	protected Filter filter;
@@ -60,9 +62,15 @@ public abstract class Entity {
 	}
 
 	public void destroy() {
+		// Iterate for all bodies
 		for (Body body : bodies) {
 			if (body != null) {
 				body.setUserData(null);
+				// Iterate for all fixtures
+				for(Fixture fixture : body.getFixtureList()){
+					fixture.setUserData(null);
+					body.destroyFixture(fixture);
+				}
 				world.destroyBody(body);
 			}
 		}

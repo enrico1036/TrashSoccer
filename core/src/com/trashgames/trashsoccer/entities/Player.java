@@ -267,7 +267,7 @@ public class Player extends Entity {
 		shape.setAsBox(dims[TORSO].width, dims[RIGHT_FOOT].height, new Vector2(-dims[TORSO].width / 2, -(dims[RIGHT_LEG].height + dims[RIGHT_FOOT].height)), 0);
 		fdef.shape = shape;
 		fdef.isSensor = true;
-		fdef.filter.categoryBits = filter.categoryBits;
+		fdef.filter.categoryBits = B2DFilter.FOOT_SENSOR;
 		fdef.filter.maskBits = B2DFilter.TERRAIN;
 		bodies[RIGHT_LEG].createFixture(fdef).setUserData(this);
 		fdef.isSensor = false;

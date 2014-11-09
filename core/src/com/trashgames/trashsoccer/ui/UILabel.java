@@ -46,6 +46,4 @@ public class UILabel{
 	public void setFont(BitmapFont font) {
 		this.font = font;
 	}
-	
-	
 }
