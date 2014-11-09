@@ -58,7 +58,10 @@ public class Ball extends Entity {
 		fdef.friction = 0.7f;
 		Fixture fixture = bodies[0].createFixture(fdef);
 		fixture.setFilterData(filter);
-		fixture.setUserData("ball");
+	}
+	
+	public float getRadius(){
+		return dims[0].width;
 	}
 
 }

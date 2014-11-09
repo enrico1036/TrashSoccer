@@ -1,3 +1,3 @@
--DONE ContactListener inside player class
--(DONE Maybe)Foot sensor (bug fixes)
--Goal sensor
+-DONE Goal sensor
+-DONE Score class
+-Reset after goal

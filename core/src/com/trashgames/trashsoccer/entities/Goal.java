@@ -23,7 +23,6 @@ public class Goal extends Entity{
 	
 	// Positions of bodies into body array
 	private static final int POLES = 0;
-	private static final int SENSOR = 1;
 	// Dimension of bodies
 	private Dimension[] dims;
 	
@@ -31,37 +30,30 @@ public class Goal extends Entity{
 	private Rectangle bounds;
 	
 	private boolean leftfacing;
+	private float sensorOffset;
 	
-	public Goal(World world, Rectangle bounds, Filter filter, AssetManager assetManager, boolean leftfacing){
+	public Goal(World world, Rectangle bounds, Filter filter, AssetManager assetManager, boolean leftfacing, float sensorOffset){
 		this.world = world;
 		this.bounds = bounds;
 		this.filter = filter;
 		this.leftfacing = leftfacing;
+		this.sensorOffset = sensorOffset;
 		
-		bodies = new Body[2];
-		dims = new Dimension[2];
-		for(int i = 0; i < dims.length; i++){
-			dims[i] = new Dimension(0, 0, 0);
-		}
+		bodies = new Body[1];
+		dims = new Dimension[1];
 		
 		createBodies();
 	}
 	
 	@Override
 	protected void createBodies(){
-		// destroy first
-		destroy();
 		// Sets parts dimension proportional to bound rect (half dimension)
-		dims[POLES].width = (float)(bounds.width / 2);
-		dims[POLES].height = (float)(bounds.height / 2);
-		dims[SENSOR].width = (float)(bounds.width / 10);
-		dims[SENSOR].height = (float)(bounds.height / 2);
+		dims[POLES] = new Dimension(bounds.width / 2, bounds.height / 2, 0);
 		
 		BodyDef bdef = new BodyDef();
 
 		// ##### POLES #####
-//		bdef.position.set(bounds.x, bounds.y);
-		bdef.type = BodyType.StaticBody;
+ 		bdef.type = BodyType.StaticBody;
 		bodies[POLES] = world.createBody(bdef);
 		
 		ChainShape shape = new ChainShape();
@@ -76,8 +68,7 @@ public class Goal extends Entity{
 			vertices[5] = new Vector2(vertices[0].x + dims[POLES].width * 0.8f, vertices[4].y);
 			vertices[6] = new Vector2(vertices[0].x + dims[POLES].width * 1.75f, vertices[0].y + dims[POLES].height * 0.095f);
 			vertices[7] = new Vector2(vertices[0].x, vertices[6].y);
-		}else
-		{
+		}else{
 			vertices[0] = new Vector2(bounds.x + bounds.width, bounds.y);
 			vertices[1] = new Vector2(vertices[0].x - dims[POLES].width * 2, vertices[0].y);
 			vertices[2] = new Vector2(vertices[0].x - dims[POLES].width * 0.95f, vertices[1].y + dims[POLES].height * 2);
@@ -94,12 +85,17 @@ public class Goal extends Entity{
 		bodies[POLES].createFixture(fdef).setFilterData(filter);
 		
 		EdgeShape eshape = new EdgeShape();
-		eshape.set(vertices[0], vertices[3]);
+		if(leftfacing){
+			eshape.set(vertices[0].add(sensorOffset, 0), vertices[3].add(sensorOffset, 0));
+			fdef.filter.categoryBits = B2DFilter.SENSORR;
+		}else{
+			eshape.set(vertices[0].sub(sensorOffset, 0), vertices[3].sub(sensorOffset, 0));
+			fdef.filter.categoryBits = B2DFilter.SENSORL;
+		}
 		fdef.shape = eshape;
 		fdef.isSensor = true;
-		fdef.filter.categoryBits = B2DFilter.GOAL;
 		fdef.filter.maskBits = B2DFilter.BALL;
-		bodies[POLES].createFixture(fdef).setUserData("goalSensor");
+		bodies[POLES].createFixture(fdef);//.setUserData(this);
 		
 	}
 	

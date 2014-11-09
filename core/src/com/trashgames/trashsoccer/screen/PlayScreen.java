@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -37,6 +38,7 @@ import com.trashgames.trashsoccer.entities.Ball;
 import com.trashgames.trashsoccer.entities.Entity;
 import com.trashgames.trashsoccer.entities.Goal;
 import com.trashgames.trashsoccer.entities.Player;
+import com.trashgames.trashsoccer.entities.Score;
 import com.trashgames.trashsoccer.entities.Terrain;
 import com.trashgames.trashsoccer.graphics.TextureManager;
 
@@ -45,10 +47,11 @@ public class PlayScreen extends GameScreen {
 	private Sprite sprite;
 	private World world;
 	private Box2DDebugRenderer renderer;
-	MyContactListener cl;
-	
-	Goal goalR;
-	Goal goalL;
+	private MyContactListener cl;
+	private Score scores[];
+	private Goal goalR;
+	private Goal goalL;
+	private final int MAX_SCORE = 5;
 	
 	ArrayList<Entity> entities;
 	
@@ -60,8 +63,14 @@ public class PlayScreen extends GameScreen {
 		renderer.setDrawContacts(true);
 		renderer.setDrawJoints(true);
 		
+		scores = new Score[2];
+		// Left score
+		scores[0] = new Score(new Rectangle());
+		// Right score
+		scores[1] = new Score(new Rectangle());
 		// World initialization
 		cl = new MyContactListener();
+		cl.setScores(scores[0], scores[1]);
 		world = new World(new Vector2(0f, -9.81f), true);
 		world.setContactListener(cl);
 		
@@ -103,7 +112,8 @@ public class PlayScreen extends GameScreen {
 		// #### BALL ####
 		filter.categoryBits = B2DFilter.BALL;
 		filter.maskBits = B2DFilter.ALL;
-		entities.add(new Ball(world, new Rectangle (800 / PPM, 200 / PPM, 30 / PPM, 30 / PPM), filter, gm.assetManager));
+		Ball ball = new Ball(world, new Rectangle (800 / PPM, 200 / PPM, 30 / PPM, 30 / PPM), filter, gm.assetManager);
+		entities.add(ball);
 		
 		// #### PLAYERS ####
 		Rectangle rect = new Rectangle(
@@ -115,7 +125,7 @@ public class PlayScreen extends GameScreen {
 		filter.maskBits = B2DFilter.ALL;
 
 		float offset = 1/7f;
-		for(int i = 0; i < 4; i++){
+		for(int i = 0; i < 1; i++){
 			if(i%2 != 0)
 			{
 				rect.setPosition(Gdx.graphics.getWidth() * offset * 2 / PPM - rect.width / 2, Gdx.graphics.getHeight() / (2 * PPM));
@@ -132,9 +142,9 @@ public class PlayScreen extends GameScreen {
 		filter = new Filter();
 		filter.categoryBits = B2DFilter.GOAL;
 		filter.maskBits = B2DFilter.ALL;
-		goalR = new Goal(world, rect, filter, gm.assetManager, true);
+		goalR = new Goal(world, rect, filter, gm.assetManager, true, ball.getRadius() * 2);
 		rect.x = 30 / PPM;
-		goalL = new Goal(world, rect, filter, gm.assetManager, false);
+		goalL = new Goal(world, rect, filter, gm.assetManager, false, ball.getRadius() * 2);
 		
 		
 		
@@ -154,7 +164,7 @@ public class PlayScreen extends GameScreen {
 	@Override
 	public void render(float delta) {
 		super.render(delta);
-		Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		sb.setProjectionMatrix(camera.combined);
 		sb.begin();
@@ -171,8 +181,21 @@ public class PlayScreen extends GameScreen {
 	public void update(float delta) {
 		camera.update();
 		world.step(delta , 6, 2);
+		for(int i = 0; i < scores.length; i++)
+			if(scores[i].hasWon(MAX_SCORE))
+			{
+				System.out.println(i + "won");
+				reset();
+			}
 		for (Entity entity : entities)
 			entity.update(delta);
+	}
+	
+	public void reset(){
+		for (Entity entity : entities)
+			entity.regenerateBodies();
+		for(int i = 0; i < scores.length; i++)
+			scores[i].reset();
 	}
 
 	@Override
