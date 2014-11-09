@@ -4,17 +4,29 @@ import com.badlogic.gdx.math.Rectangle;
 
 public class Score {
 	int score;
-	Rectangle bounds;
-	public Score(Rectangle rect){
-		bounds = rect;
+	boolean isIncremented;
+	
+	public Score(){
 		reset();
 	}
 	
 	public void reset(){
 		score = 0;
+		isIncremented = false;
+	}
+	
+	public int getScore(){
+		return score;
+	}
+	
+	public boolean isIncremented(){
+		boolean isIncremented = this.isIncremented;
+		this.isIncremented = false;
+		return isIncremented;
 	}
 	public void addGoal(){
 		score++;
+		isIncremented = true;
 		System.out.println(this.toString() + "  " + score);
 	}
 	
@@ -22,9 +34,5 @@ public class Score {
 		if(score >= maximum)
 			return true;
 		return false;
-	}
-	
-	public void render(){
-		
 	}
 }

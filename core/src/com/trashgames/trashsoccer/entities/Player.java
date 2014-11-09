@@ -316,7 +316,7 @@ public class Player extends Entity {
 
 	public void jump() {
 		if(canJump)
-			bodies[TORSO].applyForceToCenter(-10000 * (float) Math.sin(bodies[TORSO].getAngle()), 10000 * (float) Math.cos(bodies[TORSO].getAngle()), true);
+			bodies[TORSO].applyForceToCenter(-15000 * (float) Math.sin(bodies[TORSO].getAngle()), 15000 * (float) Math.cos(bodies[TORSO].getAngle()), true);
 	}
 
 	public void toggleKick(boolean kickOn) {

@@ -65,9 +65,9 @@ public class PlayScreen extends GameScreen {
 		
 		scores = new Score[2];
 		// Left score
-		scores[0] = new Score(new Rectangle());
+		scores[0] = new Score();
 		// Right score
-		scores[1] = new Score(new Rectangle());
+		scores[1] = new Score();
 		// World initialization
 		cl = new MyContactListener();
 		cl.setScores(scores[0], scores[1]);
@@ -182,20 +182,25 @@ public class PlayScreen extends GameScreen {
 		camera.update();
 		world.step(delta , 6, 2);
 		for(int i = 0; i < scores.length; i++)
+		{
 			if(scores[i].hasWon(MAX_SCORE))
 			{
 				System.out.println(i + "won");
-				reset();
+				reset(true);
 			}
+			if(scores[i].isIncremented())
+				reset(false);
+		}
 		for (Entity entity : entities)
 			entity.update(delta);
 	}
 	
-	public void reset(){
+	public void reset(boolean newGame){
 		for (Entity entity : entities)
 			entity.regenerateBodies();
-		for(int i = 0; i < scores.length; i++)
-			scores[i].reset();
+		if(newGame)
+			for(int i = 0; i < scores.length; i++)
+				scores[i].reset();
 	}
 
 	@Override
