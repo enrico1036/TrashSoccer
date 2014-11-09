@@ -183,7 +183,6 @@ public class PlayScreen extends GameScreen {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		if(cl.isPlayerOnGround())
 		for (Entity entity : entities)
 			try {
 				((Player)entity).jump();
@@ -198,7 +197,7 @@ public class PlayScreen extends GameScreen {
 		case Keys.SPACE:
 			for (Entity entity : entities)
 				try {
-					((Player)entity).toggleKick();
+					((Player)entity).toggleKick(true);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 				}
@@ -218,7 +217,7 @@ public class PlayScreen extends GameScreen {
 		case Keys.SPACE:
 			for (Entity entity : entities)
 				try {
-					((Player)entity).toggleKick();
+					((Player)entity).toggleKick(false);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 				}

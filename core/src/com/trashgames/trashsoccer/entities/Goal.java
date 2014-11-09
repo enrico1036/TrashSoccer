@@ -14,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.trashgames.trashsoccer.B2DFilter;
 import com.trashgames.trashsoccer.Dimension;
 
 import static com.trashgames.trashsoccer.Game.PPM;
@@ -96,7 +97,9 @@ public class Goal extends Entity{
 		eshape.set(vertices[0], vertices[3]);
 		fdef.shape = eshape;
 		fdef.isSensor = true;
-		bodies[POLES].createFixture(fdef);
+		fdef.filter.categoryBits = B2DFilter.GOAL;
+		fdef.filter.maskBits = B2DFilter.BALL;
+		bodies[POLES].createFixture(fdef).setUserData("goalSensor");
 		
 	}
 	

@@ -1,2 +1,3 @@
-ContactListener inside player class
-Foot sensor (bug fixes)
+-DONE ContactListener inside player class
+-(DONE Maybe)Foot sensor (bug fixes)
+-Goal sensor

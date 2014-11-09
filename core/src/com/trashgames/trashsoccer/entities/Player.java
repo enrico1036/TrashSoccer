@@ -51,7 +51,7 @@ public class Player extends Entity {
 	private boolean leftfacing;
 	private float terrainSurface;
 	
-	private boolean kicking = false;
+	private boolean canJump = false;
 	
 
 	public Player(World world, Rectangle bounds, Filter filter, AssetManager assetManager, boolean leftfacing, float terrainSurface) {
@@ -269,7 +269,7 @@ public class Player extends Entity {
 		fdef.isSensor = true;
 		fdef.filter.categoryBits = filter.categoryBits;
 		fdef.filter.maskBits = B2DFilter.TERRAIN;
-		bodies[RIGHT_LEG].createFixture(fdef).setUserData("foot");
+		bodies[RIGHT_LEG].createFixture(fdef).setUserData(this);
 		fdef.isSensor = false;
 		
 		// #### PIVOT ####
@@ -308,16 +308,21 @@ public class Player extends Entity {
 		world.createJoint(rdef);
 
 	}
-
-	public void jump() {
-		bodies[TORSO].applyForceToCenter(-10000 * (float) Math.sin(bodies[TORSO].getAngle()), 10000 * (float) Math.cos(bodies[TORSO].getAngle()), true);
+	
+	public void setJump(boolean canJump){
+		this.canJump = canJump;
 	}
 
-	public void toggleKick() {
-		// Toggle between 1 and -1
-		kicking = !kicking;
+
+	public void jump() {
+		if(canJump)
+			bodies[TORSO].applyForceToCenter(-10000 * (float) Math.sin(bodies[TORSO].getAngle()), 10000 * (float) Math.cos(bodies[TORSO].getAngle()), true);
+	}
+
+	public void toggleKick(boolean kickOn) {
+
 		
-		if(kicking ){
+		if(kickOn){
 			if(leftfacing){
 				bodies[LEFT_LEG].applyAngularImpulse(-20f, true);
 				kickJoint.setLimits(-3.1415f / 2,0);
