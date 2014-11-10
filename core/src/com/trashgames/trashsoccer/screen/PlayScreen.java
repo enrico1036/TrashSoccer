@@ -183,6 +183,7 @@ public class PlayScreen extends GameScreen {
 		camera.update();
 		world.step(delta , 6, 2);
 		for(int i = 0; i < scores.length; i++)
+		{
 			if(scores[i].hasWon(MAX_SCORE))	{
 				System.out.println(i + "won");
 				reset(true);

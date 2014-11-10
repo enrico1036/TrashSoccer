@@ -1,3 +1,2 @@
--DONE Goal sensor
--DONE Score class
--Reset after goal
+-DONE Reset after goal
+-fix collision detection after reset
