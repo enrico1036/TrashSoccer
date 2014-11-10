@@ -39,12 +39,11 @@ public class Player extends Entity {
 	private static final int LEFT_ARM = 3;
 	private static final int RIGHT_LEG = 4;
 	private static final int LEFT_LEG = 5;
-	private static final int RIGHT_FOOT = 6;
-	private static final int LEFT_FOOT = 7;
 	// Invisible then
-	private static final int PIVOT = 8;
-	private static final int JUNCTION = 9;
-	private static final int GHOST_LEG = 10;
+	private static final int FOOT_SENSOR = 6;
+	private static final int PIVOT = 7;
+	private static final int JUNCTION = 8;
+	private static final int GHOST_LEG = 9;
 
 	private RevoluteJoint kickJoint;
 	private RevoluteJoint ghostJoint;
@@ -57,12 +56,11 @@ public class Player extends Entity {
 	public Player(World world, Rectangle bounds, Filter filter, AssetManager assetManager, boolean leftfacing, float terrainSurface) {
 		this.world = world;
 		this.bounds = bounds;
-		this.filter = filter;
 		this.leftfacing = leftfacing;
 		this.terrainSurface = terrainSurface;
-
+		setFilter(filter);
 		
-		bodies = new Body[11];
+		bodies = new Body[10];
 		sprites = new Sprite[10];
 		dims = new Dimension[12];
 
@@ -96,16 +94,15 @@ public class Player extends Entity {
 		dims[TORSO].width = (float) (bounds.width / 2 * 0.6);
 		dims[RIGHT_ARM].width = (float) (bounds.width / 2 * 0.2);
 		dims[RIGHT_LEG].width = (float) (bounds.width / 2 * 0.2);
-		dims[RIGHT_FOOT].width = dims[RIGHT_LEG].width;
+		dims[FOOT_SENSOR].width = dims[RIGHT_LEG].width;
 		dims[HEAD].height = dims[HEAD].width = (float) (bounds.height / 2 * 0.3);
 		dims[TORSO].height = (float) (bounds.height / 2 * 0.6);
 		dims[RIGHT_LEG].height = (float) (bounds.height / 2 * 0.4);
 		dims[RIGHT_ARM].height = (float) (bounds.height / 2 * 0.3);
-		dims[RIGHT_FOOT].height = .5f / PPM;
+		dims[FOOT_SENSOR].height = .5f / PPM;
 
 		dims[LEFT_ARM] = dims[RIGHT_ARM];
 		dims[LEFT_LEG] = dims[RIGHT_LEG];
-		dims[LEFT_FOOT] = dims[RIGHT_FOOT];
 
 		// Get box2d torso position
 		Vector2 pos = new Vector2(bounds.x + (2 * dims[RIGHT_ARM].width + dims[TORSO].width), bounds.y + (2 * dims[RIGHT_LEG].height + dims[TORSO].height));
@@ -244,6 +241,7 @@ public class Player extends Entity {
 		jdef.upperAngle = 0f;
 		jdef.lowerAngle = 0f;
 		jdef.enableLimit = true;
+		jdef.collideConnected = false;
 		ghostJoint = (RevoluteJoint) world.createJoint(jdef);
 
 		// #### LEFT LEG JOINT ####
@@ -264,7 +262,7 @@ public class Player extends Entity {
 		cshape.setPosition(new Vector2(0, -dims[RIGHT_LEG].height));
 		
 		// #### FOOT ####
-		shape.setAsBox(dims[TORSO].width, dims[RIGHT_FOOT].height, new Vector2(-dims[TORSO].width / 2, -(dims[RIGHT_LEG].height + dims[RIGHT_FOOT].height)), 0);
+		shape.setAsBox(dims[TORSO].width, dims[FOOT_SENSOR].height, new Vector2(-dims[TORSO].width / 2, -(dims[RIGHT_LEG].height + dims[FOOT_SENSOR].height)), 0);
 		fdef.shape = shape;
 		fdef.isSensor = true;
 		fdef.filter.categoryBits = B2DFilter.FOOT_SENSOR;
@@ -296,6 +294,7 @@ public class Player extends Entity {
 		djdef.length = dims[TORSO].height / 2;
 		djdef.dampingRatio = 0.1f;
 		djdef.frequencyHz = 2.15f;
+		djdef.collideConnected = false;
 		world.createJoint(djdef);
 
 		// #### ROPE ####
@@ -305,6 +304,7 @@ public class Player extends Entity {
 		rdef.localAnchorA.setZero();
 		rdef.localAnchorB.setZero();
 		rdef.maxLength = dims[TORSO].height * 2;
+		rdef.collideConnected = false;
 		world.createJoint(rdef);
 
 	}

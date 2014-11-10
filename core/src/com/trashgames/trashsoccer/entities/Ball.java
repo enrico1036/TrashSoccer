@@ -24,7 +24,7 @@ public class Ball extends Entity {
 	public Ball(World world, Rectangle bounds, Filter filter, AssetManager assetManager) {
 		this.world = world;
 		this.bounds = bounds;
-		this.filter = filter;
+		setFilter(filter);
 		
 		bodies = new Body[1];
 		sprites = new Sprite[1];

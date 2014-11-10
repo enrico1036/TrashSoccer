@@ -35,9 +35,9 @@ public class Goal extends Entity{
 	public Goal(World world, Rectangle bounds, Filter filter, AssetManager assetManager, boolean leftfacing, float sensorOffset){
 		this.world = world;
 		this.bounds = bounds;
-		this.filter = filter;
 		this.leftfacing = leftfacing;
 		this.sensorOffset = sensorOffset;
+		setFilter(filter);
 		
 		bodies = new Body[1];
 		dims = new Dimension[1];

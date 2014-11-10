@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -53,7 +54,6 @@ public class PlayScreen extends GameScreen {
 	private Goal goalR;
 	private Goal goalL;
 	private final int MAX_SCORE = 5;
-	
 	private ArrayList<Entity> entities;
 	
 	public PlayScreen(Game gm) {
@@ -83,7 +83,12 @@ public class PlayScreen extends GameScreen {
 		gm.assetManager.load("data/character/arm_rx.png", Texture.class);
 		gm.assetManager.load("data/character/leg.png", Texture.class);
 		gm.assetManager.load("data/balls/ballstd.png", Texture.class);
+		gm.assetManager.load("data/sound/s2.mp3", Sound.class);
+		gm.assetManager.load("data/sound/s4-1.mp3", Sound.class);
 		gm.assetManager.finishLoading();
+		
+		Sound music = gm.assetManager.get("data/sound/s4-1.mp3");
+		music.loop(0.1f, 1f, 0f);
 		
 		// Usefull instances
 		BodyDef bdef = new BodyDef();
@@ -95,7 +100,7 @@ public class PlayScreen extends GameScreen {
 		filter.categoryBits = B2DFilter.TERRAIN;
 		filter.maskBits = B2DFilter.PLAYER | B2DFilter.BALL | B2DFilter.FOOT_SENSOR;
 		Terrain terrain = new Terrain(world, 55 / PPM, 0.3f, filter, gm.assetManager);
-		entities.add(terrain);		
+		entities.add(terrain);
 		
 		// Left wall
 		bdef.position.set(0, Gdx.graphics.getHeight()/(2*PPM));
@@ -111,6 +116,7 @@ public class PlayScreen extends GameScreen {
 		
 		
 		// #### BALL ####
+		filter = new Filter();
 		filter.categoryBits = B2DFilter.BALL;
 		filter.maskBits = B2DFilter.ALL;
 		Ball ball = new Ball(world, new Rectangle (800 / PPM, 200 / PPM, 30 / PPM, 30 / PPM), filter, gm.assetManager);
@@ -122,8 +128,9 @@ public class PlayScreen extends GameScreen {
 				0,
 				Gdx.graphics.getWidth() * 0.047f / PPM,
 				Gdx.graphics.getHeight() * 0.21f / PPM);
+		filter = new Filter();
 		filter.categoryBits = B2DFilter.PLAYER;
-		filter.maskBits = B2DFilter.ALL;
+		filter.maskBits = B2DFilter.ALL ;
 
 		float offset = 1/7f;
 		for(int i = 0; i < 1; i++){
@@ -196,8 +203,10 @@ public class PlayScreen extends GameScreen {
 	}
 	
 	public void reset(boolean newGame){
-		for (Entity entity : entities)
+		for (Entity entity : entities){
+			System.out.println(entity.toString());
 			entity.regenerateBodies();
+		}
 		if(newGame)
 			for(int i = 0; i < scores.length; i++)
 				scores[i].reset();
@@ -251,8 +260,7 @@ public class PlayScreen extends GameScreen {
 				}
 			break;
 		case Keys.A:
-			for (Entity entity : entities)
-				entity.regenerateBodies();
+			reset(false);
 			break;
 			
 		case Keys.R:

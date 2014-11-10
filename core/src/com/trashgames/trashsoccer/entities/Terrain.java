@@ -22,8 +22,8 @@ public class Terrain extends Entity{
 	float friction;
 	public Terrain(World world, float height, float friction, Filter filter, AssetManager assetManager){
 		this.friction = friction;
-		this.filter = filter;
 		this.world = world;
+		setFilter(filter);
 		
 		bodies = new Body[1];
 		dims = new Dimension[1];
@@ -54,6 +54,10 @@ public class Terrain extends Entity{
 
 	public float getSurfaceY(){
 		return dims[0].height;
+	}
+	
+	@Override
+	public void regenerateBodies() {
 	}
 	
 
