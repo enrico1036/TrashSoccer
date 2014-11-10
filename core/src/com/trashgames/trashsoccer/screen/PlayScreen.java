@@ -85,10 +85,12 @@ public class PlayScreen extends GameScreen {
 		gm.assetManager.load("data/balls/ballstd.png", Texture.class);
 		gm.assetManager.load("data/sound/s2.mp3", Sound.class);
 		gm.assetManager.load("data/sound/s4-1.mp3", Sound.class);
+		gm.assetManager.load("data/sound/jump.mp3", Sound.class);
+		gm.assetManager.load("data/sound/kick.mp3", Sound.class);
 		gm.assetManager.finishLoading();
 		
 		Sound music = gm.assetManager.get("data/sound/s4-1.mp3");
-		music.loop(0.1f, 1f, 0f);
+		music.loop(0.05f, 1f, -1f);
 		
 		// Usefull instances
 		BodyDef bdef = new BodyDef();
@@ -133,15 +135,15 @@ public class PlayScreen extends GameScreen {
 		filter.maskBits = B2DFilter.ALL ;
 
 		float offset = 1/7f;
-		for(int i = 0; i < 1; i++){
+		for(int i = 0; i < 4; i++){
 			if(i%2 != 0)
 			{
 				rect.setPosition(Gdx.graphics.getWidth() * offset * 2 / PPM - rect.width / 2, Gdx.graphics.getHeight() / (2 * PPM));
-				entities.add(new Player(world, rect, filter, gm.assetManager, false, terrain.getSurfaceY()));
+				entities.add(new Player(world, new Rectangle(rect), filter, gm.assetManager, false, terrain.getSurfaceY()));
 				offset *= 2;
 			}else{
 				rect.setPosition(Gdx.graphics.getWidth() * (1 - offset * 2) / PPM - rect.width / 2, Gdx.graphics.getHeight() / (2 * PPM));
-				entities.add(new Player(world, rect, filter, gm.assetManager, true, terrain.getSurfaceY()));
+				entities.add(new Player(world, new Rectangle(rect), filter, gm.assetManager, true, terrain.getSurfaceY()));
 			}
 		}
 	
@@ -204,7 +206,6 @@ public class PlayScreen extends GameScreen {
 	
 	public void reset(boolean newGame){
 		for (Entity entity : entities){
-			System.out.println(entity.toString());
 			entity.regenerateBodies();
 		}
 		if(newGame)

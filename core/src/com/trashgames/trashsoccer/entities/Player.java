@@ -2,6 +2,7 @@ package com.trashgames.trashsoccer.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -50,6 +51,9 @@ public class Player extends Entity {
 	private boolean leftfacing;
 	private float terrainSurface;
 	
+	private Sound kick;
+	private Sound jump;
+	
 	private boolean canJump = false;
 	
 
@@ -77,6 +81,9 @@ public class Player extends Entity {
 		sprites[LEFT_ARM] = new Sprite(assetManager.get("data/character/arm_lx.png", Texture.class));
 		sprites[RIGHT_LEG] = new Sprite(assetManager.get("data/character/leg.png", Texture.class));
 		sprites[LEFT_LEG] = new Sprite(assetManager.get("data/character/leg.png", Texture.class));
+		
+		kick = assetManager.get("data/sound/kick.mp3");
+		jump = assetManager.get("data/sound/jump.mp3");
 		
 		for (Sprite sprite : sprites){
 			if (sprite != null){
@@ -315,8 +322,10 @@ public class Player extends Entity {
 
 
 	public void jump() {
-		if(canJump)
+		if(canJump){
 			bodies[TORSO].applyForceToCenter(-15000 * (float) Math.sin(bodies[TORSO].getAngle()), 15000 * (float) Math.cos(bodies[TORSO].getAngle()), true);
+			jump.play(0.1f, 1, 0);
+		}
 	}
 
 	public void toggleKick(boolean kickOn) {
@@ -332,6 +341,7 @@ public class Player extends Entity {
 				kickJoint.setLimits(0, 3.1415f / 2);
 				ghostJoint.setLimits(-3.1415f / 2,0);
 			}
+			kick.play(0.1f, 1, 0);
 		}else{
 			kickJoint.setLimits(0, 0);
 			ghostJoint.setLimits(0, 0);
@@ -352,9 +362,6 @@ public class Player extends Entity {
 		bodies[PIVOT].setLinearVelocity((bodies[TORSO].getPosition().x - bodies[PIVOT].getPosition().x)*10, 0);
 		
 		super.update(delta);
-		
-		
-		
 	}
 
 }
