@@ -52,6 +52,7 @@ public class ScreenManager {
 		try {
 			screenStack.peek().render(delta);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return false;
 		}
 		return true;

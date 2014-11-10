@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -53,7 +54,7 @@ public class PlayScreen extends GameScreen {
 	private Goal goalL;
 	private final int MAX_SCORE = 5;
 	
-	ArrayList<Entity> entities;
+	private ArrayList<Entity> entities;
 	
 	public PlayScreen(Game gm) {
 		super(gm);
@@ -92,7 +93,7 @@ public class PlayScreen extends GameScreen {
 		
 		// Terrain creation
 		filter.categoryBits = B2DFilter.TERRAIN;
-		filter.maskBits = B2DFilter.PLAYER | B2DFilter.BALL;
+		filter.maskBits = B2DFilter.PLAYER | B2DFilter.BALL | B2DFilter.FOOT_SENSOR;
 		Terrain terrain = new Terrain(world, 55 / PPM, 0.3f, filter, gm.assetManager);
 		entities.add(terrain);		
 		
@@ -182,9 +183,7 @@ public class PlayScreen extends GameScreen {
 		camera.update();
 		world.step(delta , 6, 2);
 		for(int i = 0; i < scores.length; i++)
-		{
-			if(scores[i].hasWon(MAX_SCORE))
-			{
+			if(scores[i].hasWon(MAX_SCORE))	{
 				System.out.println(i + "won");
 				reset(true);
 			}

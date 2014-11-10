@@ -95,7 +95,7 @@ public class Goal extends Entity{
 		fdef.shape = eshape;
 		fdef.isSensor = true;
 		fdef.filter.maskBits = B2DFilter.BALL;
-		bodies[POLES].createFixture(fdef);//.setUserData(this);
+		bodies[POLES].createFixture(fdef).setUserData(this);
 		
 	}
 	
