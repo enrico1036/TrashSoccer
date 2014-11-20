@@ -31,9 +31,9 @@ public class MenuScreen extends GameScreen {
 		super(gm);
 
 		sb = new SpriteBatch();
-		camera = new OrthographicCamera(30, 30 * (Game.WND_HEIGHT / Game.WND_WIDTH));
-		camera.setToOrtho(false);
-		camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0);
+		worldCamera = new OrthographicCamera(30, 30 * (Game.WND_HEIGHT / Game.WND_WIDTH));
+		worldCamera.setToOrtho(false);
+		worldCamera.position.set(worldCamera.viewportWidth / 2f, worldCamera.viewportHeight / 2f, 0);
 
 		BitmapFont font = new BitmapFont();
 		font.setColor(Color.WHITE);
@@ -46,8 +46,10 @@ public class MenuScreen extends GameScreen {
 		gm.assetManager.load("data/StandardBackground.png", Texture.class);
 		gm.assetManager.load("data/StandardTerrain.png", Texture.class);
 		gm.assetManager.load("data/rosario-muniz.png", Texture.class);
-		gm.assetManager.load("data/btup.jpg", Texture.class);
-		gm.assetManager.load("data/btdown.jpg", Texture.class);
+		gm.assetManager.load("data/ui/single_up.png", Texture.class);
+		gm.assetManager.load("data/ui/single_down.png", Texture.class);
+		gm.assetManager.load("data/ui/multi_up.png", Texture.class);
+		gm.assetManager.load("data/ui/multi_down.png", Texture.class);
 		gm.assetManager.finishLoading();
 
 		// Background
@@ -64,10 +66,10 @@ public class MenuScreen extends GameScreen {
 		rosSprite.setPosition(Gdx.graphics.getWidth() * (2f / 3f), 0);
 
 		// Button creation
-		UIButton bt = new UIButton("1 Player", font, 
+		UIButton bt = new UIButton(null, gm.mainFont, 
 				new Rectangle(Gdx.graphics.getWidth() / 8, Gdx.graphics.getHeight() / 2, 
 						Gdx.graphics.getWidth() / 3, Gdx.graphics.getHeight() / 7), 
-				gm.assetManager.get("data/btup.jpg", Texture.class), gm.assetManager.get("data/btdown.jpg", Texture.class));
+				gm.assetManager.get("data/ui/single_up.png", Texture.class), gm.assetManager.get("data/ui/single_down.png", Texture.class));
 		bt.setAction(new Runnable() {
 
 			@Override
@@ -78,9 +80,9 @@ public class MenuScreen extends GameScreen {
 		buttons.add(bt);
 
 		// 2 players button creation
-		UIButton bt2 = new UIButton("2 Players", font, 
+		UIButton bt2 = new UIButton(null, gm.mainFont, 
 				new Rectangle(Gdx.graphics.getWidth() * (13f / 24f), Gdx.graphics.getHeight() / 2, Gdx.graphics.getWidth() / 3, Gdx.graphics.getHeight() / 7), 
-				gm.assetManager.get("data/btup.jpg", Texture.class), gm.assetManager.get("data/btdown.jpg", Texture.class));
+				gm.assetManager.get("data/ui/multi_up.png", Texture.class), gm.assetManager.get("data/ui/multi_down.png", Texture.class));
 		bt2.setAction(new Runnable() {
 
 			@Override
@@ -117,7 +119,7 @@ public class MenuScreen extends GameScreen {
 	@Override
 	public void update(float delta) {
 		super.update(delta);
-		camera.update();
+		worldCamera.update();
 
 	}
 

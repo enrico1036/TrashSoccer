@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.trashgames.trashsoccer.screen.MenuScreen;
 import com.trashgames.trashsoccer.screen.PlayScreen;
 import com.trashgames.trashsoccer.screen.ScreenManager;
@@ -14,6 +15,7 @@ public class Game extends ApplicationAdapter {
 	public static final String WND_TITLE = "Platformer game";
 	public static final int WND_WIDTH = 640;
 	public static final int WND_HEIGHT = 480;
+	public BitmapFont mainFont;
 	
 	// Class memebers
 	public ScreenManager screenManager;
@@ -21,8 +23,10 @@ public class Game extends ApplicationAdapter {
 	@Override
 	public void create() {
 		assetManager = new AssetManager();
+		// Load font
+		mainFont = new BitmapFont(Gdx.files.internal("data/font/kongtext.fnt"), Gdx.files.internal("data/font/kongtext.png"), false);
+		mainFont.setScale(1f);
 		Texture.setAssetManager(assetManager);
-		
 		screenManager = new ScreenManager(this);
 		screenManager.push(new MenuScreen(this));
 	}

@@ -43,6 +43,7 @@ import com.trashgames.trashsoccer.entities.Player;
 import com.trashgames.trashsoccer.entities.Score;
 import com.trashgames.trashsoccer.entities.Terrain;
 import com.trashgames.trashsoccer.graphics.TextureManager;
+import com.trashgames.trashsoccer.ui.UIButton;
 
 public class PlayScreen extends GameScreen {
 	
@@ -55,6 +56,10 @@ public class PlayScreen extends GameScreen {
 	private Goal goalL;
 	private final int MAX_SCORE = 5;
 	private ArrayList<Entity> entities;
+	private UIButton kickButton;
+	private UIButton jumpButton;
+	private UIButton pauseButton;
+	private boolean paused;
 	
 	public PlayScreen(Game gm) {
 		super(gm);
@@ -75,6 +80,8 @@ public class PlayScreen extends GameScreen {
 		world = new World(new Vector2(0f, -9.81f), true);
 		world.setContactListener(cl);
 		
+		
+		
 		gm.assetManager.load("data/StandardTerrain.png", Texture.class);
 		gm.assetManager.load("data/StandardBackground.png", Texture.class);
 		gm.assetManager.load("data/character/head.png", Texture.class);
@@ -83,14 +90,18 @@ public class PlayScreen extends GameScreen {
 		gm.assetManager.load("data/character/arm_rx.png", Texture.class);
 		gm.assetManager.load("data/character/leg.png", Texture.class);
 		gm.assetManager.load("data/balls/ballstd.png", Texture.class);
+		gm.assetManager.load("data/ui/kick_blue_up.png", Texture.class);
+		gm.assetManager.load("data/ui/kick_blue_down.png", Texture.class);
+		gm.assetManager.load("data/ui/jump_blue_up.png", Texture.class);
+		gm.assetManager.load("data/ui/jump_blue_down.png", Texture.class);
+		gm.assetManager.load("data/ui/pause_up.png", Texture.class);
+		gm.assetManager.load("data/ui/pause_down.png", Texture.class);
 		gm.assetManager.load("data/sound/s2.mp3", Sound.class);
 		gm.assetManager.load("data/sound/s4-1.mp3", Sound.class);
 		gm.assetManager.load("data/sound/jump.mp3", Sound.class);
 		gm.assetManager.load("data/sound/kick.mp3", Sound.class);
 		gm.assetManager.finishLoading();
 		
-		Sound music = gm.assetManager.get("data/sound/s4-1.mp3");
-		music.loop(0.05f, 1f, -1f);
 		
 		// Usefull instances
 		BodyDef bdef = new BodyDef();
@@ -139,11 +150,11 @@ public class PlayScreen extends GameScreen {
 			if(i%2 != 0)
 			{
 				rect.setPosition(Gdx.graphics.getWidth() * offset * 2 / PPM - rect.width / 2, Gdx.graphics.getHeight() / (2 * PPM));
-				entities.add(new Player(world, new Rectangle(rect), filter, gm.assetManager, false, terrain.getSurfaceY()));
+				entities.add(new Player(world, new Rectangle(rect), filter, gm.assetManager, false ^ (i > 1), terrain.getSurfaceY()));
 				offset *= 2;
 			}else{
 				rect.setPosition(Gdx.graphics.getWidth() * (1 - offset * 2) / PPM - rect.width / 2, Gdx.graphics.getHeight() / (2 * PPM));
-				entities.add(new Player(world, new Rectangle(rect), filter, gm.assetManager, true, terrain.getSurfaceY()));
+				entities.add(new Player(world, new Rectangle(rect), filter, gm.assetManager, true ^ (i > 1), terrain.getSurfaceY()));
 			}
 		}
 	
@@ -157,18 +168,68 @@ public class PlayScreen extends GameScreen {
 		goalL = new Goal(world, rect, filter, gm.assetManager, false, ball.getRadius() * 2);
 		
 		
+		// #### UI ####
+		Rectangle bound = new Rectangle(10, 10, Gdx.graphics.getHeight() / 5, Gdx.graphics.getHeight() / 5);
+		kickButton = new UIButton(null, 
+				gm.mainFont, 
+				new Rectangle(bound), 
+				gm.assetManager.get("data/ui/kick_blue_up.png", Texture.class), 
+				gm.assetManager.get("data/ui/kick_blue_down.png", Texture.class));
+		kickButton.setAction(new Runnable() {
+			@Override
+			public void run() {
+				for (Entity entity : entities)
+					try {
+						((Player)entity).toggleKick(true);
+					} catch (Exception e) {
+						// Do nothing
+					}
+			}
+		});
 		
-		// Texture loading
-
-		sb = new SpriteBatch();
+		bound.setPosition(Gdx.graphics.getWidth() - bound.width - 10, bound.y);
+		jumpButton = new UIButton(null, 
+				gm.mainFont, 
+				new Rectangle(bound), 
+				gm.assetManager.get("data/ui/jump_blue_up.png", Texture.class), 
+				gm.assetManager.get("data/ui/jump_blue_down.png", Texture.class));
+		jumpButton.setAction(new Runnable() {
+			@Override
+			public void run() {
+				for (Entity entity : entities)
+					try {
+						((Player)entity).jump();
+					} catch (Exception e) {
+						// Do nothing
+					}
+			}
+		});
+		
+		bound.setSize(Gdx.graphics.getHeight() / 10, Gdx.graphics.getHeight() / 10);
+		bound.setPosition(Gdx.graphics.getWidth() - bound.width - 10, Gdx.graphics.getHeight() - bound.height - 10);
+		pauseButton = new UIButton(null, 
+				gm.mainFont, 
+				new Rectangle(bound), 
+				gm.assetManager.get("data/ui/pause_up.png", Texture.class), 
+				gm.assetManager.get("data/ui/pause_down.png", Texture.class));
+		pauseButton.setAction(new Runnable() {
+			@Override
+			public void run() {
+				paused = !paused;
+			}
+		});
 		
 		// Camera
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, Gdx.graphics.getWidth() / PPM, Gdx.graphics.getHeight() / PPM);
-
+		sb = new SpriteBatch();
+		worldCamera = new OrthographicCamera();
+		worldCamera.setToOrtho(false, Gdx.graphics.getWidth() / PPM, Gdx.graphics.getHeight() / PPM);
+		uiCamera = new OrthographicCamera();
+		uiCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		
 		// OpenGL initialization
 		Gdx.gl.glClearColor(.5f, .5f, .5f, 1f);
-
+		
+		paused = false;
 	}
 
 	@Override
@@ -176,20 +237,32 @@ public class PlayScreen extends GameScreen {
 		super.render(delta);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
-		sb.setProjectionMatrix(camera.combined);
+		// World rendering
+		sb.setProjectionMatrix(worldCamera.combined);
 		sb.begin();
-
-		for (Entity entity : entities)
-			entity.render(sb);
-		
+			for (Entity entity : entities)
+				entity.render(sb);
 		sb.end();
 		
-		renderer.render(world, camera.combined);
+		renderer.render(world, worldCamera.combined);
+		
+		// Ui rendering
+		sb.setProjectionMatrix(uiCamera.combined);
+		sb.begin();
+			kickButton.render(sb);
+			jumpButton.render(sb);
+			pauseButton.render(sb);
+		sb.end();
+		
+		
 	}
 
 	@Override
 	public void update(float delta) {
-		camera.update();
+		if(paused) return;
+		
+		worldCamera.update();
+		uiCamera.update();
 		world.step(delta , 6, 2);
 		for(int i = 0; i < scores.length; i++)
 		{
@@ -221,12 +294,29 @@ public class PlayScreen extends GameScreen {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		for (Entity entity : entities)
-			try {
-				((Player)entity).jump();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-			}
+		if(kickButton.checkBound(new Vector2(screenX, Gdx.graphics.getHeight() - screenY))){
+			kickButton.setPressed(true);
+			kickButton.execAction();
+		}
+		
+		if(jumpButton.checkBound(new Vector2(screenX, Gdx.graphics.getHeight() - screenY))){
+			jumpButton.setPressed(true);
+			jumpButton.execAction();
+		}
+		
+		
+		if(pauseButton.checkBound(new Vector2(screenX, Gdx.graphics.getHeight() - screenY))){
+			pauseButton.setPressed(!pauseButton.isPressed());
+			pauseButton.execAction();
+		}
+		
+		return true;
+	}
+	
+	@Override
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		kickButton.setPressed(false);
+		jumpButton.setPressed(false);
 		return true;
 	}
 	
@@ -257,7 +347,6 @@ public class PlayScreen extends GameScreen {
 				try {
 					((Player)entity).toggleKick(false);
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 				}
 			break;
 		case Keys.A:
