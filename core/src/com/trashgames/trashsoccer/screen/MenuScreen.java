@@ -12,7 +12,10 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+
 import java.util.Vector;
+
+import com.trashgames.trashsoccer.Asset;
 import com.trashgames.trashsoccer.Game;
 import com.trashgames.trashsoccer.graphics.TextureManager;
 import com.trashgames.trashsoccer.ui.UIButton;
@@ -42,14 +45,10 @@ public class MenuScreen extends GameScreen {
 		labels = new Vector<UILabel>();
 
 		// Load texture manager
-
 		gm.assetManager.load("data/StandardBackground.png", Texture.class);
 		gm.assetManager.load("data/StandardTerrain.png", Texture.class);
 		gm.assetManager.load("data/rosario-muniz.png", Texture.class);
-		gm.assetManager.load("data/ui/single_up.png", Texture.class);
-		gm.assetManager.load("data/ui/single_down.png", Texture.class);
-		gm.assetManager.load("data/ui/multi_up.png", Texture.class);
-		gm.assetManager.load("data/ui/multi_down.png", Texture.class);
+		Asset.loadUI(gm.assetManager);
 		gm.assetManager.finishLoading();
 
 		// Background
@@ -69,7 +68,7 @@ public class MenuScreen extends GameScreen {
 		UIButton bt = new UIButton(null, gm.mainFont, 
 				new Rectangle(Gdx.graphics.getWidth() / 8, Gdx.graphics.getHeight() / 2, 
 						Gdx.graphics.getWidth() / 3, Gdx.graphics.getHeight() / 7), 
-				gm.assetManager.get("data/ui/single_up.png", Texture.class), gm.assetManager.get("data/ui/single_down.png", Texture.class));
+				gm.assetManager.get(Asset.UI_SINGLE_PLAYER_UP, Texture.class), gm.assetManager.get(Asset.UI_SINGLE_PLAYER_DOWN, Texture.class));
 		bt.setAction(new Runnable() {
 
 			@Override
@@ -82,7 +81,7 @@ public class MenuScreen extends GameScreen {
 		// 2 players button creation
 		UIButton bt2 = new UIButton(null, gm.mainFont, 
 				new Rectangle(Gdx.graphics.getWidth() * (13f / 24f), Gdx.graphics.getHeight() / 2, Gdx.graphics.getWidth() / 3, Gdx.graphics.getHeight() / 7), 
-				gm.assetManager.get("data/ui/multi_up.png", Texture.class), gm.assetManager.get("data/ui/multi_down.png", Texture.class));
+				gm.assetManager.get(Asset.UI_MULTI_PLAYER_UP, Texture.class), gm.assetManager.get(Asset.UI_MULTI_PLAYER_DOWN, Texture.class));
 		bt2.setAction(new Runnable() {
 
 			@Override

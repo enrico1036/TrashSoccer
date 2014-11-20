@@ -30,6 +30,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.trashgames.trashsoccer.Asset;
 import com.trashgames.trashsoccer.B2DFilter;
 import com.trashgames.trashsoccer.Game;
 import com.trashgames.trashsoccer.MyContactListener;
@@ -59,6 +60,7 @@ public class PlayScreen extends GameScreen {
 	private UIButton kickButton;
 	private UIButton jumpButton;
 	private UIButton pauseButton;
+	private ArrayList<String> loadedAssets;
 	private boolean paused;
 	
 	public PlayScreen(Game gm) {
@@ -80,26 +82,13 @@ public class PlayScreen extends GameScreen {
 		world = new World(new Vector2(0f, -9.81f), true);
 		world.setContactListener(cl);
 		
-		
-		
-		gm.assetManager.load("data/StandardTerrain.png", Texture.class);
-		gm.assetManager.load("data/StandardBackground.png", Texture.class);
-		gm.assetManager.load("data/character/head.png", Texture.class);
-		gm.assetManager.load("data/character/body.png", Texture.class);
-		gm.assetManager.load("data/character/arm_lx.png", Texture.class);
-		gm.assetManager.load("data/character/arm_rx.png", Texture.class);
-		gm.assetManager.load("data/character/leg.png", Texture.class);
-		gm.assetManager.load("data/balls/ballstd.png", Texture.class);
-		gm.assetManager.load("data/ui/kick_blue_up.png", Texture.class);
-		gm.assetManager.load("data/ui/kick_blue_down.png", Texture.class);
-		gm.assetManager.load("data/ui/jump_blue_up.png", Texture.class);
-		gm.assetManager.load("data/ui/jump_blue_down.png", Texture.class);
-		gm.assetManager.load("data/ui/pause_up.png", Texture.class);
-		gm.assetManager.load("data/ui/pause_down.png", Texture.class);
+		// Asset loading
 		gm.assetManager.load("data/sound/s2.mp3", Sound.class);
 		gm.assetManager.load("data/sound/s4-1.mp3", Sound.class);
 		gm.assetManager.load("data/sound/jump.mp3", Sound.class);
 		gm.assetManager.load("data/sound/kick.mp3", Sound.class);
+		
+		loadedAssets = Asset.loadRandomWorld(gm.assetManager);
 		gm.assetManager.finishLoading();
 		
 		
@@ -290,6 +279,9 @@ public class PlayScreen extends GameScreen {
 	public void dispose() {
 		super.dispose();
 		world.dispose();
+		// Unload assets randomly loaded
+		for(String asset : loadedAssets)
+			gm.assetManager.unload(asset);
 	}
 
 	@Override

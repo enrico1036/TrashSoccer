@@ -25,6 +25,7 @@ import com.badlogic.gdx.physics.box2d.joints.MotorJointDef;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.badlogic.gdx.physics.box2d.joints.RopeJointDef;
+import com.trashgames.trashsoccer.Asset;
 import com.trashgames.trashsoccer.B2DFilter;
 import com.trashgames.trashsoccer.Dimension;
 import com.trashgames.trashsoccer.MyContactListener;
@@ -75,12 +76,12 @@ public class Player extends Entity {
 		createBodies();
 
 		// Creating Sprites
-		sprites[HEAD] = new Sprite(assetManager.get("data/character/head.png", Texture.class));
-		sprites[TORSO] = new Sprite(assetManager.get("data/character/body.png", Texture.class));
-		sprites[RIGHT_ARM] = new Sprite(assetManager.get("data/character/arm_rx.png", Texture.class));
-		sprites[LEFT_ARM] = new Sprite(assetManager.get("data/character/arm_lx.png", Texture.class));
-		sprites[RIGHT_LEG] = new Sprite(assetManager.get("data/character/leg.png", Texture.class));
-		sprites[LEFT_LEG] = new Sprite(assetManager.get("data/character/leg.png", Texture.class));
+		sprites[HEAD] = new Sprite(assetManager.get(Asset.TEX_HEAD, Texture.class));
+		sprites[TORSO] = new Sprite(assetManager.get(Asset.TEX_TORSO, Texture.class));
+		sprites[RIGHT_ARM] = new Sprite(assetManager.get(Asset.TEX_ARM, Texture.class));
+		sprites[LEFT_ARM] = new Sprite(assetManager.get(Asset.TEX_ARM, Texture.class));
+		sprites[RIGHT_LEG] = new Sprite(assetManager.get(Asset.TEX_LEG, Texture.class));
+		sprites[LEFT_LEG] = new Sprite(assetManager.get(Asset.TEX_LEG, Texture.class));
 		
 		kick = assetManager.get("data/sound/kick.mp3");
 		jump = assetManager.get("data/sound/jump.mp3");

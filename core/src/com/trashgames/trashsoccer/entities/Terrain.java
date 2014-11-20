@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.World;
+import com.trashgames.trashsoccer.Asset;
 import com.trashgames.trashsoccer.B2DFilter;
 import com.trashgames.trashsoccer.Dimension;
 
@@ -30,8 +31,8 @@ public class Terrain extends Entity{
 		sprites = new Sprite[2];
 
 		dims[0] = new Dimension(Gdx.graphics.getWidth() / PPM, height, 0);
-		sprites[0] = new Sprite(assetManager.get("data/StandardTerrain.png", Texture.class));
-		sprites[1] = new Sprite(assetManager.get("data/StandardBackground.png", Texture.class));
+		sprites[0] = new Sprite(assetManager.get(Asset.TEX_TERRAIN, Texture.class));
+		sprites[1] = new Sprite(assetManager.get(Asset.TEX_BACKGROUND, Texture.class));
 		sprites[1].setBounds(0, 0, Gdx.graphics.getWidth() / PPM, Gdx.graphics.getHeight() / PPM);
 		
 		createBodies();

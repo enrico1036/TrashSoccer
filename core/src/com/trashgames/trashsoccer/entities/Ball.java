@@ -17,6 +17,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.trashgames.trashsoccer.Asset;
 import com.trashgames.trashsoccer.Dimension;
 
 public class Ball extends Entity {
@@ -33,7 +34,7 @@ public class Ball extends Entity {
 		dims[0] = new Dimension(bounds.width / 2, bounds.height / 2, 0);
 		createBodies();
 		
-		sprites[0] = new Sprite(assetManager.get("data/balls/ballstd.png", Texture.class));
+		sprites[0] = new Sprite(assetManager.get(Asset.TEX_BALL, Texture.class));
 		sprites[0].setOriginCenter();
 	}
 	
