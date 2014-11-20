@@ -169,7 +169,7 @@ public class PlayScreen extends GameScreen {
 			public void run() {
 				for (Entity entity : entities)
 					try {
-						((Player)entity).toggleKick(true);
+						((Player)entity).toggleKick();
 					} catch (Exception e) {
 						// Do nothing
 					}
@@ -307,7 +307,10 @@ public class PlayScreen extends GameScreen {
 	
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		kickButton.setPressed(false);
+		if(kickButton.checkBound(new Vector2(screenX, Gdx.graphics.getHeight() - screenY))){
+			kickButton.execAction();
+			kickButton.setPressed(false);
+		}
 		jumpButton.setPressed(false);
 		return true;
 	}
@@ -317,7 +320,7 @@ public class PlayScreen extends GameScreen {
 		case Keys.SPACE:
 			for (Entity entity : entities)
 				try {
-					((Player)entity).toggleKick(true);
+					((Player)entity).toggleKick();
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 				}
@@ -337,7 +340,7 @@ public class PlayScreen extends GameScreen {
 		case Keys.SPACE:
 			for (Entity entity : entities)
 				try {
-					((Player)entity).toggleKick(false);
+					((Player)entity).toggleKick();
 				} catch (Exception e) {
 				}
 			break;

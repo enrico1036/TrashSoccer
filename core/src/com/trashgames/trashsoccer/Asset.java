@@ -107,13 +107,6 @@ public class Asset {
 		manager.load(TEX_LEG, Texture.class);
 		loaded.add(TEX_LEG);
 		
-		// Load terrain
-		dirPath = dataPath + "data/textures/terrain/";
-		children = Gdx.files.internal(dirPath).list();
-		TEX_TERRAIN = children[rand.nextInt(children.length)].path().substring(dataPath.length());
-		manager.load(TEX_TERRAIN, Texture.class);
-		loaded.add(TEX_TERRAIN);
-		
 		// Load ball
 		dirPath =  dataPath + "data/textures/ball/";
 		children = Gdx.files.internal(dirPath).list();
@@ -121,12 +114,16 @@ public class Asset {
 		manager.load(TEX_BALL, Texture.class);
 		loaded.add(TEX_BALL);
 		
-		// Load background
-		dirPath = dataPath + "data/textures/background/";
+		// Load world
+		dirPath = dataPath + "data/textures/world/";
 		children = Gdx.files.internal(dirPath).list();
-		TEX_BACKGROUND = children[rand.nextInt(children.length)].path().substring(dataPath.length());
+		String worldDirPath = children[rand.nextInt(children.length)].path().substring(dataPath.length());
+		TEX_BACKGROUND = worldDirPath + "/background.png";
+		TEX_TERRAIN = worldDirPath + "/terrain.png";
 		manager.load(TEX_BACKGROUND, Texture.class);
+		manager.load(TEX_TERRAIN, Texture.class);
 		loaded.add(TEX_BACKGROUND);
+		loaded.add(TEX_TERRAIN);
 		
 		return loaded;
 	}

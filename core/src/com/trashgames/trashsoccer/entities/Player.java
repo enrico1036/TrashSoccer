@@ -56,6 +56,7 @@ public class Player extends Entity {
 	private Sound jump;
 	
 	private boolean canJump = false;
+	private boolean isKicking;
 	
 
 	public Player(World world, Rectangle bounds, Filter filter, AssetManager assetManager, boolean leftfacing, float terrainSurface) {
@@ -328,11 +329,12 @@ public class Player extends Entity {
 			jump.play(0.1f, 1, 0);
 		}
 	}
-
-	public void toggleKick(boolean kickOn) {
-
+	
+	public void toggleKick() {
 		
-		if(kickOn){
+		isKicking = !isKicking;
+		
+		if(isKicking){
 			if(leftfacing){
 				bodies[LEFT_LEG].applyAngularImpulse(-20f, true);
 				kickJoint.setLimits(-3.1415f / 2,0);
