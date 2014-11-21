@@ -53,7 +53,6 @@ public class PlayScreen extends GameScreen {
 	private Box2DDebugRenderer renderer;
 	private MyContactListener cl;
 	private Score scores[];
-	private boolean inPause = false;
 	private final int MAX_SCORE = 5;
 	private ArrayList<Entity> entities;
 	private UIButton kickButton;
@@ -244,31 +243,23 @@ public class PlayScreen extends GameScreen {
 
 	@Override
 	public void update(float delta) {
-<<<<<<< HEAD
+
 		if(paused) return;
 		
 		worldCamera.update();
 		uiCamera.update();
 		world.step(delta , 6, 2);
 		for(int i = 0; i < scores.length; i++)
-=======
-		camera.update();
-		if(!inPause)
->>>>>>> enrico1036_branch
 		{
-			world.step(delta , 6, 2);
-			for(int i = 0; i < scores.length; i++)
-			{
-				if(scores[i].hasWon(MAX_SCORE))	{
-					System.out.println(i + "won");
-					reset(true);
-				}
-				if(scores[i].isIncremented())
-					reset(false);
+			if(scores[i].hasWon(MAX_SCORE))	{
+				System.out.println(i + "won");
+				reset(true);
 			}
-			for (Entity entity : entities)
-				entity.update(delta);
+			if(scores[i].isIncremented())
+				reset(false);
 		}
+		for (Entity entity : entities)
+			entity.update(delta);
 	}
 	
 	public void reset(boolean newGame){
@@ -358,7 +349,8 @@ public class PlayScreen extends GameScreen {
 				entity.destroy();
 			break;
 		case Keys.P:
-			inPause = !inPause;
+			pauseButton.setPressed(!pauseButton.isPressed());
+			pauseButton.execAction();
 			break;
 		default:
 			break;
