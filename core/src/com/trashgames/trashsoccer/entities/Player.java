@@ -46,6 +46,8 @@ public class Player extends Entity {
 	private static final int PIVOT = 7;
 	private static final int JUNCTION = 8;
 	private static final int GHOST_LEG = 9;
+	
+	private float totalMass = 29.7f;
 
 	private RevoluteJoint kickJoint;
 	private RevoluteJoint ghostJoint;
@@ -65,6 +67,8 @@ public class Player extends Entity {
 		this.leftfacing = leftfacing;
 		this.terrainSurface = terrainSurface;
 		setFilter(filter);
+		
+		//totalMass = 27.01568727f / (bounds.getHeight() * bounds.getWidth());//rect area * mass density
 		
 		bodies = new Body[10];
 		sprites = new Sprite[10];
@@ -132,7 +136,7 @@ public class Player extends Entity {
 		fdef.restitution = 0.5f;
 		bodies[TORSO].createFixture(fdef).setFilterData(filter);
 		MassData md = new MassData();
-		md.mass = 8f;
+		md.mass = totalMass * 0.2693602694f;
 		md.I = 0.5f;
 		bodies[TORSO].setMassData(md);
 		
@@ -144,7 +148,7 @@ public class Player extends Entity {
 		cshape.setRadius(dims[HEAD].width);
 		fdef.shape = cshape;
 		bodies[HEAD].createFixture(fdef).setFilterData(filter);
-		md.mass = 1.5f;
+		md.mass = totalMass * 0.05050505051f;
 		md.I = 0.5f;
 		bodies[HEAD].setMassData(md);
 		
@@ -163,7 +167,7 @@ public class Player extends Entity {
 		// #### RIGHT ARM ####
 		bodies[RIGHT_ARM] = world.createBody(bdef);
 		md.I = 0.1f;
-		md.mass = 0.2f;
+		md.mass = totalMass * 0.006734006734f;
 		bodies[RIGHT_ARM].setMassData(md);
 		shape.setAsBox(dims[RIGHT_ARM].width, dims[RIGHT_ARM].height);
 
@@ -202,16 +206,16 @@ public class Player extends Entity {
 		fdef.restitution = 0f;
 		fdef.friction = 1f;
 		if(leftfacing)
-			md.mass = 10f;
+			md.mass = totalMass * 0.3367003367f;
 		else
-			md.mass = 5f;
+			md.mass = totalMass * 0.1683501684f;
 		md.I = 0.7f;
 		bodies[RIGHT_LEG] = world.createBody(bdef);
 		bodies[RIGHT_LEG].setMassData(md);
 		bodies[RIGHT_LEG].createFixture(fdef).setFilterData(filter);
 
 		// #### GHOST LEG ####
-		md.mass = 5f;
+		md.mass = totalMass * 0.1683501684f;
 		fdef.filter.maskBits = 0;
 		bodies[GHOST_LEG] = world.createBody(bdef);
 		bodies[GHOST_LEG].setMassData(md);
@@ -219,9 +223,9 @@ public class Player extends Entity {
 		
 		// #### LEFT LEG ####
 		if(leftfacing)
-			md.mass = 5f;
+			md.mass = totalMass * 0.1683501684f;
 		else
-			md.mass = 10f;
+			md.mass = totalMass * 0.3367003367f;
 		bodies[LEFT_LEG] = world.createBody(bdef);
 		bodies[LEFT_LEG].setMassData(md);
 		bodies[LEFT_LEG].createFixture(fdef).setFilterData(filter);
@@ -300,7 +304,7 @@ public class Player extends Entity {
 		djdef.bodyB = bodies[TORSO];
 		djdef.localAnchorA.setZero();
 		djdef.localAnchorB.set(0, dims[TORSO].height);
-		djdef.length = dims[TORSO].height / 2;
+		djdef.length = 0.00063f * Gdx.graphics.getHeight() / 2;//dims[TORSO].height / 2;	// TODO add (+) something proportional to window.height
 		djdef.dampingRatio = 0.1f;
 		djdef.frequencyHz = 2.15f;
 		djdef.collideConnected = false;
@@ -312,7 +316,7 @@ public class Player extends Entity {
 		rdef.bodyB = bodies[JUNCTION];
 		rdef.localAnchorA.setZero();
 		rdef.localAnchorB.setZero();
-		rdef.maxLength = dims[TORSO].height * 2;
+		rdef.maxLength = 0.00063f * Gdx.graphics.getHeight() * 2;// + dims[TORSO].height;	// TODO add (+) something proportional to window.height
 		rdef.collideConnected = false;
 		world.createJoint(rdef);
 
@@ -325,7 +329,7 @@ public class Player extends Entity {
 
 	public void jump() {
 		if(canJump){
-			bodies[TORSO].applyForceToCenter(-15000 * (float) Math.sin(bodies[TORSO].getAngle()), 15000 * (float) Math.cos(bodies[TORSO].getAngle()), true);
+			bodies[TORSO].applyForceToCenter(-10000 * (float) Math.sin(bodies[TORSO].getAngle()), 10000 * (float) Math.cos(bodies[TORSO].getAngle()), true);
 			jump.play(0.1f, 1, 0);
 		}
 	}

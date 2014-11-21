@@ -1,2 +1,3 @@
--DONE Reset after goal
--fix collision detection after reset
+-USELESS Inverse Proportional player mass
+-DONE Add something proportional to window height in rope and spring length
+-Relative ball's and goal's dimension

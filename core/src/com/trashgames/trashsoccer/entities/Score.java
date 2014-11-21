@@ -27,7 +27,6 @@ public class Score {
 	public void addGoal(){
 		score++;
 		isIncremented = true;
-		System.out.println(this.toString() + "  " + score);
 	}
 	
 	public boolean hasWon(int maximum){

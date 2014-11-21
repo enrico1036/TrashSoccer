@@ -15,7 +15,7 @@ public class MyContactListener implements ContactListener {
 	private Score scoreL;
 	private Score scoreR;
 	
-	public void setScores(Score scoreL, Score scoreR){
+	public MyContactListener(Score scoreL, Score scoreR){
 		this.scoreL = scoreL;
 		this.scoreR = scoreR;
 	}

@@ -53,8 +53,7 @@ public class PlayScreen extends GameScreen {
 	private Box2DDebugRenderer renderer;
 	private MyContactListener cl;
 	private Score scores[];
-	private Goal goalR;
-	private Goal goalL;
+	private boolean inPause = false;
 	private final int MAX_SCORE = 5;
 	private ArrayList<Entity> entities;
 	private UIButton kickButton;
@@ -77,8 +76,7 @@ public class PlayScreen extends GameScreen {
 		// Right score
 		scores[1] = new Score();
 		// World initialization
-		cl = new MyContactListener();
-		cl.setScores(scores[0], scores[1]);
+		cl = new MyContactListener(scores[0], scores[1]);
 		world = new World(new Vector2(0f, -9.81f), true);
 		world.setContactListener(cl);
 		
@@ -128,11 +126,11 @@ public class PlayScreen extends GameScreen {
 		Rectangle rect = new Rectangle(
 				0,
 				0,
-				Gdx.graphics.getWidth() * 0.047f / PPM,
-				Gdx.graphics.getHeight() * 0.21f / PPM);
+				Gdx.graphics.getWidth() * 0.027f / PPM, //0.47f
+				Gdx.graphics.getHeight() * 0.11f / PPM); // 0.21f
 		filter = new Filter();
 		filter.categoryBits = B2DFilter.PLAYER;
-		filter.maskBits = B2DFilter.ALL ;
+		filter.maskBits = B2DFilter.ALL;
 
 		float offset = 1/7f;
 		for(int i = 0; i < 4; i++){
@@ -148,13 +146,11 @@ public class PlayScreen extends GameScreen {
 		}
 	
 		// #### GOAL ####
-		rect = new Rectangle((Gdx.graphics.getWidth()-180)/PPM, 66/PPM, 150/PPM, 300/PPM);
 		filter = new Filter();
 		filter.categoryBits = B2DFilter.GOAL;
 		filter.maskBits = B2DFilter.ALL;
-		goalR = new Goal(world, rect, filter, gm.assetManager, true, ball.getRadius() * 2);
-		rect.x = 30 / PPM;
-		goalL = new Goal(world, rect, filter, gm.assetManager, false, ball.getRadius() * 2);
+		entities.add(new Goal(world, new Rectangle((Gdx.graphics.getWidth()-180)/PPM, 66/PPM, 150/PPM, 300/PPM), filter, gm.assetManager, true, ball.getRadius() * 2));
+		entities.add(new Goal(world, new Rectangle(30/PPM, 66/PPM, 150/PPM, 300/PPM), filter, gm.assetManager, false, ball.getRadius() * 2));
 		
 		
 		// #### UI ####
@@ -248,22 +244,31 @@ public class PlayScreen extends GameScreen {
 
 	@Override
 	public void update(float delta) {
+<<<<<<< HEAD
 		if(paused) return;
 		
 		worldCamera.update();
 		uiCamera.update();
 		world.step(delta , 6, 2);
 		for(int i = 0; i < scores.length; i++)
+=======
+		camera.update();
+		if(!inPause)
+>>>>>>> enrico1036_branch
 		{
-			if(scores[i].hasWon(MAX_SCORE))	{
-				System.out.println(i + "won");
-				reset(true);
+			world.step(delta , 6, 2);
+			for(int i = 0; i < scores.length; i++)
+			{
+				if(scores[i].hasWon(MAX_SCORE))	{
+					System.out.println(i + "won");
+					reset(true);
+				}
+				if(scores[i].isIncremented())
+					reset(false);
 			}
-			if(scores[i].isIncremented())
-				reset(false);
+			for (Entity entity : entities)
+				entity.update(delta);
 		}
-		for (Entity entity : entities)
-			entity.update(delta);
 	}
 	
 	public void reset(boolean newGame){
@@ -351,6 +356,9 @@ public class PlayScreen extends GameScreen {
 		case Keys.R:
 			for (Entity entity : entities)
 				entity.destroy();
+			break;
+		case Keys.P:
+			inPause = !inPause;
 			break;
 		default:
 			break;
