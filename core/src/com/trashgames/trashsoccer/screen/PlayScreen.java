@@ -125,8 +125,8 @@ public class PlayScreen extends GameScreen {
 		Rectangle rect = new Rectangle(
 				0,
 				0,
-				Gdx.graphics.getWidth() * 0.027f / PPM, //0.47f
-				Gdx.graphics.getHeight() * 0.11f / PPM); // 0.21f
+				Gdx.graphics.getWidth() * 0.037f / PPM, //0.47f
+				Gdx.graphics.getHeight() * 0.17f / PPM); // 0.21f
 		filter = new Filter();
 		filter.categoryBits = B2DFilter.PLAYER;
 		filter.maskBits = B2DFilter.ALL;
@@ -314,12 +314,8 @@ public class PlayScreen extends GameScreen {
 	public boolean keyDown(int keycode) {
 		switch (keycode) {
 		case Keys.SPACE:
-			for (Entity entity : entities)
-				try {
-					((Player)entity).toggleKick();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-				}
+			kickButton.setPressed(true);
+			kickButton.execAction();
 			break;
 		default:
 			break;
@@ -334,11 +330,8 @@ public class PlayScreen extends GameScreen {
 			gm.screenManager.pop();
 			break;
 		case Keys.SPACE:
-			for (Entity entity : entities)
-				try {
-					((Player)entity).toggleKick();
-				} catch (Exception e) {
-				}
+			kickButton.execAction();
+			kickButton.setPressed(false);
 			break;
 		case Keys.A:
 			reset(false);
