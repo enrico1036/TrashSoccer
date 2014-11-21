@@ -11,8 +11,9 @@ public abstract class GameScreen extends ScreenAdapter implements InputProcessor
 
     protected Game gm;
     protected SpriteBatch sb;
-    protected OrthographicCamera camera;
-
+    protected OrthographicCamera worldCamera;
+    protected OrthographicCamera uiCamera;
+    
     public GameScreen(Game gm){
         this.gm = gm;
 		Gdx.input.setInputProcessor(this);

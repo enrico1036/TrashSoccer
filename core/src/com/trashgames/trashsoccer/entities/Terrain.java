@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.World;
+import com.trashgames.trashsoccer.Asset;
 import com.trashgames.trashsoccer.B2DFilter;
 import com.trashgames.trashsoccer.Dimension;
 
@@ -22,16 +23,16 @@ public class Terrain extends Entity{
 	float friction;
 	public Terrain(World world, float height, float friction, Filter filter, AssetManager assetManager){
 		this.friction = friction;
-		this.filter = filter;
 		this.world = world;
+		setFilter(filter);
 		
 		bodies = new Body[1];
 		dims = new Dimension[1];
 		sprites = new Sprite[2];
 
 		dims[0] = new Dimension(Gdx.graphics.getWidth() / PPM, height, 0);
-		sprites[0] = new Sprite(assetManager.get("data/StandardTerrain.png", Texture.class));
-		sprites[1] = new Sprite(assetManager.get("data/StandardBackground.png", Texture.class));
+		sprites[0] = new Sprite(assetManager.get(Asset.TEX_TERRAIN, Texture.class));
+		sprites[1] = new Sprite(assetManager.get(Asset.TEX_BACKGROUND, Texture.class));
 		sprites[1].setBounds(0, 0, Gdx.graphics.getWidth() / PPM, Gdx.graphics.getHeight() / PPM);
 		
 		createBodies();
@@ -54,6 +55,10 @@ public class Terrain extends Entity{
 
 	public float getSurfaceY(){
 		return dims[0].height;
+	}
+	
+	@Override
+	public void regenerateBodies() {
 	}
 	
 

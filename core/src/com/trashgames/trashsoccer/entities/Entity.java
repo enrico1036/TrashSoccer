@@ -60,6 +60,13 @@ public abstract class Entity {
 			}
 		}
 	}
+	
+	public void setFilter(Filter filter){
+		this.filter = new Filter();
+		this.filter.categoryBits = filter.categoryBits;
+		this.filter.groupIndex = filter.groupIndex;
+		this.filter.maskBits = filter.maskBits;
+	}
 
 	public void destroy() {
 		// Iterate for all bodies
@@ -70,6 +77,10 @@ public abstract class Entity {
 				for(Fixture fixture : body.getFixtureList()){
 					fixture.setUserData(null);
 					body.destroyFixture(fixture);
+				}
+				for(JointEdge joint : body.getJointList()){
+					joint.joint.setUserData(null);
+					world.destroyJoint(joint.joint);
 				}
 				world.destroyBody(body);
 			}
