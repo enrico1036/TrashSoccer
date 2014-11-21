@@ -125,7 +125,7 @@ public class MenuScreen extends GameScreen {
 	@Override
 	public void dispose() {
 		super.dispose();
-		gm.assetManager.dispose();
+		//gm.assetManager.dispose();	//Unneeded call because already called in super.dispose()
 	}
 
 	@Override
