@@ -125,8 +125,8 @@ public class PlayScreen extends GameScreen {
 		Rectangle rect = new Rectangle(
 				0,
 				0,
-				Gdx.graphics.getWidth() * 0.037f / PPM, //0.47f
-				Gdx.graphics.getHeight() * 0.17f / PPM); // 0.21f
+				Gdx.graphics.getWidth() * 0.037f/ PPM, //0.47f
+				Gdx.graphics.getHeight() * 0.17f/ PPM); // 0.21f
 		filter = new Filter();
 		filter.categoryBits = B2DFilter.PLAYER;
 		filter.maskBits = B2DFilter.ALL;

@@ -1,7 +1,10 @@
 package com.trashgames.trashsoccer.entities;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -14,6 +17,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.trashgames.trashsoccer.Asset;
 import com.trashgames.trashsoccer.B2DFilter;
 import com.trashgames.trashsoccer.Dimension;
 
@@ -23,8 +27,6 @@ public class Goal extends Entity{
 	
 	// Positions of bodies into body array
 	private static final int POLES = 0;
-	// Dimension of bodies
-	private Dimension[] dims;
 	
 	// To make sure the Goal will fit in a defined dimension
 	private Rectangle bounds;
@@ -40,8 +42,16 @@ public class Goal extends Entity{
 		setFilter(filter);
 		
 		bodies = new Body[1];
+		sprites = new Sprite[1];
 		dims = new Dimension[1];
 		
+		sprites[POLES] = new Sprite(assetManager.get(Asset.TEX_GOAL, Texture.class));
+		if(leftfacing)
+			sprites[POLES].setFlip(true, false);
+		
+		dims[POLES] = new Dimension(bounds.width / 2, bounds.height / 2, 0);
+		
+			
 		createBodies();
 	}
 	
@@ -53,7 +63,7 @@ public class Goal extends Entity{
 		BodyDef bdef = new BodyDef();
 
 		// ##### POLES #####
- 		bdef.type = BodyType.StaticBody;
+ 		bdef.type = BodyType.KinematicBody;
 		bodies[POLES] = world.createBody(bdef);
 		
 		ChainShape shape = new ChainShape();
@@ -99,12 +109,15 @@ public class Goal extends Entity{
 		
 	}
 	
-	public void update(float delta){
-		
+	@Override
+	public void update(float delta) {
+		// Update sprites position
+		sprites[POLES].setPosition(bounds.x, bounds.y);
+		sprites[POLES].setSize(dims[POLES].width * 2, dims[POLES].height * 2);
+		sprites[POLES].setOriginCenter();
+		sprites[POLES].setRotation(bodies[POLES].getAngle() * MathUtils.radiansToDegrees);
+	
 	}
 	
-	public void render(SpriteBatch batch){
-		
-	}
 	
 }

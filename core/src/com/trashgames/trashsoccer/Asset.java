@@ -114,6 +114,13 @@ public class Asset {
 		manager.load(TEX_BALL, Texture.class);
 		loaded.add(TEX_BALL);
 		
+		// Load ball 
+		dirPath =  dataPath + "data/textures/goal/";
+		children = Gdx.files.internal(dirPath).list();
+		TEX_GOAL = children[rand.nextInt(children.length)].path().substring(dataPath.length());
+		manager.load(TEX_GOAL, Texture.class);
+		loaded.add(TEX_GOAL);
+		
 		// Load world
 		dirPath = dataPath + "data/textures/world/";
 		children = Gdx.files.internal(dirPath).list();
