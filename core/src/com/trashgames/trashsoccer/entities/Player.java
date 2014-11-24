@@ -107,7 +107,7 @@ public class Player extends Entity {
 		dims[TORSO].width = (float) (bounds.width / 2 * 0.6);
 		dims[RIGHT_ARM].width = (float) (bounds.width / 2 * 0.2);
 		dims[RIGHT_LEG].width = (float) (bounds.width / 2 * 0.2);
-		dims[FOOT_SENSOR].width = dims[RIGHT_LEG].width;
+		dims[FOOT_SENSOR].width = dims[TORSO].width;
 		dims[HEAD].height = dims[HEAD].width = (float) (bounds.height / 2 * 0.3);
 		dims[TORSO].height = (float) (bounds.height / 2 * 0.6);
 		dims[RIGHT_LEG].height = (float) (bounds.height / 2 * 0.4);
@@ -275,12 +275,12 @@ public class Player extends Entity {
 		cshape.setPosition(new Vector2(0, -dims[RIGHT_LEG].height));
 		
 		// #### FOOT ####
-		shape.setAsBox(dims[TORSO].width, dims[FOOT_SENSOR].height, new Vector2(-dims[TORSO].width / 2, -(dims[RIGHT_LEG].height + dims[FOOT_SENSOR].height)), 0);
+		shape.setAsBox(dims[FOOT_SENSOR].width, dims[FOOT_SENSOR].height, new Vector2(0, -(dims[TORSO].height + dims[RIGHT_LEG].height * 2) + 10 / PPM), 0);
 		fdef.shape = shape;
 		fdef.isSensor = true;
 		fdef.filter.categoryBits = B2DFilter.FOOT_SENSOR;
 		fdef.filter.maskBits = B2DFilter.TERRAIN;
-		bodies[RIGHT_LEG].createFixture(fdef).setUserData(this);
+		bodies[TORSO].createFixture(fdef).setUserData(this);
 		fdef.isSensor = false;
 		
 		// #### PIVOT ####
