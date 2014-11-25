@@ -31,10 +31,10 @@ public class MyContactListener implements ContactListener {
 		switch(filterSum){
 		// Increase score when the Ball touches Goal sensor
 		case B2DFilter.BALL | B2DFilter.SENSORL:
-			scoreL.addGoal();
+			scoreR.addGoal();
 			break;
 		case B2DFilter.BALL | B2DFilter.SENSORR:
-			scoreR.addGoal();
+			scoreL.addGoal();
 			break;
 		// 	The Player can jump only when it is on the ground
 		case B2DFilter.FOOT_SENSOR | B2DFilter.TERRAIN:

@@ -17,7 +17,7 @@ public class UILabel{
 	}
 	
 	public void render(SpriteBatch batch){
-		if(!text.isEmpty()){
+		if(text != null && !text.isEmpty()){
 			TextBounds tBound = font.getBounds(text);
 			font.draw(batch, text, bound.x + (bound.width - tBound.width) / 2, bound.y + (bound.height - tBound.height) / 2);
 		}

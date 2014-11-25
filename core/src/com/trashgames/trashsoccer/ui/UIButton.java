@@ -31,8 +31,7 @@ public class UIButton {
 		int s = (state) ? 1 : 0;
 		// Checks if sprite exists
 		if (backImg[s] != null) {
-			backImg[s].setBounds(bound.x, bound.y, bound.width *2, bound.height);
-			backImg[s].setSize(bound.width, bound.height);
+			backImg[s].setBounds(bound.x, bound.y, bound.width, bound.height);
 			backImg[s].draw(batch);
 		}
 		// Draws text

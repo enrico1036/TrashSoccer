@@ -45,6 +45,7 @@ public class Game extends ApplicationAdapter {
 			Gdx.app.exit();
 		}
 	}
+	
 
 	@Override
 	public void dispose() {

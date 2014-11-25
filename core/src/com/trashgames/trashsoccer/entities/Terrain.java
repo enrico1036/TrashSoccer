@@ -30,7 +30,7 @@ public class Terrain extends Entity{
 		dims = new Dimension[1];
 		sprites = new Sprite[2];
 
-		dims[0] = new Dimension(Gdx.graphics.getWidth() / PPM, height, 0);
+		dims[0] = new Dimension(Gdx.graphics.getWidth() / (2*PPM), height / 2, 0);
 		sprites[0] = new Sprite(assetManager.get(Asset.TEX_TERRAIN, Texture.class));
 		sprites[1] = new Sprite(assetManager.get(Asset.TEX_BACKGROUND, Texture.class));
 		sprites[1].setBounds(0, 0, Gdx.graphics.getWidth() / PPM, Gdx.graphics.getHeight() / PPM);
@@ -42,7 +42,7 @@ public class Terrain extends Entity{
 	@Override
 	protected void createBodies() {
 		BodyDef bdef = new BodyDef();
-		bdef.position.set(Gdx.graphics.getWidth() / 2 / PPM, dims[0].height / 2);
+		bdef.position.set(dims[0].width, dims[0].height);
 		bdef.type  = BodyType.StaticBody;
 		bodies[0] = world.createBody(bdef);
 		PolygonShape shape = new PolygonShape();
@@ -54,7 +54,7 @@ public class Terrain extends Entity{
 	}
 
 	public float getSurfaceY(){
-		return dims[0].height;
+		return dims[0].height * 2;
 	}
 	
 	@Override

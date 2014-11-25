@@ -67,26 +67,22 @@ public class Goal extends Entity{
 		bodies[POLES] = world.createBody(bdef);
 		
 		ChainShape shape = new ChainShape();
-		Vector2[] vertices = new Vector2[8];
+		Vector2[] vertices = new Vector2[6];
 		if(leftfacing)
 		{
-			vertices[0] = new Vector2(bounds.x, bounds.y);
-			vertices[1] = new Vector2(vertices[0].x + dims[POLES].width * 2, vertices[0].y);
-			vertices[2] = new Vector2(vertices[0].x + dims[POLES].width * 0.95f, vertices[1].y + dims[POLES].height * 2);
-			vertices[3] = new Vector2(vertices[0].x, vertices[2].y);
-			vertices[4] = new Vector2(vertices[3].x, vertices[0].y + dims[POLES].height * 1.9f);
-			vertices[5] = new Vector2(vertices[0].x + dims[POLES].width * 0.8f, vertices[4].y);
-			vertices[6] = new Vector2(vertices[0].x + dims[POLES].width * 1.75f, vertices[0].y + dims[POLES].height * 0.095f);
-			vertices[7] = new Vector2(vertices[0].x, vertices[6].y);
+			vertices[0] = new Vector2(bounds.x + dims[POLES].width * 2, bounds.y);
+			vertices[1] = new Vector2(bounds.x + dims[POLES].width, bounds.y + dims[POLES].height * 2);
+			vertices[2] = new Vector2(bounds.x, bounds.y + dims[POLES].height * 2);
+			vertices[3] = new Vector2(bounds.x, bounds.y + dims[POLES].height * 1.9f);
+			vertices[4] = new Vector2(bounds.x + dims[POLES].width * 0.9f, bounds.y + dims[POLES].height * 1.9f);
+			vertices[5] = new Vector2(bounds.x + dims[POLES].width * 1.9f, bounds.y);
 		}else{
-			vertices[0] = new Vector2(bounds.x + bounds.width, bounds.y);
-			vertices[1] = new Vector2(vertices[0].x - dims[POLES].width * 2, vertices[0].y);
-			vertices[2] = new Vector2(vertices[0].x - dims[POLES].width * 0.95f, vertices[1].y + dims[POLES].height * 2);
-			vertices[3] = new Vector2(vertices[0].x, vertices[2].y);
-			vertices[4] = new Vector2(vertices[3].x, vertices[0].y + dims[POLES].height * 1.9f);
-			vertices[5] = new Vector2(vertices[0].x - dims[POLES].width * 0.8f, vertices[4].y);
-			vertices[6] = new Vector2(vertices[0].x - dims[POLES].width * 1.75f, vertices[0].y + dims[POLES].height * 0.095f);
-			vertices[7] = new Vector2(vertices[0].x, vertices[6].y);
+			vertices[0] = new Vector2(bounds.x, bounds.y);
+			vertices[1] = new Vector2(bounds.x + dims[POLES].width, bounds.y + dims[POLES].height * 2);
+			vertices[2] = new Vector2(bounds.x + dims[POLES].width * 2, bounds.y + dims[POLES].height * 2);
+			vertices[3] = new Vector2(bounds.x + dims[POLES].width * 2, bounds.y + dims[POLES].height * 1.9f);
+			vertices[4] = new Vector2(bounds.x + dims[POLES].width * 1.1f, bounds.y + dims[POLES].height * 1.9f);
+			vertices[5] = new Vector2(bounds.x + dims[POLES].width * 0.1f, bounds.y);
 		}
 		
 		shape.createLoop(vertices);
@@ -96,10 +92,10 @@ public class Goal extends Entity{
 		
 		EdgeShape eshape = new EdgeShape();
 		if(leftfacing){
-			eshape.set(vertices[0].add(sensorOffset, 0), vertices[3].add(sensorOffset, 0));
+			eshape.set(vertices[2].add(sensorOffset, 0), new Vector2(bounds.x + sensorOffset, bounds.y));
 			fdef.filter.categoryBits = B2DFilter.SENSORR;
 		}else{
-			eshape.set(vertices[0].sub(sensorOffset, 0), vertices[3].sub(sensorOffset, 0));
+			eshape.set(vertices[2].sub(sensorOffset, 0), new Vector2(bounds.x + dims[POLES].width * 2 - sensorOffset, bounds.y));
 			fdef.filter.categoryBits = B2DFilter.SENSORL;
 		}
 		fdef.shape = eshape;

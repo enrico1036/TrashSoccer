@@ -4,32 +4,23 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.utils.Timer;
 import com.trashgames.trashsoccer.Asset;
 import com.trashgames.trashsoccer.B2DFilter;
 import com.trashgames.trashsoccer.Game;
@@ -45,6 +36,7 @@ import com.trashgames.trashsoccer.entities.Score;
 import com.trashgames.trashsoccer.entities.Terrain;
 import com.trashgames.trashsoccer.graphics.TextureManager;
 import com.trashgames.trashsoccer.ui.UIButton;
+import com.trashgames.trashsoccer.ui.UILabel;
 
 public class PlayScreen extends GameScreen {
 	
@@ -58,6 +50,7 @@ public class PlayScreen extends GameScreen {
 	private UIButton kickButton;
 	private UIButton jumpButton;
 	private UIButton pauseButton;
+	private UILabel scoreLabel;
 	private ArrayList<String> loadedAssets;
 	private boolean paused;
 	
@@ -98,7 +91,7 @@ public class PlayScreen extends GameScreen {
 		// Terrain creation
 		filter.categoryBits = B2DFilter.TERRAIN;
 		filter.maskBits = B2DFilter.PLAYER | B2DFilter.BALL | B2DFilter.FOOT_SENSOR;
-		Terrain terrain = new Terrain(world, 55 / PPM, 0.3f, filter, gm.assetManager);
+		Terrain terrain = new Terrain(world, 164 / PPM, 0.3f, filter, gm.assetManager);
 		entities.add(terrain);
 		
 		// Left wall
@@ -148,8 +141,8 @@ public class PlayScreen extends GameScreen {
 		filter = new Filter();
 		filter.categoryBits = B2DFilter.GOAL;
 		filter.maskBits = B2DFilter.ALL;
-		entities.add(new Goal(world, new Rectangle((Gdx.graphics.getWidth()-180)/PPM, 66/PPM, 150/PPM, 300/PPM), filter, gm.assetManager, true, ball.getRadius() * 2));
-		entities.add(new Goal(world, new Rectangle(30/PPM, 66/PPM, 150/PPM, 300/PPM), filter, gm.assetManager, false, ball.getRadius() * 2));
+		entities.add(new Goal(world, new Rectangle((Gdx.graphics.getWidth()-180)/PPM, terrain.getSurfaceY(), 150/PPM, 300/PPM), filter, gm.assetManager, true, ball.getRadius() * 2));
+		entities.add(new Goal(world, new Rectangle(30/PPM, terrain.getSurfaceY(), 150/PPM, 300/PPM), filter, gm.assetManager, false, ball.getRadius() * 2));
 		
 		
 		// #### UI ####
@@ -203,6 +196,8 @@ public class PlayScreen extends GameScreen {
 			}
 		});
 		
+		scoreLabel = new UILabel("0 : 0", new Rectangle(Gdx.graphics.getWidth() / 2 - 50, Gdx.graphics.getHeight() - 50, 100, 50), gm.mainFont);
+		
 		// Camera
 		sb = new SpriteBatch();
 		worldCamera = new OrthographicCamera();
@@ -236,9 +231,8 @@ public class PlayScreen extends GameScreen {
 			kickButton.render(sb);
 			jumpButton.render(sb);
 			pauseButton.render(sb);
+			scoreLabel.render(sb);
 		sb.end();
-		
-		
 	}
 
 	@Override
@@ -249,6 +243,10 @@ public class PlayScreen extends GameScreen {
 		worldCamera.update();
 		uiCamera.update();
 		world.step(delta , 6, 2);
+		
+		String scoreText = scores[0].getScore() + " : " + scores[1].getScore();
+		scoreLabel.setText(scoreText);
+		
 		for(int i = 0; i < scores.length; i++)
 		{
 			if(scores[i].hasWon(MAX_SCORE))	{
@@ -258,6 +256,9 @@ public class PlayScreen extends GameScreen {
 			if(scores[i].isIncremented())
 				reset(false);
 		}
+		
+		
+		
 		for (Entity entity : entities)
 			entity.update(delta);
 	}
