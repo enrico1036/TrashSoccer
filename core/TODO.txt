@@ -1,4 +1,1 @@
--USELESS Inverse Proportional player mass
--DONE Add something proportional to window height in rope and spring length
--Relative ball's and goal's dimension
--DONE Foot sensor should be part of Torso
+-DONE Relative ball's and goal's dimension

@@ -111,7 +111,7 @@ public class PlayScreen extends GameScreen {
 		filter = new Filter();
 		filter.categoryBits = B2DFilter.BALL;
 		filter.maskBits = B2DFilter.ALL;
-		Ball ball = new Ball(world, new Rectangle (Gdx.graphics.getWidth() / (2*PPM), 200 / PPM, 30 / PPM, 30 / PPM), filter, gm.assetManager);
+		Ball ball = new Ball(world, new Rectangle (Gdx.graphics.getWidth() / (2*PPM), Gdx.graphics.getHeight() / (2*PPM), Gdx.graphics.getHeight() / (24*PPM), Gdx.graphics.getHeight() / (24*PPM)), filter, gm.assetManager);
 		entities.add(ball);
 		
 		// #### PLAYERS ####
@@ -141,8 +141,8 @@ public class PlayScreen extends GameScreen {
 		filter = new Filter();
 		filter.categoryBits = B2DFilter.GOAL;
 		filter.maskBits = B2DFilter.ALL;
-		entities.add(new Goal(world, new Rectangle((Gdx.graphics.getWidth()-180)/PPM, terrain.getSurfaceY(), 150/PPM, 300/PPM), filter, gm.assetManager, true, ball.getRadius() * 2));
-		entities.add(new Goal(world, new Rectangle(30/PPM, terrain.getSurfaceY(), 150/PPM, 300/PPM), filter, gm.assetManager, false, ball.getRadius() * 2));
+		entities.add(new Goal(world, new Rectangle((Gdx.graphics.getWidth()-180)/PPM, terrain.getSurfaceY(), Gdx.graphics.getWidth() / (8.53f*PPM), Gdx.graphics.getHeight() / (2.4f*PPM)), filter, gm.assetManager, true, ball.getRadius() * 2));
+		entities.add(new Goal(world, new Rectangle(30/PPM, terrain.getSurfaceY(), Gdx.graphics.getWidth() / (8.53f*PPM), Gdx.graphics.getHeight() / (2.4f*PPM)), filter, gm.assetManager, false, ball.getRadius() * 2));
 		
 		
 		// #### UI ####
