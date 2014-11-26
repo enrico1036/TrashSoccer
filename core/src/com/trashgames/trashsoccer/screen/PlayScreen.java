@@ -91,7 +91,7 @@ public class PlayScreen extends GameScreen {
 		// Terrain creation
 		filter.categoryBits = B2DFilter.TERRAIN;
 		filter.maskBits = B2DFilter.PLAYER | B2DFilter.BALL | B2DFilter.FOOT_SENSOR;
-		Terrain terrain = new Terrain(world, 164 / PPM, 0.3f, filter, gm.assetManager);
+		Terrain terrain = new Terrain(world, (Gdx.graphics.getHeight() / 5 + 20) / PPM, 0.3f, filter, gm.assetManager);
 		entities.add(terrain);
 		
 		// Left wall
@@ -111,7 +111,7 @@ public class PlayScreen extends GameScreen {
 		filter = new Filter();
 		filter.categoryBits = B2DFilter.BALL;
 		filter.maskBits = B2DFilter.ALL;
-		Ball ball = new Ball(world, new Rectangle (800 / PPM, 200 / PPM, 30 / PPM, 30 / PPM), filter, gm.assetManager);
+		Ball ball = new Ball(world, new Rectangle (Gdx.graphics.getWidth() / (2*PPM), 200 / PPM, 30 / PPM, 30 / PPM), filter, gm.assetManager);
 		entities.add(ball);
 		
 		// #### PLAYERS ####
@@ -242,7 +242,18 @@ public class PlayScreen extends GameScreen {
 		
 		worldCamera.update();
 		uiCamera.update();
-		world.step(delta , 6, 2);
+		int stepsPerformed = 0;
+		int MAX_STEPS = 25; 
+		while ( (delta > 0.0) && (stepsPerformed < MAX_STEPS) ){
+		float deltaTime = Math.min(delta, Game.TIME_STEP); //deltaTime becomes 20
+		   delta -= deltaTime; //frameTime is now zero
+		   if (delta < Game.TIME_STEP) { // this if will succeed because frameTime is zero
+		      deltaTime += delta; // deltaTime is unchanged because frameTime is zero
+		      delta = 0.0f; // nothing changes
+		   }
+		   world.step(Game.TIME_STEP , 6, 2);
+		   stepsPerformed++;
+		}
 		
 		String scoreText = scores[0].getScore() + " : " + scores[1].getScore();
 		scoreLabel.setText(scoreText);

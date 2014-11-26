@@ -12,6 +12,7 @@ import com.trashgames.trashsoccer.screen.ScreenManager;
 public class Game extends ApplicationAdapter {
 	// Static variables
 	public static final float PPM = 100;
+	public static final float TIME_STEP = 1f/60f;
 	public static final String WND_TITLE = "Platformer game";
 	public static final int WND_WIDTH = 640;
 	public static final int WND_HEIGHT = 480;
