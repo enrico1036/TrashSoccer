@@ -82,7 +82,7 @@ public class Asset {
 
 		// This is a workaround for the FileHandle desktop partial incompatibility
 		String dataPath = "";
-		if(Gdx.app.getType() != ApplicationType.Android)
+		if(Gdx.app.getType() == ApplicationType.Desktop)
 			dataPath = "./bin/";
 		
 		// Load head	

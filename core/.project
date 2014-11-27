@@ -14,11 +14,4 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>assets/data</name>
-			<type>2</type>
-			<location>/Users/Enrico/Documents/Eclipse-workspace/TrashAndroid/android/assets/data</location>
-		</link>
-	</linkedResources>
 </projectDescription>
