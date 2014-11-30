@@ -15,4 +15,11 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.robovm.eclipse.RoboVMNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>assets</name>
+			<type>2</type>
+			<location>/Users/Enrico/git/TrashSoccer/android/assets</location>
+		</link>
+	</linkedResources>
 </projectDescription>
