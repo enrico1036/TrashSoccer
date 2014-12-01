@@ -61,7 +61,7 @@ public class Player extends Entity {
 	private boolean isKicking;
 	
 
-	public Player(World world, Rectangle bounds, Filter filter, AssetManager assetManager, boolean leftfacing, float terrainSurface, boolean userControlled) {
+	public Player(World world, Rectangle bounds, Filter filter, AssetManager assetManager, boolean leftfacing, float terrainSurface) {
 		this.world = world;
 		this.bounds = bounds;
 		this.leftfacing = leftfacing;
@@ -81,12 +81,12 @@ public class Player extends Entity {
 		createBodies();
 
 		// Creating Sprites
-		sprites[HEAD] = new Sprite(assetManager.get(userControlled ? Asset.TEX_HEAD_A : Asset.TEX_HEAD_B, Texture.class));
-		sprites[TORSO] = new Sprite(assetManager.get(userControlled ? Asset.TEX_TORSO_A : Asset.TEX_TORSO_B, Texture.class));
-		sprites[RIGHT_ARM] = new Sprite(assetManager.get(userControlled ? Asset.TEX_ARM_A : Asset.TEX_ARM_B, Texture.class));
-		sprites[LEFT_ARM] = new Sprite(assetManager.get(userControlled ? Asset.TEX_ARM_A : Asset.TEX_ARM_B, Texture.class));
-		sprites[RIGHT_LEG] = new Sprite(assetManager.get(userControlled ? Asset.TEX_LEG_A : Asset.TEX_LEG_B, Texture.class));
-		sprites[LEFT_LEG] = new Sprite(assetManager.get(userControlled ? Asset.TEX_LEG_A : Asset.TEX_LEG_B, Texture.class));
+		sprites[HEAD] = new Sprite(assetManager.get(leftfacing ? Asset.TEX_HEAD_A : Asset.TEX_HEAD_B, Texture.class));
+		sprites[TORSO] = new Sprite(assetManager.get(leftfacing ? Asset.TEX_TORSO_A : Asset.TEX_TORSO_B, Texture.class));
+		sprites[RIGHT_ARM] = new Sprite(assetManager.get(leftfacing ? Asset.TEX_ARM_A : Asset.TEX_ARM_B, Texture.class));
+		sprites[LEFT_ARM] = new Sprite(assetManager.get(leftfacing ? Asset.TEX_ARM_A : Asset.TEX_ARM_B, Texture.class));
+		sprites[RIGHT_LEG] = new Sprite(assetManager.get(leftfacing ? Asset.TEX_LEG_A : Asset.TEX_LEG_B, Texture.class));
+		sprites[LEFT_LEG] = new Sprite(assetManager.get(leftfacing ? Asset.TEX_LEG_A : Asset.TEX_LEG_B, Texture.class));
 		
 		kick = assetManager.get(Asset.SND_KICK);
 		jump = assetManager.get(Asset.SND_JUMP);

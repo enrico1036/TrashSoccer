@@ -128,11 +128,11 @@ public class PlayScreen extends GameScreen {
 			if(i%2 != 0)
 			{
 				rect.setPosition(Gdx.graphics.getWidth() * offset * 2 / PPM - rect.width / 2, Gdx.graphics.getHeight() / (2 * PPM));
-				entities.add(new Player(world, new Rectangle(rect), filter, gm.assetManager, false ^ (i > 1), terrain.getSurfaceY(), true));
+				entities.add(new Player(world, new Rectangle(rect), filter, gm.assetManager, false ^ (i > 1), terrain.getSurfaceY()));
 				offset *= 2;
 			}else{
 				rect.setPosition(Gdx.graphics.getWidth() * (1 - offset * 2) / PPM - rect.width / 2, Gdx.graphics.getHeight() / (2 * PPM));
-				entities.add(new Player(world, new Rectangle(rect), filter, gm.assetManager, true ^ (i > 1), terrain.getSurfaceY(), false));
+				entities.add(new Player(world, new Rectangle(rect), filter, gm.assetManager, true ^ (i > 1), terrain.getSurfaceY()));
 			}
 		}
 	

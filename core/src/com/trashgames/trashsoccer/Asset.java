@@ -146,30 +146,30 @@ public class Asset {
 			randomDir2 = children[rand.nextInt(children.length)];
 		String worldDirPath = randomDir.path().substring(dataPath.length());
 		TEX_HEAD_A = worldDirPath + "/head.png";
-		TEX_TORSO_A = worldDirPath + "/torso.png";
+		TEX_TORSO_A = worldDirPath + "/body.png";
 		TEX_ARM_A = worldDirPath + "/arm.png";
 		TEX_LEG_A = worldDirPath + "/leg.png";
 		worldDirPath = randomDir2.path().substring(dataPath.length());
 		TEX_HEAD_B = worldDirPath + "/head.png";
-		TEX_TORSO_B = worldDirPath + "/torso.png";
+		TEX_TORSO_B = worldDirPath + "/body.png";
 		TEX_ARM_B = worldDirPath + "/arm.png";
 		TEX_LEG_B = worldDirPath + "/leg.png";
 		manager.load(TEX_TORSO_A, Texture.class);
 		manager.load(TEX_HEAD_A, Texture.class);
 		manager.load(TEX_ARM_A, Texture.class);
-		manager.load(TEX_HEAD_A, Texture.class);
+		manager.load(TEX_LEG_A, Texture.class);
 		manager.load(TEX_TORSO_B, Texture.class);
 		manager.load(TEX_HEAD_B, Texture.class);
 		manager.load(TEX_ARM_B, Texture.class);
-		manager.load(TEX_HEAD_B, Texture.class);
+		manager.load(TEX_LEG_B, Texture.class);
 		loaded.add(TEX_TORSO_A);
 		loaded.add(TEX_HEAD_A);
 		loaded.add(TEX_ARM_A);
-		loaded.add(TEX_HEAD_A);
+		loaded.add(TEX_LEG_A);
 		loaded.add(TEX_TORSO_B);
 		loaded.add(TEX_HEAD_B);
 		loaded.add(TEX_ARM_B);
-		loaded.add(TEX_HEAD_B);
+		loaded.add(TEX_LEG_B);
 		
 		// Load ball
 		dirPath =  dataPath + "data/textures/ball/";
