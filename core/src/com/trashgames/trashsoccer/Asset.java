@@ -6,6 +6,7 @@ import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -20,6 +21,8 @@ public class Asset {
 	public static String TEX_TERRAIN;
 	public static String TEX_BACKGROUND;
 	public static String TEX_GOAL;
+	public static String TEX_MENU_BACKGOUND;
+	public static String TEX_MENU_TERRAIN;
 	// UI textures
 	public static String UI_KICK_BLUE_UP;
 	public static String UI_KICK_RED_UP;
@@ -35,6 +38,10 @@ public class Asset {
 	public static String UI_SINGLE_PLAYER_DOWN;
 	public static String UI_MULTI_PLAYER_DOWN;
 	public static String UI_PAUSE_DOWN;
+	// Sounds
+	public static String SND_KICK;
+	public static String SND_JUMP;
+	public static String SND_MUSIC;
 	
 	
 	public static void loadUI(AssetManager manager){
@@ -68,6 +75,26 @@ public class Asset {
 		manager.load(UI_MULTI_PLAYER_UP, Texture.class);
 		UI_MULTI_PLAYER_DOWN = uiPath + "multi_down.png";
 		manager.load(UI_MULTI_PLAYER_DOWN, Texture.class);
+	}
+	
+	public static void loadSounds(AssetManager manager){
+		String soundPath = "data/sound/";
+		//	Load sounds
+		SND_KICK = soundPath + "kick.mp3";
+		manager.load(SND_KICK, Sound.class);
+		SND_JUMP = soundPath + "jump.mp3";
+		manager.load(SND_JUMP, Sound.class);
+//		SND_MUSIC = soundPath + "music.mp3";
+//		manager.load(SND_MUSIC, Sound.class); // TODO resolve dependences problem
+	}
+	
+	public static void loadMenu(AssetManager manager){
+		String dataPath = "data/textures/world/default/";
+		//	Load menu textures
+		TEX_MENU_BACKGOUND = dataPath + "background.png";
+		manager.load(TEX_MENU_BACKGOUND, Texture.class);
+		TEX_MENU_TERRAIN = dataPath + "terrain.png";
+		manager.load(TEX_MENU_TERRAIN, Texture.class);
 	}
 	
 	public static ArrayList<String> loadRandomWorld(AssetManager manager){

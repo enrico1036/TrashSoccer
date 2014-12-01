@@ -73,11 +73,7 @@ public class PlayScreen extends GameScreen {
 		world.setContactListener(cl);
 		
 		// Asset loading
-		gm.assetManager.load("data/sound/s2.mp3", Sound.class);
-		gm.assetManager.load("data/sound/s4-1.mp3", Sound.class);
-		gm.assetManager.load("data/sound/jump.mp3", Sound.class);
-		gm.assetManager.load("data/sound/kick.mp3", Sound.class);
-		
+		Asset.loadSounds(gm.assetManager);
 		loadedAssets = Asset.loadRandomWorld(gm.assetManager);
 		gm.assetManager.finishLoading();
 		
@@ -97,7 +93,7 @@ public class PlayScreen extends GameScreen {
 		// Left wall
 		bdef.position.set(0, Gdx.graphics.getHeight()/(2*PPM));
 		Body bodyL = world.createBody(bdef);
-		shape.setAsBox(30/PPM, Gdx.graphics.getHeight()/PPM);
+		shape.setAsBox(1/PPM, Gdx.graphics.getHeight()/PPM);
 		fdef.shape = shape;
 		bodyL.createFixture(fdef).setFilterData(filter);
 		
@@ -141,8 +137,12 @@ public class PlayScreen extends GameScreen {
 		filter = new Filter();
 		filter.categoryBits = B2DFilter.GOAL;
 		filter.maskBits = B2DFilter.ALL;
-		entities.add(new Goal(world, new Rectangle((Gdx.graphics.getWidth()-180)/PPM, terrain.getSurfaceY(), Gdx.graphics.getWidth() / (8.53f*PPM), Gdx.graphics.getHeight() / (2.4f*PPM)), filter, gm.assetManager, true, ball.getRadius() * 2));
-		entities.add(new Goal(world, new Rectangle(30/PPM, terrain.getSurfaceY(), Gdx.graphics.getWidth() / (8.53f*PPM), Gdx.graphics.getHeight() / (2.4f*PPM)), filter, gm.assetManager, false, ball.getRadius() * 2));
+		// Right goal
+		Rectangle bounds = new Rectangle(Gdx.graphics.getWidth() * 7.53f / (8.53f * PPM), terrain.getSurfaceY(), Gdx.graphics.getWidth() / (8.53f*PPM), Gdx.graphics.getHeight() / (2.4f*PPM));
+		entities.add(new Goal(world, new Rectangle(bounds), filter, gm.assetManager, true, ball.getRadius()));
+		// Left goal
+		bounds.setPosition(0, terrain.getSurfaceY());
+		entities.add(new Goal(world, new Rectangle(bounds), filter, gm.assetManager, false, ball.getRadius()));
 		
 		
 		// #### UI ####
@@ -150,8 +150,8 @@ public class PlayScreen extends GameScreen {
 		kickButton = new UIButton(null, 
 				gm.mainFont, 
 				new Rectangle(bound), 
-				gm.assetManager.get("data/ui/kick_blue_up.png", Texture.class), 
-				gm.assetManager.get("data/ui/kick_blue_down.png", Texture.class));
+				gm.assetManager.get(Asset.UI_KICK_BLUE_UP, Texture.class), 
+				gm.assetManager.get(Asset.UI_KICK_BLUE_DOWN, Texture.class));
 		kickButton.setAction(new Runnable() {
 			@Override
 			public void run() {
@@ -168,8 +168,8 @@ public class PlayScreen extends GameScreen {
 		jumpButton = new UIButton(null, 
 				gm.mainFont, 
 				new Rectangle(bound), 
-				gm.assetManager.get("data/ui/jump_blue_up.png", Texture.class), 
-				gm.assetManager.get("data/ui/jump_blue_down.png", Texture.class));
+				gm.assetManager.get(Asset.UI_JUMP_BLUE_UP, Texture.class), 
+				gm.assetManager.get(Asset.UI_JUMP_BLUE_DOWN, Texture.class));
 		jumpButton.setAction(new Runnable() {
 			@Override
 			public void run() {
@@ -187,8 +187,8 @@ public class PlayScreen extends GameScreen {
 		pauseButton = new UIButton(null, 
 				gm.mainFont, 
 				new Rectangle(bound), 
-				gm.assetManager.get("data/ui/pause_up.png", Texture.class), 
-				gm.assetManager.get("data/ui/pause_down.png", Texture.class));
+				gm.assetManager.get(Asset.UI_PAUSE_UP, Texture.class), 
+				gm.assetManager.get(Asset.UI_PAUSE_DOWN, Texture.class));
 		pauseButton.setAction(new Runnable() {
 			@Override
 			public void run() {

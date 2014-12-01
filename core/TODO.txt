@@ -1,2 +1,3 @@
 -DONE Relative ball's and goal's dimension
--Add pause and quit option menu
+-ALMOST Add pause and quit option menu
+-ALMOST Asset class should load all the assets
