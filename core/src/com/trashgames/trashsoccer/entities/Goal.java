@@ -38,7 +38,7 @@ public class Goal extends Entity{
 		this.world = world;
 		this.bounds = bounds;
 		this.leftfacing = leftfacing;
-		this.sensorOffset = sensorOffset;
+		this.sensorOffset = sensorOffset * 2;
 		setFilter(filter);
 		
 		bodies = new Body[1];

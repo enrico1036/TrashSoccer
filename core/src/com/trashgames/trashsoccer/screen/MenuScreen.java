@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -45,24 +46,22 @@ public class MenuScreen extends GameScreen {
 		labels = new Vector<UILabel>();
 
 		// Load texture manager
-		gm.assetManager.load("data/StandardBackground.png", Texture.class);
-		gm.assetManager.load("data/StandardTerrain.png", Texture.class);
-		gm.assetManager.load("data/rosario-muniz.png", Texture.class);
+		Asset.loadMenu(gm.assetManager);
 		Asset.loadUI(gm.assetManager);
 		gm.assetManager.finishLoading();
 
 		// Background
-		bgSprite = new Sprite(gm.assetManager.get("data/StandardBackground.png", Texture.class));
+		bgSprite = new Sprite(gm.assetManager.get(Asset.TEX_MENU_BACKGOUND, Texture.class));
 		bgSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 		// Terrain
-		terSprite = new Sprite(gm.assetManager.get("data/StandardTerrain.png", Texture.class));
+		terSprite = new Sprite(gm.assetManager.get(Asset.TEX_MENU_TERRAIN, Texture.class));
 		terSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 4);
 
 		// Rosario muniz
-		rosSprite = new Sprite(gm.assetManager.get("data/rosario-muniz.png", Texture.class));
-		rosSprite.setSize(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
-		rosSprite.setPosition(Gdx.graphics.getWidth() * (2f / 3f), 0);
+//		rosSprite = new Sprite(gm.assetManager.get("data/rosario-muniz.png", Texture.class));
+//		rosSprite.setSize(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+//		rosSprite.setPosition(Gdx.graphics.getWidth() * (2f / 3f), 0);
 
 		// Button creation
 		UIButton bt = new UIButton(null, gm.mainFont, 

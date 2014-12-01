@@ -88,8 +88,8 @@ public class Player extends Entity {
 		sprites[RIGHT_LEG] = new Sprite(assetManager.get(Asset.TEX_LEG, Texture.class));
 		sprites[LEFT_LEG] = new Sprite(assetManager.get(Asset.TEX_LEG, Texture.class));
 		
-		kick = assetManager.get("data/sound/kick.mp3");
-		jump = assetManager.get("data/sound/jump.mp3");
+		kick = assetManager.get(Asset.SND_KICK);
+		jump = assetManager.get(Asset.SND_JUMP);
 		
 		for (Sprite sprite : sprites){
 			if (sprite != null){
