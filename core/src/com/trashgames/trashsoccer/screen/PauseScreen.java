@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.trashgames.trashsoccer.Asset;
@@ -18,8 +19,10 @@ public class PauseScreen extends GameScreen{
 	private UIButton toMenuButton;
 	private UIButton resumeButton;
 	private UIButton pauseButton;
-	private Sprite background;
-	private TextureRegion prevBuffer;
+	private Sprite darkFilter;
+	private TextureRegion lastFrameTex;
+	private FrameBuffer lastFrame;
+	
 	public PauseScreen(Game gm) {
 		super(gm);
 		
@@ -39,14 +42,18 @@ public class PauseScreen extends GameScreen{
 				gm.assetManager.get(Asset.UI_PAUSE_DOWN, Texture.class), 
 				gm.assetManager.get(Asset.UI_PAUSE_DOWN, Texture.class));
 		
-		background = new Sprite(gm.assetManager.get(Asset.UI_PAUSE_BACKGROUND, Texture.class));
-		prevBuffer = ScreenUtils.getFrameBufferTexture();
+		darkFilter = new Sprite(gm.assetManager.get(Asset.UI_PAUSE_BACKGROUND, Texture.class));
 		
 		sb = new SpriteBatch();
 		
 		uiCamera = new OrthographicCamera();
 		uiCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClearColor(0f, 0f, 0f, 0.5f);
+	}
+	
+	public void setLastFrame(FrameBuffer fb){
+		lastFrameTex = new TextureRegion(fb.getColorBufferTexture());
+		lastFrameTex.flip(false, true);
 	}
 	
 	void assetTree(FileHandle handle, String spaces){
@@ -62,8 +69,8 @@ public class PauseScreen extends GameScreen{
 		Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
 		sb.setProjectionMatrix(uiCamera.combined);
 		sb.begin();
-			sb.draw(prevBuffer, 0, 0);
-			sb.draw(background.getTexture(), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+			sb.draw(lastFrameTex, 0, 0);
+			sb.draw(darkFilter.getTexture(), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			toMenuButton.render(sb);
 			resumeButton.render(sb);
 			pauseButton.render(sb);

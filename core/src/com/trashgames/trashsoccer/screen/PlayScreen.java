@@ -7,9 +7,11 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -195,6 +197,9 @@ public class PlayScreen extends GameScreen {
 		pauseButton.setAction(new Runnable() {
 			@Override
 			public void run() {
+				FrameBuffer target = new FrameBuffer(Format.RGB888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+				renderToTarget(0, target);
+				pauseScreen.setLastFrame(target);
 				gm.screenManager.push(pauseScreen);
 			}
 		});
@@ -236,6 +241,31 @@ public class PlayScreen extends GameScreen {
 			pauseButton.render(sb);
 			scoreLabel.render(sb);
 		sb.end();
+	}
+	
+	public void renderToTarget(float delta, FrameBuffer target) {
+		super.render(delta);
+		// Render on target instead of screen
+		target.begin();
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		// World rendering
+		sb.setProjectionMatrix(worldCamera.combined);
+		sb.begin();
+			for (Entity entity : entities)
+				entity.render(sb);
+		sb.end();
+		
+		renderer.render(world, worldCamera.combined);
+		
+		// Ui rendering
+		sb.setProjectionMatrix(uiCamera.combined);
+		sb.begin();
+			kickButton.render(sb);
+			jumpButton.render(sb);
+			pauseButton.render(sb);
+			scoreLabel.render(sb);
+		sb.end();
+		target.end();
 	}
 
 	@Override
