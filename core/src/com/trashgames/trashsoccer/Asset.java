@@ -31,6 +31,8 @@ public class Asset {
 	public static String UI_SINGLE_PLAYER_UP;
 	public static String UI_MULTI_PLAYER_UP;
 	public static String UI_PAUSE_UP;
+	public static String UI_TO_MENU_UP;
+	public static String UI_RESUME_UP;
 	public static String UI_KICK_BLUE_DOWN;
 	public static String UI_KICK_RED_DOWN;
 	public static String UI_JUMP_BLUE_DOWN;
@@ -38,6 +40,9 @@ public class Asset {
 	public static String UI_SINGLE_PLAYER_DOWN;
 	public static String UI_MULTI_PLAYER_DOWN;
 	public static String UI_PAUSE_DOWN;
+	public static String UI_TO_MENU_DOWN;
+	public static String UI_RESUME_DOWN;
+	public static String UI_PAUSE_BACKGROUND;
 	// Sounds
 	public static String SND_KICK;
 	public static String SND_JUMP;
@@ -75,6 +80,16 @@ public class Asset {
 		manager.load(UI_MULTI_PLAYER_UP, Texture.class);
 		UI_MULTI_PLAYER_DOWN = uiPath + "multi_down.png";
 		manager.load(UI_MULTI_PLAYER_DOWN, Texture.class);
+		UI_TO_MENU_UP = uiPath + "to_menu_up.png";
+		manager.load(UI_TO_MENU_UP, Texture.class);
+		UI_TO_MENU_DOWN = uiPath + "to_menu_down.png";
+		manager.load(UI_TO_MENU_DOWN, Texture.class);
+		UI_RESUME_UP = uiPath + "resume_up.png";
+		manager.load(UI_RESUME_UP, Texture.class);
+		UI_RESUME_DOWN = uiPath + "resume_down.png";
+		manager.load(UI_RESUME_DOWN, Texture.class);
+		UI_PAUSE_BACKGROUND = uiPath + "pause_background.png";
+		manager.load(UI_PAUSE_BACKGROUND, Texture.class);
 	}
 	
 	public static void loadSounds(AssetManager manager){

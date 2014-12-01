@@ -3,6 +3,7 @@ package com.trashgames.trashsoccer.screen;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
+import com.badlogic.gdx.Gdx;
 import com.trashgames.trashsoccer.Game;
 
 public class ScreenManager {
@@ -25,6 +26,7 @@ public class ScreenManager {
 		} catch (EmptyStackException e) {
 			// Do nothing
 		}
+		Gdx.input.setInputProcessor(screen);
 		screenStack.push(screen);
 	}
 

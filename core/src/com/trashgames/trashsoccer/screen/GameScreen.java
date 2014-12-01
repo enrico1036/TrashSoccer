@@ -16,7 +16,6 @@ public abstract class GameScreen extends ScreenAdapter implements InputProcessor
     
     public GameScreen(Game gm){
         this.gm = gm;
-		Gdx.input.setInputProcessor(this);
     }
 
     public Game getGm() {

@@ -52,9 +52,10 @@ public class PlayScreen extends GameScreen {
 	private UIButton pauseButton;
 	private UILabel scoreLabel;
 	private ArrayList<String> loadedAssets;
+	private PauseScreen pauseScreen;
 	private boolean paused;
 	
-	public PlayScreen(Game gm) {
+	public PlayScreen(final Game gm) {
 		super(gm);
 		entities = new ArrayList<Entity>();
 		
@@ -182,6 +183,8 @@ public class PlayScreen extends GameScreen {
 			}
 		});
 		
+	    pauseScreen = new PauseScreen(gm);
+		
 		bound.setSize(Gdx.graphics.getHeight() / 10, Gdx.graphics.getHeight() / 10);
 		bound.setPosition(Gdx.graphics.getWidth() - bound.width - 10, Gdx.graphics.getHeight() - bound.height - 10);
 		pauseButton = new UIButton(null, 
@@ -192,7 +195,7 @@ public class PlayScreen extends GameScreen {
 		pauseButton.setAction(new Runnable() {
 			@Override
 			public void run() {
-				paused = !paused;
+				gm.screenManager.push(pauseScreen);
 			}
 		});
 		
