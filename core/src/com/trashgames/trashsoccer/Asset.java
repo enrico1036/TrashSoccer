@@ -99,8 +99,8 @@ public class Asset {
 		manager.load(SND_KICK, Sound.class);
 		SND_JUMP = soundPath + "jump.mp3";
 		manager.load(SND_JUMP, Sound.class);
-//		SND_MUSIC = soundPath + "music.mp3";
-//		manager.load(SND_MUSIC, Sound.class); // TODO resolve dependences problem
+		SND_MUSIC = soundPath + "music.mp3";
+		manager.load(SND_MUSIC, Sound.class); // TODO resolve dependences problem
 	}
 	
 	public static void loadMenu(AssetManager manager){
