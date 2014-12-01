@@ -13,10 +13,14 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 public class Asset {
 	// Textures
-	public static String TEX_HEAD;
-	public static String TEX_ARM;
-	public static String TEX_TORSO;
-	public static String TEX_LEG;
+	public static String TEX_HEAD_A;
+	public static String TEX_ARM_A;
+	public static String TEX_TORSO_A;
+	public static String TEX_LEG_A;
+	public static String TEX_HEAD_B;
+	public static String TEX_ARM_B;
+	public static String TEX_TORSO_B;
+	public static String TEX_LEG_B;
 	public static String TEX_BALL;
 	public static String TEX_TERRAIN;
 	public static String TEX_BACKGROUND;
@@ -130,24 +134,42 @@ public class Asset {
 		// Load head	
 		String dirPath = dataPath + "data/textures/player/";
 		FileHandle[] children = Gdx.files.internal(dirPath + "head/").list();
-		TEX_HEAD = children[rand.nextInt(children.length)].path().substring(dataPath.length());
-		manager.load(TEX_HEAD, Texture.class);
-		loaded.add(TEX_HEAD);
-		// Load torso
-		children = Gdx.files.internal(dirPath + "torso/").list();
-		TEX_TORSO = children[rand.nextInt(children.length)].path().substring(dataPath.length());
-		manager.load(TEX_TORSO, Texture.class);
-		loaded.add(TEX_TORSO);
-		// Load torso
-		children = Gdx.files.internal(dirPath + "arm/").list();
-		TEX_ARM = children[rand.nextInt(children.length)].path().substring(dataPath.length());
-		manager.load(TEX_ARM, Texture.class);
-		loaded.add(TEX_ARM);
-		// Load torso
-		children = Gdx.files.internal(dirPath + "leg/").list();
-		TEX_LEG = children[rand.nextInt(children.length)].path().substring(dataPath.length());
-		manager.load(TEX_LEG, Texture.class);
-		loaded.add(TEX_LEG);
+		
+		// Load player
+		dirPath = dataPath + "data/textures/player/";
+		children = Gdx.files.internal(dirPath).list();
+		FileHandle randomDir = children[rand.nextInt(children.length)], randomDir2 = randomDir;
+		// Choose two different folders for cpu and user Players
+		while(!randomDir.isDirectory())
+			randomDir = children[rand.nextInt(children.length)];
+		while(randomDir.equals(randomDir2))
+			randomDir2 = children[rand.nextInt(children.length)];
+		String worldDirPath = randomDir.path().substring(dataPath.length());
+		TEX_HEAD_A = worldDirPath + "/head.png";
+		TEX_TORSO_A = worldDirPath + "/torso.png";
+		TEX_ARM_A = worldDirPath + "/arm.png";
+		TEX_LEG_A = worldDirPath + "/leg.png";
+		worldDirPath = randomDir2.path().substring(dataPath.length());
+		TEX_HEAD_B = worldDirPath + "/head.png";
+		TEX_TORSO_B = worldDirPath + "/torso.png";
+		TEX_ARM_B = worldDirPath + "/arm.png";
+		TEX_LEG_B = worldDirPath + "/leg.png";
+		manager.load(TEX_TORSO_A, Texture.class);
+		manager.load(TEX_HEAD_A, Texture.class);
+		manager.load(TEX_ARM_A, Texture.class);
+		manager.load(TEX_HEAD_A, Texture.class);
+		manager.load(TEX_TORSO_B, Texture.class);
+		manager.load(TEX_HEAD_B, Texture.class);
+		manager.load(TEX_ARM_B, Texture.class);
+		manager.load(TEX_HEAD_B, Texture.class);
+		loaded.add(TEX_TORSO_A);
+		loaded.add(TEX_HEAD_A);
+		loaded.add(TEX_ARM_A);
+		loaded.add(TEX_HEAD_A);
+		loaded.add(TEX_TORSO_B);
+		loaded.add(TEX_HEAD_B);
+		loaded.add(TEX_ARM_B);
+		loaded.add(TEX_HEAD_B);
 		
 		// Load ball
 		dirPath =  dataPath + "data/textures/ball/";
@@ -156,7 +178,7 @@ public class Asset {
 		manager.load(TEX_BALL, Texture.class);
 		loaded.add(TEX_BALL);
 		
-		// Load ball 
+		// Load goal 
 		dirPath =  dataPath + "data/textures/goal/";
 		children = Gdx.files.internal(dirPath).list();
 		TEX_GOAL = children[rand.nextInt(children.length)].path().substring(dataPath.length());
@@ -166,7 +188,10 @@ public class Asset {
 		// Load world
 		dirPath = dataPath + "data/textures/world/";
 		children = Gdx.files.internal(dirPath).list();
-		String worldDirPath = children[rand.nextInt(children.length)].path().substring(dataPath.length());
+		randomDir = children[rand.nextInt(children.length)];
+		while(!randomDir.isDirectory())			// Avoid single files
+			randomDir = children[rand.nextInt(children.length)];
+		worldDirPath = randomDir.path().substring(dataPath.length());
 		TEX_BACKGROUND = worldDirPath + "/background.png";
 		TEX_TERRAIN = worldDirPath + "/terrain.png";
 		manager.load(TEX_BACKGROUND, Texture.class);

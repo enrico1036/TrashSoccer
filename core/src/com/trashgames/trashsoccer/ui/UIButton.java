@@ -48,7 +48,8 @@ public class UIButton {
 	}
 
 	public void execAction() {
-		action.run();
+		if(action != null)
+			action.run();
 	}
 
 	public boolean checkBound(Vector2 point) {

@@ -128,11 +128,11 @@ public class PlayScreen extends GameScreen {
 			if(i%2 != 0)
 			{
 				rect.setPosition(Gdx.graphics.getWidth() * offset * 2 / PPM - rect.width / 2, Gdx.graphics.getHeight() / (2 * PPM));
-				entities.add(new Player(world, new Rectangle(rect), filter, gm.assetManager, false ^ (i > 1), terrain.getSurfaceY()));
+				entities.add(new Player(world, new Rectangle(rect), filter, gm.assetManager, false ^ (i > 1), terrain.getSurfaceY(), true));
 				offset *= 2;
 			}else{
 				rect.setPosition(Gdx.graphics.getWidth() * (1 - offset * 2) / PPM - rect.width / 2, Gdx.graphics.getHeight() / (2 * PPM));
-				entities.add(new Player(world, new Rectangle(rect), filter, gm.assetManager, true ^ (i > 1), terrain.getSurfaceY()));
+				entities.add(new Player(world, new Rectangle(rect), filter, gm.assetManager, true ^ (i > 1), terrain.getSurfaceY(), false));
 			}
 		}
 	
@@ -201,6 +201,7 @@ public class PlayScreen extends GameScreen {
 				renderToTarget(0, target);
 				pauseScreen.setLastFrame(target);
 				gm.screenManager.push(pauseScreen);
+				
 			}
 		});
 		
@@ -323,6 +324,7 @@ public class PlayScreen extends GameScreen {
 		// Unload assets randomly loaded
 		for(String asset : loadedAssets)
 			gm.assetManager.unload(asset);
+		loadedAssets.clear();
 	}
 
 	@Override
@@ -339,8 +341,9 @@ public class PlayScreen extends GameScreen {
 		
 		
 		if(pauseButton.checkBound(new Vector2(screenX, Gdx.graphics.getHeight() - screenY))){
-			pauseButton.setPressed(!pauseButton.isPressed());
+			pauseButton.setPressed(true);
 			pauseButton.execAction();
+			pauseButton.setPressed(false);
 		}
 		
 		return true;
