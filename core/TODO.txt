@@ -1,3 +1,2 @@
--DONE Relative ball's and goal's dimension
--ALMOST Add pause and quit option menu
--ALMOST Asset class should load all the assets
+-Add mute function
+-Implement 2 player function overriding createUI method

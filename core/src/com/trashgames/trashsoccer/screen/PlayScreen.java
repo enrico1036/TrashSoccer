@@ -2,6 +2,8 @@ package com.trashgames.trashsoccer.screen;
 
 import java.util.ArrayList;
 
+import sun.net.www.content.text.plain;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Sound;
@@ -23,6 +25,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 import com.trashgames.trashsoccer.Asset;
 import com.trashgames.trashsoccer.B2DFilter;
 import com.trashgames.trashsoccer.Game;
@@ -56,6 +59,9 @@ public class PlayScreen extends GameScreen {
 	private ArrayList<String> loadedAssets;
 	private PauseScreen pauseScreen;
 	private boolean paused;
+	protected final Player playersL[] = new Player[2];
+	protected final Player playersR[] = new Player[2];
+	protected Ball ball;
 	
 	public PlayScreen(final Game gm) {
 		super(gm);
@@ -110,7 +116,7 @@ public class PlayScreen extends GameScreen {
 		filter = new Filter();
 		filter.categoryBits = B2DFilter.BALL;
 		filter.maskBits = B2DFilter.ALL;
-		Ball ball = new Ball(world, new Rectangle (Gdx.graphics.getWidth() / (2*PPM), Gdx.graphics.getHeight() / (2*PPM), Gdx.graphics.getHeight() / (24*PPM), Gdx.graphics.getHeight() / (24*PPM)), filter, gm.assetManager);
+		ball = new Ball(world, new Rectangle (Gdx.graphics.getWidth() / (2*PPM), Gdx.graphics.getHeight() / (2*PPM), Gdx.graphics.getHeight() / (24*PPM), Gdx.graphics.getHeight() / (24*PPM)), filter, gm.assetManager);
 		entities.add(ball);
 		
 		// #### PLAYERS ####
@@ -123,19 +129,31 @@ public class PlayScreen extends GameScreen {
 		filter.categoryBits = B2DFilter.PLAYER;
 		filter.maskBits = B2DFilter.ALL;
 
+		
 		float offset = 1/7f;
-		for(int i = 0; i < 4; i++){
-			if(i%2 != 0)
-			{
-				rect.setPosition(Gdx.graphics.getWidth() * offset * 2 / PPM - rect.width / 2, Gdx.graphics.getHeight() / (2 * PPM));
-				entities.add(new Player(world, new Rectangle(rect), filter, gm.assetManager, false ^ (i > 1), terrain.getSurfaceY()));
-				offset *= 2;
-			}else{
-				rect.setPosition(Gdx.graphics.getWidth() * (1 - offset * 2) / PPM - rect.width / 2, Gdx.graphics.getHeight() / (2 * PPM));
-				entities.add(new Player(world, new Rectangle(rect), filter, gm.assetManager, true ^ (i > 1), terrain.getSurfaceY()));
-			}
-		}
-	
+		
+		// Right outside player
+		rect.setPosition(Gdx.graphics.getWidth() * (1 - offset * 2) / PPM - rect.width / 2, Gdx.graphics.getHeight() / (2 * PPM));
+		playersR[0] = new Player(world, new Rectangle(rect), filter, gm.assetManager, true, terrain.getSurfaceY());
+		entities.add(playersR[0]);
+		
+		// Left outside player
+		rect.setPosition(Gdx.graphics.getWidth() * offset * 2 / PPM - rect.width / 2, Gdx.graphics.getHeight() / (2 * PPM));
+		playersL[0] = new Player(world, new Rectangle(rect), filter, gm.assetManager, false, terrain.getSurfaceY());
+		entities.add(playersL[0]);
+		
+		offset *= 2;
+		// Left inside player
+		rect.setPosition(Gdx.graphics.getWidth() * (1 - offset * 2) / PPM - rect.width / 2, Gdx.graphics.getHeight() / (2 * PPM));
+		playersL[1] = new Player(world, new Rectangle(rect), filter, gm.assetManager, false, terrain.getSurfaceY());
+		entities.add(playersL[1]);
+		
+		// Right inside player
+		rect.setPosition(Gdx.graphics.getWidth() * offset * 2 / PPM - rect.width / 2, Gdx.graphics.getHeight() / (2 * PPM));
+		playersR[1] = new Player(world, new Rectangle(rect), filter, gm.assetManager, true, terrain.getSurfaceY());
+		entities.add(playersR[1]);
+		
+		
 		// #### GOAL ####
 		filter = new Filter();
 		filter.categoryBits = B2DFilter.GOAL;
@@ -149,49 +167,15 @@ public class PlayScreen extends GameScreen {
 		
 		
 		// #### UI ####
-		Rectangle bound = new Rectangle(10, 10, Gdx.graphics.getHeight() / 5, Gdx.graphics.getHeight() / 5);
-		kickButton = new UIButton(null, 
-				gm.mainFont, 
-				new Rectangle(bound), 
-				gm.assetManager.get(Asset.UI_KICK_BLUE_UP, Texture.class), 
-				gm.assetManager.get(Asset.UI_KICK_BLUE_DOWN, Texture.class));
-		kickButton.setAction(new Runnable() {
-			@Override
-			public void run() {
-				for (Entity entity : entities)
-					try {
-						((Player)entity).toggleKick();
-					} catch (Exception e) {
-						// Do nothing
-					}
-			}
-		});
-		
-		bound.setPosition(Gdx.graphics.getWidth() - bound.width - 10, bound.y);
-		jumpButton = new UIButton(null, 
-				gm.mainFont, 
-				new Rectangle(bound), 
-				gm.assetManager.get(Asset.UI_JUMP_BLUE_UP, Texture.class), 
-				gm.assetManager.get(Asset.UI_JUMP_BLUE_DOWN, Texture.class));
-		jumpButton.setAction(new Runnable() {
-			@Override
-			public void run() {
-				for (Entity entity : entities)
-					try {
-						((Player)entity).jump();
-					} catch (Exception e) {
-						// Do nothing
-					}
-			}
-		});
+		createUI();
 		
 	    pauseScreen = new PauseScreen(gm);
 		
-		bound.setSize(Gdx.graphics.getHeight() / 10, Gdx.graphics.getHeight() / 10);
-		bound.setPosition(Gdx.graphics.getWidth() - bound.width - 10, Gdx.graphics.getHeight() - bound.height - 10);
+		bounds.setSize(Gdx.graphics.getHeight() / 10, Gdx.graphics.getHeight() / 10);
+		bounds.setPosition(Gdx.graphics.getWidth() - bounds.width - 10, Gdx.graphics.getHeight() - bounds.height - 10);
 		pauseButton = new UIButton(null, 
 				gm.mainFont, 
-				new Rectangle(bound), 
+				new Rectangle(bounds), 
 				gm.assetManager.get(Asset.UI_PAUSE_UP, Texture.class), 
 				gm.assetManager.get(Asset.UI_PAUSE_DOWN, Texture.class));
 		pauseButton.setAction(new Runnable() {
@@ -201,7 +185,6 @@ public class PlayScreen extends GameScreen {
 				renderToTarget(0, target);
 				pauseScreen.setLastFrame(target);
 				gm.screenManager.push(pauseScreen);
-				
 			}
 		});
 		
@@ -218,6 +201,86 @@ public class PlayScreen extends GameScreen {
 		Gdx.gl.glClearColor(.5f, .5f, .5f, 1f);
 		
 		paused = false;
+	}
+	
+	protected void createUI(){
+		Rectangle bound = new Rectangle(10, 10, Gdx.graphics.getHeight() / 5, Gdx.graphics.getHeight() / 5);
+		// Kick button
+		kickButton = new UIButton(null, 
+				gm.mainFont, 
+				new Rectangle(bound), 
+				gm.assetManager.get(Asset.UI_KICK_BLUE_UP, Texture.class), 
+				gm.assetManager.get(Asset.UI_KICK_BLUE_DOWN, Texture.class));
+		kickButton.setAction(new Runnable() {
+			@Override
+			public void run() {
+				playersL[0].toggleKick();
+				playersL[1].toggleKick();
+			}
+		});
+		
+		// Jump button
+		bound.setPosition(Gdx.graphics.getWidth() - bound.width - 10, bound.y);
+		jumpButton = new UIButton(null, 
+				gm.mainFont, 
+				new Rectangle(bound), 
+				gm.assetManager.get(Asset.UI_JUMP_BLUE_UP, Texture.class), 
+				gm.assetManager.get(Asset.UI_JUMP_BLUE_DOWN, Texture.class));
+		jumpButton.setAction(new Runnable() {
+			@Override
+			public void run() {
+				playersL[0].jump();
+				playersL[1].jump();
+			}
+		});
+		
+		// Artificial intelligence
+		final Ball ball = this.ball;
+		Timer.schedule(new Task() {
+			
+			@Override
+			public void run() {
+				if((playersR[0].getPosX() - ball.getPosX() > 0 && playersR[0].getPosX() - ball.getPosX() < ball.getRadius() * 3) || 
+						(playersR[1].getPosX() - ball.getPosX() > 0 && playersR[1].getPosX() - ball.getPosX() < ball.getRadius() * 3))
+				{
+					playersR[0].toggleKick();
+					playersR[1].toggleKick();
+					Timer.schedule(new Task() {
+						
+						@Override
+						public void run() {
+							playersR[0].toggleKick();
+							playersR[1].toggleKick();
+						}
+					}, 0.35f);
+				}else{
+					playersR[0].jump();
+					playersR[1].jump();
+				}
+			}
+		}, 0.2f, 0.7f);
+		
+		// Pause button
+		pauseScreen = new PauseScreen(gm);
+		
+		bound.setSize(Gdx.graphics.getHeight() / 10, Gdx.graphics.getHeight() / 10);
+		bound.setPosition(Gdx.graphics.getWidth() - bound.width - 10, Gdx.graphics.getHeight() - bound.height - 10);
+		pauseButton = new UIButton(null, 
+				gm.mainFont, 
+				new Rectangle(bound), 
+				gm.assetManager.get(Asset.UI_PAUSE_UP, Texture.class), 
+				gm.assetManager.get(Asset.UI_PAUSE_DOWN, Texture.class));
+		pauseButton.setAction(new Runnable() {
+			@Override
+			public void run() {
+				FrameBuffer target = new FrameBuffer(Format.RGB888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+				renderToTarget(0, target);
+				pauseScreen.setLastFrame(target);
+				gm.screenManager.push(pauseScreen);
+			}
+		});
+		
+		scoreLabel = new UILabel("0 : 0", new Rectangle(Gdx.graphics.getWidth() / 2 - 50, Gdx.graphics.getHeight() - 50, 100, 50), gm.mainFont);
 	}
 
 	@Override

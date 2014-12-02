@@ -64,5 +64,9 @@ public class Ball extends Entity {
 	public float getRadius(){
 		return dims[0].width;
 	}
+	
+	public float getPosX(){
+		return bodies[0].getPosition().x;
+	}
 
 }

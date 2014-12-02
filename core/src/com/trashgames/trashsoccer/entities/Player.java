@@ -334,6 +334,14 @@ public class Player extends Entity {
 		}
 	}
 	
+	public boolean isLeftfacing(){
+		return leftfacing;
+	}
+	
+	public float getPosX(){
+		return bodies[TORSO].getPosition().x;
+	}
+	
 	public void toggleKick() {
 		
 		isKicking = !isKicking;
