@@ -20,10 +20,18 @@ import com.trashgames.trashsoccer.B2DFilter;
 import com.trashgames.trashsoccer.Dimension;
 
 public class Terrain extends Entity{
-	float friction;
+	
+	// Positions of bodies into body array
+	private static final int TERRAIN = 0;
+	private static final int BACKGROUND = 1;
+	
+	private float friction;
+	private AssetManager assetManager;
+
 	public Terrain(World world, float height, float friction, Filter filter, AssetManager assetManager){
 		this.friction = friction;
 		this.world = world;
+		this.assetManager = assetManager;
 		setFilter(filter);
 		
 		bodies = new Body[1];
@@ -31,9 +39,7 @@ public class Terrain extends Entity{
 		sprites = new Sprite[2];
 
 		dims[0] = new Dimension(Gdx.graphics.getWidth() / (2*PPM), height / 2, 0);
-		sprites[0] = new Sprite(assetManager.get(Asset.TEX_TERRAIN, Texture.class));
-		sprites[1] = new Sprite(assetManager.get(Asset.TEX_BACKGROUND, Texture.class));
-		sprites[1].setBounds(0, 0, Gdx.graphics.getWidth() / PPM, Gdx.graphics.getHeight() / PPM);
+		setSprites();
 		
 		createBodies();
 		super.update(1);
@@ -53,12 +59,20 @@ public class Terrain extends Entity{
 		bodies[0].createFixture(fdef).setFilterData(filter);
 	}
 
+	@Override
+	protected void setSprites() {
+		sprites[BACKGROUND] = new Sprite(assetManager.get(Asset.TEX_BACKGROUND, Texture.class));
+		sprites[BACKGROUND].setBounds(0, 0, Gdx.graphics.getWidth() / PPM, Gdx.graphics.getHeight() / PPM);		
+		sprites[TERRAIN] = new Sprite(assetManager.get(Asset.TEX_TERRAIN, Texture.class));
+	}
 	public float getSurfaceY(){
 		return dims[0].height * 2;
 	}
 	
 	@Override
 	public void regenerateBodies() {
+		setSprites();
+		super.update(1);
 	}
 	
 
@@ -68,7 +82,7 @@ public class Terrain extends Entity{
 	
 	@Override
 	public void render(SpriteBatch batch) {
-		sprites[1].draw(batch);
+		sprites[BACKGROUND].draw(batch);
 		super.render(batch);
 	}
 }

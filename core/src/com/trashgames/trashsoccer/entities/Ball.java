@@ -22,9 +22,11 @@ import com.trashgames.trashsoccer.Dimension;
 
 public class Ball extends Entity {
 
+	private AssetManager assetManager;
 	public Ball(World world, Rectangle bounds, Filter filter, AssetManager assetManager) {
 		this.world = world;
 		this.bounds = bounds;
+		this.assetManager = assetManager;
 		setFilter(filter);
 		
 		bodies = new Body[1];
@@ -33,9 +35,8 @@ public class Ball extends Entity {
 		
 		dims[0] = new Dimension(bounds.width / 2, bounds.height / 2, 0);
 		createBodies();
+		setSprites();
 		
-		sprites[0] = new Sprite(assetManager.get(Asset.TEX_BALL, Texture.class));
-		sprites[0].setOriginCenter();
 	}
 	
 	@Override
@@ -61,6 +62,11 @@ public class Ball extends Entity {
 		fixture.setFilterData(filter);
 	}
 	
+	@Override
+	protected void setSprites() {
+		sprites[0] = new Sprite(assetManager.get(Asset.TEX_BALL, Texture.class));
+		sprites[0].setOriginCenter();		
+	}
 	public float getRadius(){
 		return dims[0].width;
 	}

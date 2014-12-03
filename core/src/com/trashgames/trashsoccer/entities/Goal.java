@@ -34,20 +34,21 @@ public class Goal extends Entity{
 	private boolean leftfacing;
 	private float sensorOffset;
 	
+	private AssetManager assetManager;
+	
 	public Goal(World world, Rectangle bounds, Filter filter, AssetManager assetManager, boolean leftfacing, float sensorOffset){
 		this.world = world;
 		this.bounds = bounds;
 		this.leftfacing = leftfacing;
 		this.sensorOffset = sensorOffset * 2;
+		this.assetManager = assetManager;
 		setFilter(filter);
 		
 		bodies = new Body[1];
 		sprites = new Sprite[1];
 		dims = new Dimension[1];
 		
-		sprites[POLES] = new Sprite(assetManager.get(Asset.TEX_GOAL, Texture.class));
-		if(leftfacing)
-			sprites[POLES].setFlip(true, false);
+		setSprites();
 		
 		dims[POLES] = new Dimension(bounds.width / 2, bounds.height / 2, 0);
 		
@@ -103,6 +104,13 @@ public class Goal extends Entity{
 		fdef.filter.maskBits = B2DFilter.BALL;
 		bodies[POLES].createFixture(fdef).setUserData(this);
 		
+	}
+	
+	@Override
+	protected void setSprites() {
+		sprites[POLES] = new Sprite(assetManager.get(Asset.TEX_GOAL, Texture.class));
+		if(leftfacing)
+			sprites[POLES].setFlip(true, false);		
 	}
 	
 	@Override

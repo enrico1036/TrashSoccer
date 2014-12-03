@@ -2,6 +2,7 @@ package com.trashgames.trashsoccer.entities;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -27,9 +28,12 @@ public abstract class Entity {
 	
 	protected abstract void createBodies();
 	
+	protected abstract void setSprites();
+	
 	public void regenerateBodies(){
 		// destroy first
 		destroy();
+		setSprites();
 		createBodies();
 	}
 

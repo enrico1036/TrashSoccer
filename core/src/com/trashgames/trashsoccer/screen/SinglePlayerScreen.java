@@ -1,5 +1,6 @@
 package com.trashgames.trashsoccer.screen;
 
+import java.io.IOException;
 import java.sql.Time;
 import java.util.ArrayList;
 
@@ -8,6 +9,7 @@ import sun.net.www.content.text.plain;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -67,7 +69,7 @@ public class SinglePlayerScreen extends GameScreen {
 	protected final Player playersR[] = new Player[2];
 	protected Ball ball;
 	
-	public SinglePlayerScreen(final Game gm) {
+	public SinglePlayerScreen(final Game gm){
 		super(gm);
 		entities = new ArrayList<Entity>();
 		
@@ -91,6 +93,17 @@ public class SinglePlayerScreen extends GameScreen {
 		loadedAssets = Asset.loadRandomWorld(gm.assetManager);
 		gm.assetManager.finishLoading();
 		
+		// World properties load
+		XmlReader xml = new XmlReader();
+		FileHandle file = Gdx.files.internal(Asset.XML_WORLD);
+		float friction = 0.3f;
+		try {
+			world.setGravity(new Vector2(0, xml.parse(file).getFloat("gravity", -9.81f)));
+			friction = xml.parse(file).getFloat("friction", 0.3f);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		// Usefull instances
 		BodyDef bdef = new BodyDef();
@@ -101,7 +114,7 @@ public class SinglePlayerScreen extends GameScreen {
 		// Terrain creation
 		filter.categoryBits = B2DFilter.TERRAIN;
 		filter.maskBits = B2DFilter.PLAYER | B2DFilter.BALL | B2DFilter.FOOT_SENSOR;
-		Terrain terrain = new Terrain(world, (Gdx.graphics.getHeight() / 5 + 20) / PPM, 0.3f, filter, gm.assetManager);
+		Terrain terrain = new Terrain(world, (Gdx.graphics.getHeight() / 5 + 20) / PPM, friction, filter, gm.assetManager);
 		entities.add(terrain);
 		
 		// Left wall
@@ -351,10 +364,15 @@ public class SinglePlayerScreen extends GameScreen {
 		{
 			if(scores[i].hasWon(MAX_SCORE))	{
 				System.out.println(i + "won");
+//				for(String asset : loadedAssets)
+//					gm.assetManager.unload(asset);
+//				loadedAssets.clear();
+//				loadedAssets = Asset.loadRandomWorld(gm.assetManager);
+//				gm.assetManager.finishLoading();
 				reset(true);
 			}
 			if(scores[i].isIncremented())
-				reset(false);
+				reset(false); // Replace entities 
 		}
 		
 		
@@ -364,12 +382,19 @@ public class SinglePlayerScreen extends GameScreen {
 	}
 	
 	public void reset(boolean newGame){
+		if(newGame){
+			for(String asset : loadedAssets)
+				gm.assetManager.unload(asset);
+			loadedAssets.clear();
+			loadedAssets = Asset.loadRandomWorld(gm.assetManager);
+			gm.assetManager.finishLoading();
+			
+			for(int i = 0; i < scores.length; i++)
+				scores[i].reset();
+		}
 		for (Entity entity : entities){
 			entity.regenerateBodies();
 		}
-		if(newGame)
-			for(int i = 0; i < scores.length; i++)
-				scores[i].reset();
 	}
 
 	@Override

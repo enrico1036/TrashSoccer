@@ -1,5 +1,6 @@
 package com.trashgames.trashsoccer;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -10,6 +11,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.XmlReader;
 
 public class Asset {
 	// Textures
@@ -53,6 +55,8 @@ public class Asset {
 	public static String SND_KICK;
 	public static String SND_JUMP;
 	public static String SND_MUSIC;
+	// Description files
+	public static String XML_WORLD;
 	
 	
 	public static void loadUI(AssetManager manager){
@@ -136,6 +140,8 @@ public class Asset {
 		String dataPath = "";
 		if(Gdx.app.getType() == ApplicationType.Desktop)
 			dataPath = "./bin/";
+		if(Gdx.app.getType() == ApplicationType.iOS)
+			dataPath = "assets/";
 		
 		// Load head	
 		String dirPath = dataPath + "data/textures/player/";
@@ -200,6 +206,7 @@ public class Asset {
 		worldDirPath = randomDir.path().substring(dataPath.length());
 		TEX_BACKGROUND = worldDirPath + "/background.png";
 		TEX_TERRAIN = worldDirPath + "/terrain.png";
+		XML_WORLD = worldDirPath + "/properties.xml";
 		manager.load(TEX_BACKGROUND, Texture.class);
 		manager.load(TEX_TERRAIN, Texture.class);
 		loaded.add(TEX_BACKGROUND);

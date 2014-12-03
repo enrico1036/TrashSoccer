@@ -1,0 +1,8 @@
+<world>
+    <gravity>
+        -4
+    </gravity>
+    <friction>
+        0.3
+    </friction>
+</world>

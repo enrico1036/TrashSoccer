@@ -55,6 +55,8 @@ public class Player extends Entity {
 	private boolean leftfacing;
 	private float terrainSurface;
 	
+	private AssetManager assetManager;
+	
 	private Sound kick;
 	private Sound jump;
 	
@@ -67,6 +69,7 @@ public class Player extends Entity {
 		this.bounds = bounds;
 		this.leftfacing = leftfacing;
 		this.terrainSurface = terrainSurface;
+		this.assetManager = assetManager;
 		setFilter(filter);
 		
 		//totalMass = 27.01568727f / (bounds.getHeight() * bounds.getWidth());//rect area * mass density
@@ -82,23 +85,11 @@ public class Player extends Entity {
 		createBodies();
 
 		// Creating Sprites
-		sprites[HEAD] = new Sprite(assetManager.get(leftfacing ? Asset.TEX_HEAD_A : Asset.TEX_HEAD_B, Texture.class));
-		sprites[TORSO] = new Sprite(assetManager.get(leftfacing ? Asset.TEX_TORSO_A : Asset.TEX_TORSO_B, Texture.class));
-		sprites[RIGHT_ARM] = new Sprite(assetManager.get(leftfacing ? Asset.TEX_ARM_A : Asset.TEX_ARM_B, Texture.class));
-		sprites[LEFT_ARM] = new Sprite(assetManager.get(leftfacing ? Asset.TEX_ARM_A : Asset.TEX_ARM_B, Texture.class));
-		sprites[RIGHT_LEG] = new Sprite(assetManager.get(leftfacing ? Asset.TEX_LEG_A : Asset.TEX_LEG_B, Texture.class));
-		sprites[LEFT_LEG] = new Sprite(assetManager.get(leftfacing ? Asset.TEX_LEG_A : Asset.TEX_LEG_B, Texture.class));
+		setSprites();
 		
 		kick = assetManager.get(Asset.SND_KICK);
 		jump = assetManager.get(Asset.SND_JUMP);
 		
-		for (Sprite sprite : sprites){
-			if (sprite != null){
-				sprite.setOriginCenter();
-				// Make the sprite face player's direction
-				sprite.setFlip(!leftfacing, false);
-			}
-		}
 	}
 
 	@Override
@@ -323,6 +314,22 @@ public class Player extends Entity {
 
 	}
 	
+	@Override
+	protected void setSprites() {
+		sprites[HEAD] = new Sprite(assetManager.get(leftfacing ? Asset.TEX_HEAD_A : Asset.TEX_HEAD_B, Texture.class));
+		sprites[TORSO] = new Sprite(assetManager.get(leftfacing ? Asset.TEX_TORSO_A : Asset.TEX_TORSO_B, Texture.class));
+		sprites[RIGHT_ARM] = new Sprite(assetManager.get(leftfacing ? Asset.TEX_ARM_A : Asset.TEX_ARM_B, Texture.class));
+		sprites[LEFT_ARM] = new Sprite(assetManager.get(leftfacing ? Asset.TEX_ARM_A : Asset.TEX_ARM_B, Texture.class));
+		sprites[RIGHT_LEG] = new Sprite(assetManager.get(leftfacing ? Asset.TEX_LEG_A : Asset.TEX_LEG_B, Texture.class));
+		sprites[LEFT_LEG] = new Sprite(assetManager.get(leftfacing ? Asset.TEX_LEG_A : Asset.TEX_LEG_B, Texture.class));
+		for (Sprite sprite : sprites){
+			if (sprite != null){
+				sprite.setOriginCenter();
+				// Make the sprite face player's direction
+				sprite.setFlip(!leftfacing, false);
+			}
+		}
+	}
 	public void setJump(boolean canJump){
 		this.canJump = canJump;
 	}
