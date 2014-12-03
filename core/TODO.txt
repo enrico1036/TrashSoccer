@@ -1,2 +1,6 @@
--Add mute function
--Implement 2 player function overriding createUI method
+-DONE Add mute function
+-DONE Implement 2 player function overriding createUI method
+-Win congratulations
+-Volume state saved in file on exit
+-PlayScreen destruction after match
+-Xml file with world properties

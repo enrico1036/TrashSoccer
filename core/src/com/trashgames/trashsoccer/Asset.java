@@ -47,6 +47,8 @@ public class Asset {
 	public static String UI_TO_MENU_DOWN;
 	public static String UI_RESUME_DOWN;
 	public static String UI_PAUSE_BACKGROUND;
+	public static String UI_SOUND_UP;
+	public static String UI_SOUND_DOWN;
 	// Sounds
 	public static String SND_KICK;
 	public static String SND_JUMP;
@@ -94,6 +96,10 @@ public class Asset {
 		manager.load(UI_RESUME_DOWN, Texture.class);
 		UI_PAUSE_BACKGROUND = uiPath + "pause_background.png";
 		manager.load(UI_PAUSE_BACKGROUND, Texture.class);
+		UI_SOUND_UP = uiPath + "sound_up.png";
+		manager.load(UI_SOUND_UP, Texture.class);
+		UI_SOUND_DOWN = uiPath + "sound_down.png";
+		manager.load(UI_SOUND_DOWN, Texture.class);
 	}
 	
 	public static void loadSounds(AssetManager manager){
@@ -104,7 +110,7 @@ public class Asset {
 		SND_JUMP = soundPath + "jump.mp3";
 		manager.load(SND_JUMP, Sound.class);
 		SND_MUSIC = soundPath + "music.mp3";
-		manager.load(SND_MUSIC, Sound.class); // TODO resolve dependences problem
+		manager.load(SND_MUSIC, Sound.class);
 	}
 	
 	public static void loadMenu(AssetManager manager){

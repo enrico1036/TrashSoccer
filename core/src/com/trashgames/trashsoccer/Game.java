@@ -6,7 +6,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.trashgames.trashsoccer.screen.MenuScreen;
-import com.trashgames.trashsoccer.screen.PlayScreen;
+import com.trashgames.trashsoccer.screen.SinglePlayerScreen;
 import com.trashgames.trashsoccer.screen.ScreenManager;
 
 public class Game extends ApplicationAdapter {
@@ -16,6 +16,7 @@ public class Game extends ApplicationAdapter {
 	public static final String WND_TITLE = "Platformer game";
 	public static final int WND_WIDTH = 640;
 	public static final int WND_HEIGHT = 480;
+	public static float VOLUME = .1f;
 	public BitmapFont mainFont;
 	
 	// Class memebers

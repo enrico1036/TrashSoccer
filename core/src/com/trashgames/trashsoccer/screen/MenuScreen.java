@@ -27,6 +27,8 @@ public class MenuScreen extends GameScreen {
 	private Sprite bgSprite;
 	private Sprite terSprite;
 	private Sprite rosSprite;
+	
+	UIButton volumeBt;
 
 	private Vector<UIButton> buttons;
 	private Vector<UILabel> labels;
@@ -63,7 +65,7 @@ public class MenuScreen extends GameScreen {
 //		rosSprite.setSize(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 //		rosSprite.setPosition(Gdx.graphics.getWidth() * (2f / 3f), 0);
 
-		// Button creation
+		// 1 Player button creation
 		UIButton bt = new UIButton(null, gm.mainFont, 
 				new Rectangle(Gdx.graphics.getWidth() / 8, Gdx.graphics.getHeight() / 2, 
 						Gdx.graphics.getWidth() / 3, Gdx.graphics.getHeight() / 7), 
@@ -72,12 +74,12 @@ public class MenuScreen extends GameScreen {
 
 			@Override
 			public void run() {
-				gm.screenManager.push(new PlayScreen(gm));
+				gm.screenManager.push(new SinglePlayerScreen(gm));
 			}
 		});
 		buttons.add(bt);
 
-		// 2 players button creation
+		// 2 Players button creation
 		UIButton bt2 = new UIButton(null, gm.mainFont, 
 				new Rectangle(Gdx.graphics.getWidth() * (13f / 24f), Gdx.graphics.getHeight() / 2, Gdx.graphics.getWidth() / 3, Gdx.graphics.getHeight() / 7), 
 				gm.assetManager.get(Asset.UI_MULTI_PLAYER_UP, Texture.class), gm.assetManager.get(Asset.UI_MULTI_PLAYER_DOWN, Texture.class));
@@ -85,10 +87,25 @@ public class MenuScreen extends GameScreen {
 
 			@Override
 			public void run() {
-				System.out.println("2players");
+				gm.screenManager.push(new MultiPlayerScreen(gm));
 			}
 		});
 		buttons.add(bt2);
+		
+		volumeBt = new UIButton(null, gm.mainFont, 
+				new Rectangle(10, Gdx.graphics.getHeight() - 10 - Gdx.graphics.getHeight() / 10, Gdx.graphics.getHeight() / 10, Gdx.graphics.getHeight() / 10), 
+				gm.assetManager.get(Asset.UI_SOUND_UP, Texture.class), gm.assetManager.get(Asset.UI_SOUND_DOWN, Texture.class));
+		volumeBt.setAction(new Runnable() {
+
+			@Override
+			public void run() {
+				 if(Game.VOLUME == 0)
+					 Game.VOLUME = .1f;
+				 else
+					 Game.VOLUME = 0;
+			}
+		});
+		volumeBt.setPressed(Game.VOLUME == 0);
 
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1f);
 	}
@@ -108,6 +125,7 @@ public class MenuScreen extends GameScreen {
 		// UI rendering
 		for (UIButton bt : buttons)
 			bt.render(sb);
+		volumeBt.render(sb);
 		for (UILabel lb : labels)
 			lb.render(sb);
 
@@ -124,7 +142,12 @@ public class MenuScreen extends GameScreen {
 	@Override
 	public void dispose() {
 		super.dispose();
-		//gm.assetManager.dispose();	//Unneeded call because already called in super.dispose()
+	}
+	
+	@Override
+	public void resume() {
+		volumeBt.setPressed(Game.VOLUME == 0);
+		super.resume();
 	}
 
 	@Override
@@ -135,6 +158,12 @@ public class MenuScreen extends GameScreen {
 				bt.execAction();
 				break;
 			}
+		if(volumeBt.checkBound(new Vector2(screenX, Gdx.graphics.getHeight() - screenY)))
+		{
+			volumeBt.execAction();
+			volumeBt.setPressed(!volumeBt.isPressed());
+		}
+			
 		return true;
 	}
 

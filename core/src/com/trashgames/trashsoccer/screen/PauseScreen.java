@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.Timer;
 import com.trashgames.trashsoccer.Asset;
 import com.trashgames.trashsoccer.Game;
 import com.trashgames.trashsoccer.ui.UIButton;
@@ -20,6 +21,7 @@ public class PauseScreen extends GameScreen{
 	private UIButton toMenuButton;
 	private UIButton resumeButton;
 	private UIButton pauseButton;
+	private UIButton volumeButton;
 	private Sprite darkFilter;
 	private TextureRegion lastFrameTex;
 	private FrameBuffer lastFrame;
@@ -27,6 +29,7 @@ public class PauseScreen extends GameScreen{
 	public PauseScreen(final Game gm) {
 		super(gm);
 		
+		// To menu button
 		Rectangle bounds = new Rectangle(Gdx.graphics.getWidth() / 8, Gdx.graphics.getHeight() / 2, Gdx.graphics.getWidth() / 3, Gdx.graphics.getHeight() / 7);
 		toMenuButton = new UIButton(null, gm.mainFont, new Rectangle(bounds), 
 				gm.assetManager.get(Asset.UI_TO_MENU_UP, Texture.class), 
@@ -39,6 +42,7 @@ public class PauseScreen extends GameScreen{
 			}
 		});
 		
+		// Resume button
 		bounds.setPosition(Gdx.graphics.getWidth() * (13f / 24f), Gdx.graphics.getHeight() / 2);
 		resumeButton = new UIButton(null, gm.mainFont, new Rectangle(bounds), 
 				gm.assetManager.get(Asset.UI_RESUME_UP, Texture.class), 
@@ -46,10 +50,12 @@ public class PauseScreen extends GameScreen{
 		resumeButton.setAction(new Runnable() {
 			@Override
 			public void run() {
+				Timer.instance().start();
 				gm.screenManager.pop();
 			}
 		});
 		
+		// Pause button
 		bounds.setSize(Gdx.graphics.getHeight() / 10, Gdx.graphics.getHeight() / 10);
 		bounds.setPosition(Gdx.graphics.getWidth() - bounds.width - 10, Gdx.graphics.getHeight() - bounds.height - 10);
 		pauseButton = new UIButton(null, gm.mainFont, new Rectangle(bounds), 
@@ -58,9 +64,26 @@ public class PauseScreen extends GameScreen{
 		pauseButton.setAction(new Runnable() {
 			@Override
 			public void run() {
+				Timer.instance().start();
 				gm.screenManager.pop();
 			}
 		});
+		
+		// Sound button
+		volumeButton = new UIButton(null, gm.mainFont, 
+				new Rectangle(10, Gdx.graphics.getHeight() - 10 - Gdx.graphics.getHeight() / 10, Gdx.graphics.getHeight() / 10, Gdx.graphics.getHeight() / 10), 
+				gm.assetManager.get(Asset.UI_SOUND_UP, Texture.class), gm.assetManager.get(Asset.UI_SOUND_DOWN, Texture.class));
+		volumeButton.setAction(new Runnable() {
+
+			@Override
+			public void run() {
+				 if(Game.VOLUME == 0)
+					 Game.VOLUME = .1f;
+				 else
+					 Game.VOLUME = 0;
+			}
+		});
+		volumeButton.setPressed(Game.VOLUME == 0);
 		
 		darkFilter = new Sprite(gm.assetManager.get(Asset.UI_PAUSE_BACKGROUND, Texture.class));
 		
@@ -95,6 +118,7 @@ public class PauseScreen extends GameScreen{
 			toMenuButton.render(sb);
 			resumeButton.render(sb);
 			pauseButton.render(sb);
+			volumeButton.render(sb);
 		sb.end();
 	}
 	
@@ -121,6 +145,12 @@ public class PauseScreen extends GameScreen{
 		if(resumeButton.checkBound(new Vector2(screenX, Gdx.graphics.getHeight() - screenY))){
 			resumeButton.setPressed(true);
 			resumeButton.execAction();
+		}
+		
+		if(volumeButton.checkBound(new Vector2(screenX, Gdx.graphics.getHeight() - screenY)))
+		{
+			volumeButton.execAction();
+			volumeButton.setPressed(!volumeButton.isPressed());
 		}
 		
 		return true;

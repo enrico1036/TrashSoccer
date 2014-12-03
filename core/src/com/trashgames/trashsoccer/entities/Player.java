@@ -28,6 +28,7 @@ import com.badlogic.gdx.physics.box2d.joints.RopeJointDef;
 import com.trashgames.trashsoccer.Asset;
 import com.trashgames.trashsoccer.B2DFilter;
 import com.trashgames.trashsoccer.Dimension;
+import com.trashgames.trashsoccer.Game;
 import com.trashgames.trashsoccer.MyContactListener;
 
 import static com.trashgames.trashsoccer.Game.PPM;
@@ -330,7 +331,7 @@ public class Player extends Entity {
 	public void jump() {
 		if(canJump){
 			bodies[TORSO].applyForceToCenter(-10000 * (float) Math.sin(bodies[TORSO].getAngle()), 10000 * (float) Math.cos(bodies[TORSO].getAngle()), true);
-			jump.play(0.1f, 1, 0);
+			jump.play(Game.VOLUME, 1, 0);
 		}
 	}
 	
@@ -356,7 +357,7 @@ public class Player extends Entity {
 				kickJoint.setLimits(0, 3.1415f / 2);
 				ghostJoint.setLimits(-3.1415f / 2,0);
 			}
-			kick.play(0.1f, 1, 0);
+			kick.play(Game.VOLUME, 1, 0);
 		}else{
 			kickJoint.setLimits(0, 0);
 			ghostJoint.setLimits(0, 0);
