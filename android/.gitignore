@@ -1,2 +1,10 @@
-/.DS_Store
+/src/
 /gen/
+/bin/
+/libs/
+/res/
+/AndroidManifest.xml
+/build.gradle
+/ic_launcher-web.png
+/proguard-project.txt
+/project.properties

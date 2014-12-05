@@ -1,0 +1,10 @@
+/android/src/
+/android/gen/
+/android/bin/
+/android/libs/
+/android/res/
+/android/AndroidManifest.xml
+/android/build.gradle
+/android/ic_launcher-web.png
+/android/proguard-project.txt
+/android/project.properties
