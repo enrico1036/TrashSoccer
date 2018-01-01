@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="con" path="org.robovm.eclipse.ROBOVM_CONTAINER"/>
+	<classpathentry kind="con" path="org.robovm.eclipse.ROBOVM_COCOA_TOUCH_CONTAINER"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="assets"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="lib" path="/Users/Enrico/.gradle/caches/modules-2/files-2.1/org.robovm/robovm-rt/1.0.0-alpha-04/402bcd531bcd9e230979ecd6d86e4f2168220122/robovm-rt-1.0.0-alpha-04.jar" sourcepath="/Users/Enrico/.gradle/caches/modules-2/files-2.1/org.robovm/robovm-rt/1.0.0-alpha-04/1b4cedcd417235af58f366cea23c2fdd71fb36b9/robovm-rt-1.0.0-alpha-04-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="/Users/Enrico/.gradle/caches/modules-2/files-2.1/org.robovm/robovm-cocoatouch/1.0.0-alpha-04/6cf3a79553a8d3bef331ac289793f681a5b9b01f/robovm-cocoatouch-1.0.0-alpha-04.jar" sourcepath="/Users/Enrico/.gradle/caches/modules-2/files-2.1/org.robovm/robovm-cocoatouch/1.0.0-alpha-04/423e321d6f0d35a2107cf391da6b4a72c7b716d3/robovm-cocoatouch-1.0.0-alpha-04-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="/Users/Enrico/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-backend-robovm/1.4.1/8d98011309b675b76a6392ef4c57ad973cc9a40e/gdx-backend-robovm-1.4.1.jar" sourcepath="/Users/Enrico/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-backend-robovm/1.4.1/a5194bf05d422929a5421e6d4159995baa86dde0/gdx-backend-robovm-1.4.1-sources.jar"/>

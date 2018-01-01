@@ -1,3 +1,2 @@
 /data/
-/.gitignore
-/com/
+*.DS_Store
