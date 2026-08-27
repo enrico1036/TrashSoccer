@@ -9,6 +9,8 @@
 /android/proguard-project.txt
 /android/project.properties
 
+/android/trashsoccer.keystore
+
 # Gradle build artifacts
 .gradle/
 build/

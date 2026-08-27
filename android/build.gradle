@@ -7,12 +7,28 @@ android {
 
     compileSdk 36
 
+    signingConfigs {
+        release {
+            storeFile file('trashsoccer.keystore')
+            storePassword 'trashsoccer'
+            keyAlias 'trashsoccer'
+            keyPassword 'trashsoccer'
+        }
+    }
+
     defaultConfig {
         applicationId 'com.trashgames.trashsoccer.android'
         minSdk 21
         targetSdk 36
         versionCode 1
         versionName '1.0'
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled false
+        }
     }
 
     sourceSets {
