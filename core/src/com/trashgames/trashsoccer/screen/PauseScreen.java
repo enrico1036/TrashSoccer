@@ -37,8 +37,13 @@ public class PauseScreen extends GameScreen{
 		toMenuButton.setAction(new Runnable() {
 			@Override
 			public void run() {
-				while(gm.screenManager.screenStack.size() > 1)
-					gm.screenManager.pop();
+				Gdx.app.postRunnable(new Runnable() {
+					@Override
+					public void run() {
+						while(gm.screenManager.screenStack.size() > 1)
+							gm.screenManager.pop();
+					}
+				});
 			}
 		});
 		
@@ -51,7 +56,12 @@ public class PauseScreen extends GameScreen{
 			@Override
 			public void run() {
 				Timer.instance().start();
-				gm.screenManager.pop();
+				Gdx.app.postRunnable(new Runnable() {
+					@Override
+					public void run() {
+						gm.screenManager.pop();
+					}
+				});
 			}
 		});
 		
@@ -65,7 +75,12 @@ public class PauseScreen extends GameScreen{
 			@Override
 			public void run() {
 				Timer.instance().start();
-				gm.screenManager.pop();
+				Gdx.app.postRunnable(new Runnable() {
+					@Override
+					public void run() {
+						gm.screenManager.pop();
+					}
+				});
 			}
 		});
 		
