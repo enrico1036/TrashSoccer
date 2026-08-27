@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.sql.Time;
 import java.util.ArrayList;
 
-import sun.net.www.content.text.plain;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Sound;
@@ -100,7 +98,7 @@ public class SinglePlayerScreen extends GameScreen {
 		try {
 			world.setGravity(new Vector2(0, xml.parse(file).getFloat("gravity", -9.81f)));
 			friction = xml.parse(file).getFloat("friction", 0.3f);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

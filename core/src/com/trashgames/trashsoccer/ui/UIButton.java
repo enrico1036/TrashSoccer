@@ -3,7 +3,7 @@ package com.trashgames.trashsoccer.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -36,10 +36,10 @@ public class UIButton {
 		}
 		// Draws text
 		if (text != null && !text.isEmpty()) {
-			TextBounds tBound = font.getBounds(text);
+			GlyphLayout glyphLayout = new GlyphLayout(font, text);
 			font.draw(batch, text, 
-					bound.x + (bound.width - tBound.width) / 2, 
-					bound.y + (bound.height + tBound.height) / 2);
+					bound.x + (bound.width - glyphLayout.width) / 2, 
+					bound.y + (bound.height + glyphLayout.height) / 2);
 		}
 	}
 

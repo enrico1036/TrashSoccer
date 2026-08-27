@@ -1,8 +1,8 @@
 package com.trashgames.trashsoccer.ui;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.math.Rectangle;
 
 public class UILabel{
@@ -18,9 +18,10 @@ public class UILabel{
 	
 	public void render(SpriteBatch batch){
 		if(text != null && !text.isEmpty()){
-			TextBounds tBound = font.getBounds(text);
-			font.setScale(1.5f);
-			font.draw(batch, text, bound.x + (bound.width - tBound.width) / 2, bound.y + (bound.height - tBound.height) / 2);
+			GlyphLayout glyphLayout = new GlyphLayout(font, text);
+			font.getData().scaleX = 1.5f;
+			font.getData().scaleY = 1.5f;
+			font.draw(batch, text, bound.x + (bound.width - glyphLayout.width) / 2, bound.y + (bound.height - glyphLayout.height) / 2);
 		}
 	}
 

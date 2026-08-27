@@ -27,8 +27,8 @@ public class Game extends ApplicationAdapter {
 		assetManager = new AssetManager();
 		// Load font
 		mainFont = new BitmapFont(Gdx.files.internal("data/font/kongtext.fnt"), Gdx.files.internal("data/font/kongtext.png"), false);
-		mainFont.setScale(1f);
-		Texture.setAssetManager(assetManager);
+		mainFont.getData().scaleX = 1f;
+		mainFont.getData().scaleY = 1f;
 		screenManager = new ScreenManager(this);
 		screenManager.push(new MenuScreen(this));
 	}
