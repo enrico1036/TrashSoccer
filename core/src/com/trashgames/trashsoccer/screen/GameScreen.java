@@ -84,7 +84,12 @@ public abstract class GameScreen extends ScreenAdapter implements InputProcessor
 	}
 
 	@Override
-	public boolean scrolled(int arg0) {
+	public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
+		return false;
+	}
+
+	@Override
+	public boolean scrolled(float amountX, float amountY) {
 		return false;
 	}
 
